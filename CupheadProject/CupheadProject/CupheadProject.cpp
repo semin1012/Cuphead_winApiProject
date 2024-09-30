@@ -4,13 +4,17 @@
 #include <vector>
 #include <queue>
 #include "Collider.h"
+#include "WorldMap.h"
 #include "framework.h"
 #include "CupheadProject.h"
+#include "commdlg.h"
+#pragma comment(lib, "Msimg32.lib")
+
 using namespace std;
 #define MAX_LOADSTRING 100
 #define WINDOWS_WIDTH 1280
 #define WINDOWS_HEIGHT 800
-#define TILE_SIZE 20
+#define TILE_SIZE 30
 
 #pragma region WinMain
 HINSTANCE hInst;
@@ -73,7 +77,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance = hInstance;
     wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CUPHEADPROJECT));
     wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_CUPHEADPROJECT);
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -131,14 +135,25 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 #pragma endregion
 
 
-vector<Collider*> worldMapCollisions;
+RECT                rectView;
+
+HDC                 hdc, MemDC, tmpDC;
+HBITMAP             BackBit, oldBackBit;
+RECT                bufferRT;
+PAINTSTRUCT         ps;
+vector<Collider*>   worldMapCollisions;
+WorldMap*           worldMap;
 
 //void SetRectangle(RECT* rect, int left, int top, int right, int bottom);
+void Init(HWND hWnd);
 void AddTile(HWND& hWnd, LPPOINT& mousePos);
+void CreateDoubbleBuffering(HWND hWnd);
+void EndDoubleBuffering(HWND hWnd);
+void ShowDebugCollider(HDC& hdc);
+
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    static RECT rectView;
     static LPPOINT mousePos;
 
     switch (message)
@@ -146,10 +161,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_CREATE:
     {
         mousePos = new POINT;
+        Init(hWnd);
         GetWindowRect(hWnd, &rectView);
         break;
-    case WM_COMMAND:
 #pragma region COMMAND
+    case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
         switch (wmId)
@@ -164,9 +180,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
     }
+    break;
 
 #pragma endregion
-    break;
     case WM_LBUTTONDOWN:
     {
         AddTile(hWnd, mousePos);
@@ -176,15 +192,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_PAINT:
     {
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hWnd, &ps);
+        CreateDoubbleBuffering(hWnd);
+        
+        worldMap->Draw(hdc);
+        ShowDebugCollider(hdc);
 
-        for (auto obstacle : worldMapCollisions)
-        {
-            Rectangle(hdc, obstacle->left, obstacle->top, obstacle->right, obstacle->bottom);
-        }
-
-        EndPaint(hWnd, &ps);
+        EndDoubleBuffering(hWnd);
     }
     break;
     case WM_DESTROY:
@@ -205,6 +218,16 @@ void SetRectangle(RECT* rect, int left, int top, int right, int bottom)
     rect->bottom = bottom;
 }
 
+void Init(HWND hWnd)
+{
+    GetClientRect(hWnd, &rectView);
+
+    worldMap = new WorldMap();
+    worldMap->SetRectView(rectView);
+
+    worldMap->CreateBitmap();
+}
+
 void AddTile(HWND& hWnd, LPPOINT& mousePos)
 {
     GetCursorPos(mousePos);
@@ -215,14 +238,64 @@ void AddTile(HWND& hWnd, LPPOINT& mousePos)
 
     Collider* collider = new Collider(mousePos->x * TILE_SIZE, mousePos->y * TILE_SIZE, mousePos->x * TILE_SIZE + TILE_SIZE, mousePos->y * TILE_SIZE + TILE_SIZE);
     
-    for (auto obj : worldMapCollisions)
+    for (int i = 0; i < worldMapCollisions.size(); i++)
     {
-        // 이미 그 자리에 동일한 게 있다면 중지
-        if (obj->Compare(*collider))
+        if (worldMapCollisions[i]->Compare(*collider))
+        {
+            worldMapCollisions.erase(worldMapCollisions.begin() + i);
             return;
+        }
     }
    
     worldMapCollisions.push_back(collider);
     worldMapCollisions.erase(unique(worldMapCollisions.begin(), worldMapCollisions.end()), worldMapCollisions.end());
 
+}
+
+#pragma region Double Buffering
+void CreateDoubbleBuffering(HWND hWnd)
+{
+    hdc = BeginPaint(hWnd, &ps);
+
+    GetClientRect(hWnd, &bufferRT);
+    MemDC = CreateCompatibleDC(hdc);
+    BackBit = CreateCompatibleBitmap(hdc, bufferRT.right, bufferRT.bottom);
+    oldBackBit = (HBITMAP)SelectObject(MemDC, BackBit);
+    PatBlt(MemDC, 0, 0, bufferRT.right, bufferRT.bottom, BLACKNESS);
+    tmpDC = hdc;
+    hdc = MemDC;
+    MemDC = tmpDC;
+}
+
+void EndDoubleBuffering(HWND hWnd)
+{
+    tmpDC = hdc;
+    hdc = MemDC;
+    MemDC = tmpDC;
+    GetClientRect(hWnd, &bufferRT);
+    BitBlt(hdc, 0, 0, bufferRT.right, bufferRT.bottom, MemDC, 0, 0, SRCCOPY);
+    SelectObject(MemDC, oldBackBit);
+    DeleteObject(BackBit);
+    DeleteDC(MemDC);
+    EndPaint(hWnd, &ps);
+}
+#pragma endregion
+
+void ShowDebugCollider(HDC& hdc)
+{
+    HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
+    HGDIOBJ hOldPen = SelectObject(hdc, hPen);
+
+    HBRUSH myBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
+    HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
+
+    for (auto obstacle : worldMapCollisions)
+    {
+        Rectangle(hdc, obstacle->left, obstacle->top, obstacle->right, obstacle->bottom);
+    }
+
+    SelectObject(hdc, oldBrush);
+    SelectObject(hdc, hOldPen);
+    DeleteObject(myBrush);
+    DeleteObject(hPen);
 }
