@@ -134,23 +134,18 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 RECT                rectView;
+GameManager* gameMgr = new GameManager();
+void Init(HWND hWnd);
 
+/* -------- Double Buffering -------- */
 HDC                 hdc, MemDC, tmpDC;
-
-// Double Buffering
 HBITMAP             BackBit, oldBackBit;
 RECT                bufferRT;
 PAINTSTRUCT         ps;
 
-GameManager* gameMgr = new GameManager();
-
-//void SetRectangle(RECT* rect, int left, int top, int right, int bottom);
-void Init(HWND hWnd);
-void AddTile(HWND& hWnd, LPPOINT& mousePos);
 void CreateDoubbleBuffering(HWND hWnd);
 void EndDoubleBuffering(HWND hWnd);
-void SetDebugMode();
-
+/* ---------------------------------- */
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -180,6 +175,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case IDM_EXIT:
             DestroyWindow(hWnd);
             break;
+        case ID_WORLD_SAVE:
+            gameMgr->SaveWorldMapCollider();
+            break;
+        case ID_WORLD_LOAD:
+            break;
+        case ID_WORLD_CLEAR:
+            break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
@@ -197,7 +199,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wParam)
         {
         case 'D':
-            SetDebugMode();
+            gameMgr->SetDebugMode();
             break;
         }
         break;
@@ -256,30 +258,6 @@ void Init(HWND hWnd)
     gameMgr->worldMap = worldMap;
 }
 
-void AddTile(HWND& hWnd, LPPOINT& mousePos)
-{
-    GetCursorPos(mousePos);
-    ScreenToClient(hWnd, mousePos);
-
-    mousePos->x = mousePos->x / TILE_SIZE;
-    mousePos->y = mousePos->y / TILE_SIZE;
-
-    Collider* collider = new Collider(mousePos->x * TILE_SIZE, mousePos->y * TILE_SIZE, mousePos->x * TILE_SIZE + TILE_SIZE, mousePos->y * TILE_SIZE + TILE_SIZE);
-    
-    for (int i = 0; i < gameMgr->worldMapCollisions.size(); i++)
-    {
-        if (gameMgr->worldMapCollisions[i]->Compare(*collider))
-        {
-            gameMgr->worldMapCollisions.erase(gameMgr->worldMapCollisions.begin() + i);
-            return;
-        }
-    }
-   
-    gameMgr->worldMapCollisions.push_back(collider);
-    gameMgr->worldMapCollisions.erase(unique(gameMgr->worldMapCollisions.begin(), gameMgr->worldMapCollisions.end()), gameMgr->worldMapCollisions.end());
-
-}
-
 #pragma region Double Buffering
 void CreateDoubbleBuffering(HWND hWnd)
 {
@@ -309,8 +287,3 @@ void EndDoubleBuffering(HWND hWnd)
     EndPaint(hWnd, &ps);
 }
 #pragma endregion
-
-void SetDebugMode()
-{
-    gameMgr->debugMode = !gameMgr->debugMode;
-}

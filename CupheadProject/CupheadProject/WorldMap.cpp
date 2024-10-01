@@ -36,7 +36,7 @@ void WorldMap::Draw(HDC hdc)
 	hOldBitmap = (HBITMAP)SelectObject(hMemDC, hRightMapImg);
 	bx = bitRightMap.bmWidth;
 	by = bitRightMap.bmHeight;
-	TransparentBlt(hdc, bitLeftMap.bmWidth * WORLD_MAP_SCALE + x, y - 7, bx * WORLD_MAP_SCALE, by * WORLD_MAP_SCALE, hMemDC, 0, 0, bx, by, RGB(104, 156, 199));
+	TransparentBlt(hdc, bitLeftMap.bmWidth * WORLD_MAP_SCALE+ x, y - 7, bx * WORLD_MAP_SCALE, by * WORLD_MAP_SCALE, hMemDC, 0, 0, bx, by, RGB(104, 156, 199));
 
 
 	DeleteDC(hMemDC);

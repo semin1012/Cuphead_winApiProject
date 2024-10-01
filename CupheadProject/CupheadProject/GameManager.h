@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <algorithm>
+#include <fstream>
 #include "framework.h"
 #include "WorldMap.h"
 #include "Collider.h"
@@ -21,6 +22,7 @@ public:
 	int						camera_x;
 	int						camera_y;
 
+
 public:
 	GameManager();
 	~GameManager();
@@ -30,5 +32,7 @@ public:
 	void SetCameraPos(int x, int y);
 	void AddTile(HWND& hWnd, LPPOINT& mousePos);
 	bool CompairTilePos(Collider& collide);
+	void SetDebugMode();
+	void SaveWorldMapCollider();
 };
 

@@ -99,3 +99,13 @@ bool GameManager::CompairTilePos(Collider& collider)
 	if (collider.bottom <= cameraView.top + TILE_SIZE) return false;
 	return true;
 }
+
+void GameManager::SetDebugMode()
+{
+	debugMode = !debugMode;
+}
+
+void GameManager::SaveWorldMapCollider()
+{
+
+}
