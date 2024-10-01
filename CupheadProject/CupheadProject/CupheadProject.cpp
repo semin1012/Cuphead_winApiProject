@@ -176,11 +176,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DestroyWindow(hWnd);
             break;
         case ID_WORLD_SAVE:
-            gameMgr->SaveWorldMapCollider();
+            gameMgr->SaveWorldMapInfo();
             break;
         case ID_WORLD_LOAD:
+            gameMgr->LoadWorldMapInfo();
             break;
         case ID_WORLD_CLEAR:
+            gameMgr->ClearWorldMapInfo();
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -240,22 +242,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
 }
 
-void SetRectangle(RECT* rect, int left, int top, int right, int bottom)
-{
-    rect->left = left;
-    rect->top = top;
-    rect->right = right;
-    rect->bottom = bottom;
-}
-
 void Init(HWND hWnd)
 {
     GetClientRect(hWnd, &rectView);
-
     WorldMap* worldMap = new WorldMap();
     worldMap->SetRectView(rectView);
     
     gameMgr->worldMap = worldMap;
+    gameMgr->LoadWorldMapInfo();    // 콜리전 가져옴
 }
 
 #pragma region Double Buffering

@@ -27,12 +27,14 @@ public:
 	GameManager();
 	~GameManager();
 
-	void Draw(HDC& hdc);
-	void SetCameraView();
-	void SetCameraPos(int x, int y);
-	void AddTile(HWND& hWnd, LPPOINT& mousePos);
-	bool CompairTilePos(Collider& collide);
-	void SetDebugMode();
-	void SaveWorldMapCollider();
+	void			Draw(HDC& hdc);
+	void			SetCameraView();
+	void			SetCameraPos(int x, int y);
+	void			AddTile(HWND& hWnd, LPPOINT& mousePos);
+	bool			CompairTilePos(Collider& collide);
+	void			SetDebugMode();
+	void			SaveWorldMapInfo();
+	void			LoadWorldMapInfo();
+	void			ClearWorldMapInfo();
 };
 

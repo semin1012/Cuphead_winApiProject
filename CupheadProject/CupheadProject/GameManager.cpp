@@ -10,7 +10,6 @@ GameManager::GameManager()
 
 GameManager::~GameManager()
 {
-
 	for (auto it = worldMapCollisions.begin(); it != worldMapCollisions.end(); it++)
 	{
 		delete (*it);
@@ -105,7 +104,57 @@ void GameManager::SetDebugMode()
 	debugMode = !debugMode;
 }
 
-void GameManager::SaveWorldMapCollider()
+void GameManager::SaveWorldMapInfo()
 {
+	std::ofstream ofs("../Resource/Save/Map/WorldMapCollider.txt", std::ios::out);
+	if (ofs.fail())
+	{
+		MessageBox(NULL, _T("WorldMapCollider.txt 파일 열기 실패"), _T("에러"), MB_OK);
+		return;
+	}
 
+	ofs << worldMapCollisions.size() << std::endl;
+	for (auto collider : worldMapCollisions)
+	{
+		ofs << collider->left << " " << collider->top << " " << collider->right << " " << collider->bottom << std::endl;
+	}
+
+	MessageBox(NULL, _T("WorldMapCollider.txt 파일에 월드 맵의 정보를 저장했습니다."), _T("성공"), MB_OK);
+	ofs.close();
+}
+
+void GameManager::LoadWorldMapInfo()
+{
+	int size;
+
+	std::ifstream ifs("../Resource/Save/Map/WorldMapCollider.txt", std::ios::in);
+	if (ifs.fail())
+	{
+		MessageBox(NULL, _T("WorldMapCollider.txt 파일 열기 실패"), _T("에러"), MB_OK);
+		return;
+	}
+
+	if ( !ifs.eof() )
+		ifs >> size;
+
+	while (!ifs.eof())
+	{
+		Collider* collider = new Collider();
+		ifs >> collider->left >> collider->top >> collider->right >> collider->bottom;
+
+		worldMapCollisions.push_back(collider);
+	}
+
+	// MessageBox(NULL, _T("WorldMapCollider.txt 파일에 월드 맵의 정보를 가지고 왔습니다."), _T("성공"), MB_OK);
+	ifs.close();
+}
+
+void GameManager::ClearWorldMapInfo()
+{
+	for (auto it = worldMapCollisions.begin(); it != worldMapCollisions.end(); it++)
+	{
+		delete (*it);
+	}
+
+	worldMapCollisions.clear();	
 }
