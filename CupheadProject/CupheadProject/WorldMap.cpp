@@ -1,4 +1,14 @@
 #include "WorldMap.h"
+#include "GameManager.h"
+WorldMap::WorldMap()
+{
+	x = WORLD_START_POINT_X;
+	y = WORLD_START_POINT_Y;
+}
+
+WorldMap::~WorldMap()
+{
+}
 
 void WorldMap::Draw(HDC hdc)
 {
@@ -10,24 +20,23 @@ void WorldMap::Draw(HDC hdc)
 	hOldBitmap = (HBITMAP)SelectObject(hMemDC, hLeftOcean);
 	bx = bitLeftOcean.bmWidth;
 	by = bitLeftOcean.bmHeight;
-	TransparentBlt(hdc, 0, 0, bx, by, hMemDC, 0, 0, bx, by, RGB(255, 255, 255));
+	TransparentBlt(hdc, x, y, bx * WORLD_MAP_SCALE, by * WORLD_MAP_SCALE, hMemDC, 0, 0, bx, by, RGB(104, 156, 199));
 
 	hOldBitmap = (HBITMAP)SelectObject(hMemDC, hLeftMapImg);
 	bx = bitLeftMap.bmWidth;
 	by = bitLeftMap.bmHeight;
-	TransparentBlt(hdc, 0, 0, bx, by, hMemDC, 0, 0, bx, by, RGB(255, 255, 255));
-	
+	// hdc, 위치 x, y, 이미지 너비, 높이, hMemDC, 이미지의 시작 지점 x, y, 잘라낼 이미지의 x, y, 투명 색상
+	TransparentBlt(hdc, x, y, bx * WORLD_MAP_SCALE, by * WORLD_MAP_SCALE, hMemDC, 0, 0, bx, by, RGB(104, 156, 199));
 
-	//hOldBitmap = (HBITMAP)SelectObject(hMemDC, hRightMapImg);
-	//bx = bitRightMap.bmWidth;
-	//by = bitRightMap.bmHeight;
-	//TransparentBlt(hdc, 0, 0, bx, by, hMemDC, 0, 0, bx, by, RGB(255, 255, 255));
+	hOldBitmap = (HBITMAP)SelectObject(hMemDC, hRightOcean);
+	bx = bitRightMap.bmWidth;
+	by = bitRightMap.bmHeight;
+	TransparentBlt(hdc, bitLeftOcean.bmWidth * WORLD_MAP_SCALE + x, y, bx * WORLD_MAP_SCALE, by * WORLD_MAP_SCALE, hMemDC, 0, 0, bx, by, RGB(255, 0, 255));
 
-
-	//hOldBitmap = (HBITMAP)SelectObject(hMemDC, hRightMapImg);
-	//bx = bitRightMap.bmWidth;
-	//by = bitRightMap.bmHeight;
-	//TransparentBlt(hdc, 0, 0, bx, by, hMemDC, 0, 0, bx, by, RGB(255, 255, 255));
+	hOldBitmap = (HBITMAP)SelectObject(hMemDC, hRightMapImg);
+	bx = bitRightMap.bmWidth;
+	by = bitRightMap.bmHeight;
+	TransparentBlt(hdc, bitLeftMap.bmWidth * WORLD_MAP_SCALE + x, y - 7, bx * WORLD_MAP_SCALE, by * WORLD_MAP_SCALE, hMemDC, 0, 0, bx, by, RGB(104, 156, 199));
 
 
 	DeleteDC(hMemDC);
@@ -76,4 +85,5 @@ void WorldMap::CreateBitmap()
 void WorldMap::SetRectView(RECT& rectView)
 {
 	this->rectView = &rectView;
+	CreateBitmap();
 }

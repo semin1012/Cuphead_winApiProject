@@ -15,6 +15,22 @@
       "RelativeMoniker": "D:0:0:{6E2356D0-A30D-4834-91AF-68DBE01C6C58}|CupheadProject\\CupheadProject.vcxproj|solutionrelative:CupheadProject\\WorldMap.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{6E2356D0-A30D-4834-91AF-68DBE01C6C58}|CupheadProject\\CupheadProject.vcxproj|D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\GameManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6E2356D0-A30D-4834-91AF-68DBE01C6C58}|CupheadProject\\CupheadProject.vcxproj|solutionrelative:CupheadProject\\GameManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6E2356D0-A30D-4834-91AF-68DBE01C6C58}|CupheadProject\\CupheadProject.vcxproj|D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\Collider.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6E2356D0-A30D-4834-91AF-68DBE01C6C58}|CupheadProject\\CupheadProject.vcxproj|solutionrelative:CupheadProject\\Collider.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6E2356D0-A30D-4834-91AF-68DBE01C6C58}|CupheadProject\\CupheadProject.vcxproj|D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\GameManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6E2356D0-A30D-4834-91AF-68DBE01C6C58}|CupheadProject\\CupheadProject.vcxproj|solutionrelative:CupheadProject\\GameManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6E2356D0-A30D-4834-91AF-68DBE01C6C58}|CupheadProject\\CupheadProject.vcxproj|D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\Collider.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6E2356D0-A30D-4834-91AF-68DBE01C6C58}|CupheadProject\\CupheadProject.vcxproj|solutionrelative:CupheadProject\\Collider.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6E2356D0-A30D-4834-91AF-68DBE01C6C58}|CupheadProject\\CupheadProject.vcxproj|D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\framework.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{6E2356D0-A30D-4834-91AF-68DBE01C6C58}|CupheadProject\\CupheadProject.vcxproj|solutionrelative:CupheadProject\\framework.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
@@ -26,7 +42,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,7 +54,59 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Collider.h",
+              "DocumentMoniker": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\Collider.h",
+              "RelativeDocumentMoniker": "CupheadProject\\Collider.h",
+              "ToolTip": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\Collider.h",
+              "RelativeToolTip": "CupheadProject\\Collider.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-10-01T02:17:43.235Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "GameManager.cpp",
+              "DocumentMoniker": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\GameManager.cpp",
+              "RelativeDocumentMoniker": "CupheadProject\\GameManager.cpp",
+              "ToolTip": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\GameManager.cpp",
+              "RelativeToolTip": "CupheadProject\\GameManager.cpp",
+              "ViewState": "AQIAACoAAAAAAAAAAAAAAEQAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-01T02:49:46.946Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "GameManager.h",
+              "DocumentMoniker": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\GameManager.h",
+              "RelativeDocumentMoniker": "CupheadProject\\GameManager.h",
+              "ToolTip": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\GameManager.h",
+              "RelativeToolTip": "CupheadProject\\GameManager.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-10-01T02:49:36.595Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Collider.cpp",
+              "DocumentMoniker": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\Collider.cpp",
+              "RelativeDocumentMoniker": "CupheadProject\\Collider.cpp",
+              "ToolTip": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\Collider.cpp",
+              "RelativeToolTip": "CupheadProject\\Collider.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-01T02:18:56.213Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "framework.h",
               "DocumentMoniker": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\framework.h",
               "RelativeDocumentMoniker": "CupheadProject\\framework.h",
@@ -57,7 +125,7 @@
               "RelativeDocumentMoniker": "CupheadProject\\WorldMap.cpp",
               "ToolTip": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\WorldMap.cpp",
               "RelativeToolTip": "CupheadProject\\WorldMap.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACEAAAAiAAAA",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAAACYAAAA6AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-09-30T07:53:02.561Z",
               "EditorCaption": ""
@@ -70,7 +138,7 @@
               "RelativeDocumentMoniker": "CupheadProject\\WorldMap.h",
               "ToolTip": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\WorldMap.h",
               "RelativeToolTip": "CupheadProject\\WorldMap.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAWAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAYAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-09-30T07:53:00.345Z",
               "EditorCaption": ""
@@ -81,9 +149,9 @@
               "Title": "CupheadProject.cpp",
               "DocumentMoniker": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\CupheadProject.cpp",
               "RelativeDocumentMoniker": "CupheadProject\\CupheadProject.cpp",
-              "ToolTip": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\CupheadProject.cpp",
-              "RelativeToolTip": "CupheadProject\\CupheadProject.cpp",
-              "ViewState": "AQIAAJUAAAAAAAAAAAAAAL4AAAAOAAAA",
+              "ToolTip": "D:\\Cuphead_winApiProject\\CupheadProject\\CupheadProject\\CupheadProject.cpp*",
+              "RelativeToolTip": "CupheadProject\\CupheadProject.cpp*",
+              "ViewState": "AQIAAAUBAAAAAAAAAAAmwCEBAAAZAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-09-30T02:43:27.044Z",
               "EditorCaption": ""

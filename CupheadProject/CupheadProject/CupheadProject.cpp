@@ -1,10 +1,11 @@
 ﻿// CupheadProject.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
 
-#include <vector>
 #include <queue>
+#include <string>
 #include "Collider.h"
 #include "WorldMap.h"
+#include "GameManager.h"
 #include "framework.h"
 #include "CupheadProject.h"
 #include "commdlg.h"
@@ -12,9 +13,6 @@
 
 using namespace std;
 #define MAX_LOADSTRING 100
-#define WINDOWS_WIDTH 1280
-#define WINDOWS_HEIGHT 800
-#define TILE_SIZE 30
 
 #pragma region WinMain
 HINSTANCE hInst;
@@ -138,29 +136,35 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 RECT                rectView;
 
 HDC                 hdc, MemDC, tmpDC;
+
+// Double Buffering
 HBITMAP             BackBit, oldBackBit;
 RECT                bufferRT;
 PAINTSTRUCT         ps;
-vector<Collider*>   worldMapCollisions;
-WorldMap*           worldMap;
+
+GameManager* gameMgr = new GameManager();
 
 //void SetRectangle(RECT* rect, int left, int top, int right, int bottom);
 void Init(HWND hWnd);
 void AddTile(HWND& hWnd, LPPOINT& mousePos);
 void CreateDoubbleBuffering(HWND hWnd);
 void EndDoubleBuffering(HWND hWnd);
-void ShowDebugCollider(HDC& hdc);
+void SetDebugMode();
 
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static LPPOINT mousePos;
+    static bool mouseDrag = false;
+    static LPPOINT mouseDelta;
 
     switch (message)
     {
     case WM_CREATE:
     {
+        SetTimer(hWnd, 1, 20, NULL);
         mousePos = new POINT;
+        mouseDelta = new POINT;
         Init(hWnd);
         GetWindowRect(hWnd, &rectView);
         break;
@@ -181,26 +185,50 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
-
+    case WM_RBUTTONDOWN:
+        mouseDrag = true;
+        GetCursorPos(mouseDelta);
+        ScreenToClient(hWnd, mouseDelta);
+        break;
+    case WM_RBUTTONUP:
+        mouseDrag = false;
+        break;
+    case WM_KEYDOWN:
+        switch (wParam)
+        {
+        case 'D':
+            SetDebugMode();
+            break;
+        }
+        break;
 #pragma endregion
     case WM_LBUTTONDOWN:
-    {
-        AddTile(hWnd, mousePos);
-        InvalidateRect(hWnd, NULL, true);
-    }
+        gameMgr->AddTile(hWnd, mousePos);
         break;
-
+    case WM_TIMER:
+        if (mouseDrag)
+        {
+            int x, y;
+            POINT temp;
+            GetCursorPos(&temp);
+            ScreenToClient(hWnd, &temp);
+            x = mouseDelta->x - temp.x;
+            y = mouseDelta->y - temp.y;
+            gameMgr->SetCameraPos(gameMgr->camera_x + x, gameMgr->camera_y + y);
+            mouseDelta->x = temp.x;
+            mouseDelta->y = temp.y;
+        }
+        InvalidateRect(hWnd, NULL, false);
+        break;
     case WM_PAINT:
-    {
         CreateDoubbleBuffering(hWnd);
-        
-        worldMap->Draw(hdc);
-        ShowDebugCollider(hdc);
+
+        gameMgr->Draw(hdc);
 
         EndDoubleBuffering(hWnd);
-    }
-    break;
+        break;
     case WM_DESTROY:
+        KillTimer(hWnd, 1);
         PostQuitMessage(0);
         break;
     default:
@@ -222,10 +250,10 @@ void Init(HWND hWnd)
 {
     GetClientRect(hWnd, &rectView);
 
-    worldMap = new WorldMap();
+    WorldMap* worldMap = new WorldMap();
     worldMap->SetRectView(rectView);
-
-    worldMap->CreateBitmap();
+    
+    gameMgr->worldMap = worldMap;
 }
 
 void AddTile(HWND& hWnd, LPPOINT& mousePos)
@@ -238,17 +266,17 @@ void AddTile(HWND& hWnd, LPPOINT& mousePos)
 
     Collider* collider = new Collider(mousePos->x * TILE_SIZE, mousePos->y * TILE_SIZE, mousePos->x * TILE_SIZE + TILE_SIZE, mousePos->y * TILE_SIZE + TILE_SIZE);
     
-    for (int i = 0; i < worldMapCollisions.size(); i++)
+    for (int i = 0; i < gameMgr->worldMapCollisions.size(); i++)
     {
-        if (worldMapCollisions[i]->Compare(*collider))
+        if (gameMgr->worldMapCollisions[i]->Compare(*collider))
         {
-            worldMapCollisions.erase(worldMapCollisions.begin() + i);
+            gameMgr->worldMapCollisions.erase(gameMgr->worldMapCollisions.begin() + i);
             return;
         }
     }
    
-    worldMapCollisions.push_back(collider);
-    worldMapCollisions.erase(unique(worldMapCollisions.begin(), worldMapCollisions.end()), worldMapCollisions.end());
+    gameMgr->worldMapCollisions.push_back(collider);
+    gameMgr->worldMapCollisions.erase(unique(gameMgr->worldMapCollisions.begin(), gameMgr->worldMapCollisions.end()), gameMgr->worldMapCollisions.end());
 
 }
 
@@ -259,6 +287,7 @@ void CreateDoubbleBuffering(HWND hWnd)
 
     GetClientRect(hWnd, &bufferRT);
     MemDC = CreateCompatibleDC(hdc);
+    SetStretchBltMode(MemDC, COLORONCOLOR);
     BackBit = CreateCompatibleBitmap(hdc, bufferRT.right, bufferRT.bottom);
     oldBackBit = (HBITMAP)SelectObject(MemDC, BackBit);
     PatBlt(MemDC, 0, 0, bufferRT.right, bufferRT.bottom, BLACKNESS);
@@ -281,21 +310,7 @@ void EndDoubleBuffering(HWND hWnd)
 }
 #pragma endregion
 
-void ShowDebugCollider(HDC& hdc)
+void SetDebugMode()
 {
-    HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
-    HGDIOBJ hOldPen = SelectObject(hdc, hPen);
-
-    HBRUSH myBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
-    HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
-
-    for (auto obstacle : worldMapCollisions)
-    {
-        Rectangle(hdc, obstacle->left, obstacle->top, obstacle->right, obstacle->bottom);
-    }
-
-    SelectObject(hdc, oldBrush);
-    SelectObject(hdc, hOldPen);
-    DeleteObject(myBrush);
-    DeleteObject(hPen);
+    gameMgr->debugMode = !gameMgr->debugMode;
 }
