@@ -151,7 +151,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static LPPOINT mousePos;
     static bool mouseDrag = false;
-    static LPPOINT mouseDelta;
 
     switch (message)
     {
@@ -159,7 +158,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         SetTimer(hWnd, 1, 20, NULL);
         mousePos = new POINT;
-        mouseDelta = new POINT;
         Init(hWnd);
         GetWindowRect(hWnd, &rectView);
         break;
@@ -171,9 +169,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-            break;
-        case IDM_EXIT:
-            DestroyWindow(hWnd);
             break;
         case ID_WORLD_SAVE:
             gameMgr->SaveWorldMapInfo();
@@ -191,8 +186,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
     case WM_RBUTTONDOWN:
         mouseDrag = true;
-        GetCursorPos(mouseDelta);
-        ScreenToClient(hWnd, mouseDelta);
+        gameMgr->SetMouseDeltaPos(hWnd);
         break;
     case WM_RBUTTONUP:
         mouseDrag = false;
@@ -212,15 +206,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_TIMER:
         if (mouseDrag)
         {
-            int x, y;
-            POINT temp;
-            GetCursorPos(&temp);
-            ScreenToClient(hWnd, &temp);
-            x = mouseDelta->x - temp.x;
-            y = mouseDelta->y - temp.y;
-            gameMgr->SetCameraPos(gameMgr->camera_x + x, gameMgr->camera_y + y);
-            mouseDelta->x = temp.x;
-            mouseDelta->y = temp.y;
+            gameMgr->DragAndMoveWorldMap(hWnd);
         }
         InvalidateRect(hWnd, NULL, false);
         break;
@@ -248,7 +234,7 @@ void Init(HWND hWnd)
     WorldMap* worldMap = new WorldMap();
     worldMap->SetRectView(rectView);
     
-    gameMgr->worldMap = worldMap;
+    gameMgr->SetWorldMap(worldMap);
     gameMgr->LoadWorldMapInfo();    // 콜리전 가져옴
 }
 

@@ -6,6 +6,8 @@ GameManager::GameManager()
 	camera_x = WORLD_START_POINT_X;
 	camera_y = WORLD_START_POINT_Y;
 	SetCameraView();
+
+	mouseDelta = new POINT;
 }
 
 GameManager::~GameManager()
@@ -17,6 +19,7 @@ GameManager::~GameManager()
 
 	worldMapCollisions.clear();
 	delete worldMap;
+	delete mouseDelta;
 }
 
 void GameManager::Draw(HDC& hdc)
@@ -157,4 +160,38 @@ void GameManager::ClearWorldMapInfo()
 	}
 
 	worldMapCollisions.clear();	
+}
+
+void GameManager::SetWorldMap(WorldMap* worldMap)
+{
+	this->worldMap = worldMap;
+}
+
+int GameManager::GetCameraXPos()
+{
+	return camera_x;
+}
+
+int GameManager::GetCameraYPos()
+{
+	return camera_y;
+}
+
+void GameManager::SetMouseDeltaPos(HWND& hWnd)
+{
+	GetCursorPos(mouseDelta);
+	ScreenToClient(hWnd, mouseDelta);
+}
+
+void GameManager::DragAndMoveWorldMap(HWND& hWnd)
+{
+	int x, y;
+	POINT temp;
+	GetCursorPos(&temp);
+	ScreenToClient(hWnd, &temp);
+	x = mouseDelta->x - temp.x;
+	y = mouseDelta->y - temp.y;
+	SetCameraPos(camera_x + x, camera_y + y);
+	mouseDelta->x = temp.x;
+	mouseDelta->y = temp.y;
 }

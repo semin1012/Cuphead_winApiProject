@@ -14,13 +14,14 @@
 
 class GameManager
 {
-public:
+private:
 	std::vector<Collider*>  worldMapCollisions;
 	WorldMap*				worldMap;
 	bool					debugMode;
 	RECT					cameraView;
 	int						camera_x;
 	int						camera_y;
+	LPPOINT					mouseDelta;
 
 
 public:
@@ -36,5 +37,14 @@ public:
 	void			SaveWorldMapInfo();
 	void			LoadWorldMapInfo();
 	void			ClearWorldMapInfo();
+
+	void			SetWorldMap(WorldMap* worldMap);
+
+	int				GetCameraXPos();
+	int				GetCameraYPos();
+
+	// mouse event
+	void			SetMouseDeltaPos(HWND& hWnd);
+	void			DragAndMoveWorldMap(HWND& hWnd);
 };
 
