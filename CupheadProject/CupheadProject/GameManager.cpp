@@ -1,15 +1,22 @@
 #include "GameManager.h"
 
-GameManager::GameManager()
+GameManager::GameManager(RECT* rectView)
 {
 	debugMode = true;
 	camera_x = WORLD_START_POINT_X;
 	camera_y = WORLD_START_POINT_Y;
+	
 	SetCameraView();
-
 	mouseDelta = new POINT;
-	player = new Player(WINDOWS_WIDTH / 2, WINDOWS_HEIGHT / 2);
 	bMouseDrag = false;
+
+	player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
+
+	worldMap = new WorldMap();
+	worldMap->SetRectView(*rectView);
+	LoadWorldMapInfo();
+
+	SetCameraPos(camera_x, camera_y);
 }
 
 GameManager::~GameManager()
@@ -49,17 +56,16 @@ void GameManager::Draw(HDC& hdc)
 			RECT* collider = player->GetCollider();
 			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
 		}
-#pragma endregion
-
-	if (player != nullptr)
-		player->Draw(hdc);
-
 
 		SelectObject(hdc, oldBrush);
 		SelectObject(hdc, hOldPen);
 		DeleteObject(myBrush);
 		DeleteObject(hPen);
 	}
+#pragma endregion
+
+	if (player != nullptr)
+		player->Draw(hdc);
 }
 
 void GameManager::SetCameraView()
@@ -179,11 +185,6 @@ void GameManager::ClearWorldMapInfo()
 	}
 
 	worldMapCollisions.clear();	
-}
-
-void GameManager::SetWorldMap(WorldMap* worldMap)
-{
-	this->worldMap = worldMap;
 }
 
 void GameManager::SetMouseDrageState(bool state)

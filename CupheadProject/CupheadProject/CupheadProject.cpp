@@ -134,9 +134,8 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 #pragma endregion
 
-
 RECT                rectView;
-GameManager* gameMgr = new GameManager();
+GameManager*        gameMgr;
 void Init(HWND hWnd);
 
 /* -------- Double Buffering -------- */
@@ -230,11 +229,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 void Init(HWND hWnd)
 {
     GetClientRect(hWnd, &rectView);
-    WorldMap* worldMap = new WorldMap();
-    worldMap->SetRectView(rectView);
-    
-    gameMgr->SetWorldMap(worldMap);
-    gameMgr->LoadWorldMapInfo();    // 콜리전 가져옴
+    gameMgr = new GameManager(&rectView);
 }
 
 #pragma region Double Buffering

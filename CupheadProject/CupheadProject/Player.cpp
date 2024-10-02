@@ -127,12 +127,12 @@ void Player::Draw(HDC& hdc)
 		int animX = unitX * currAnimCnt;
 		int animY = unitY;
 
-		collider.left = x - unitX / 2;
-		collider.top = y - unitY;
-		collider.right = x + unitX / 2;
+		collider.left	= x - unitX / 4;
+		collider.top	= y - unitY / 5;
+		collider.right	= x + unitX / 4;
 		collider.bottom = y;
 
-		playerImg[(int)EPlayerState::World][0].Draw(hdc, collider.left - camera_x, collider.top - camera_y, unitX, unitY, animX, animY, unitX, unitY);
+		playerImg[(int)EPlayerState::World][0].Draw(hdc, collider.left - unitX / 4 - camera_x, collider.top - unitY * 3 / 5 - camera_y, unitX, unitY, animX, animY, unitX, unitY);
 	}
 }
 

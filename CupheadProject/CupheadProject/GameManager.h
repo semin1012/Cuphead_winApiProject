@@ -9,8 +9,8 @@
 
 #define WINDOWS_WIDTH 1280
 #define WINDOWS_HEIGHT 800
-#define WORLD_START_POINT_X 0
-#define WORLD_START_POINT_Y 0
+#define WORLD_START_POINT_X 400
+#define WORLD_START_POINT_Y 570
 #define TILE_SIZE 30
 
 class GameManager
@@ -25,32 +25,34 @@ private:
 	int						camera_y;
 	LPPOINT					mouseDelta;
 	bool					bMouseDrag;
+	RECT*					rectView;
 
 
 public:
-	GameManager();
+	GameManager(RECT* rectView);
 	~GameManager();
 
-	void			Draw(HDC& hdc);
-	void			SetCameraView();
-	void			SetCameraPos(int x, int y);
-	void			AddTile(HWND& hWnd, LPPOINT& mousePos);
-	bool			CompairTilePos(Collider& collide);
-	void			SetDebugMode();
-	void			SaveWorldMapInfo();
-	void			LoadWorldMapInfo();
-	void			ClearWorldMapInfo();
+	void		Draw(HDC& hdc);
+	void		SetCameraView();
+	void		SetCameraPos(int x, int y);
+	void		AddTile(HWND& hWnd, LPPOINT& mousePos);
+	bool		CompairTilePos(Collider& collide);
+	
+	void		SetDebugMode();
 
-	void			SetWorldMap(WorldMap* worldMap);
-	void			SetMouseDrageState(bool state);
+	void		SaveWorldMapInfo();
+	void		LoadWorldMapInfo();
+	void		ClearWorldMapInfo();
 
-	int				GetCameraXPos();
-	int				GetCameraYPos();
-	bool			GetMouseDragState();
+	void		SetMouseDrageState(bool state);
+
+	int			GetCameraXPos();
+	int			GetCameraYPos();
+	bool		GetMouseDragState();
 
 
 	// mouse event
-	void			SetMouseDeltaPos(HWND& hWnd);
-	void			DragAndMoveWorldMap(HWND& hWnd);
+	void		SetMouseDeltaPos(HWND& hWnd);
+	void		DragAndMoveWorldMap(HWND& hWnd);
 };
 
