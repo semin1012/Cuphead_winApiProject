@@ -258,3 +258,6 @@ UpgradeLog*.htm
 FakesAssemblies/
 *.ipch
 *.ipch
+
+CupheadProject/x64
+CupheadProject/.vs

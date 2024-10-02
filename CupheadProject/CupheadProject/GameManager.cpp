@@ -81,6 +81,11 @@ void GameManager::SetCameraPos(int x, int y)
 		worldMap->y = -camera_y;
 	}
 
+	if (player != nullptr)
+	{
+		player->SetCameraPos(camera_x, camera_y);
+	}
+
 	SetCameraView();
 }
 

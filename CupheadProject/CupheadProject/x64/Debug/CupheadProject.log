@@ -1,14 +1,10 @@
-﻿  GameManager.cpp
-  Player.cpp
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(14,55): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(25,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+﻿  Player.cpp
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(16,56): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(28,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(29,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(30,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(83,42): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(80,10): warning C4101: 'hOldBitmap' :참조되지 않은 지역 변수입니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(79,6): warning C4101: 'hMemDC' :참조되지 않은 지역 변수입니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(81,10): warning C4101: 'by' :참조되지 않은 지역 변수입니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(81,6): warning C4101: 'bx' :참조되지 않은 지역 변수입니다.
-  코드를 생성하고 있습니다...
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(31,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(32,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(33,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(95,43): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(89,10): warning C4101: 'hOldBitmap' :참조되지 않은 지역 변수입니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(88,6): warning C4101: 'hMemDC' :참조되지 않은 지역 변수입니다.
   CupheadProject.vcxproj -> D:\Cuphead_winApiProject\CupheadProject\x64\Debug\CupheadProject.exe
