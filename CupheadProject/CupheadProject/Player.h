@@ -2,6 +2,7 @@
 #include <vector>
 #include "framework.h"
 using namespace std;
+#define PLAYER_IDEL_SIZE 5
 
 enum class EPlayerState
 {
@@ -12,10 +13,15 @@ enum class EPlayerState
 
 class Player
 {
+private:
 	int		x;
 	int		y;
 	EPlayerState			state;
-	vector<vector<CImage*>> playerImg;
+	vector<vector<CImage>> playerImg;
+
+private:
+	void CreateImage();
+	void ParsingToImagePath(EPlayerState state, int spriteSize, TCHAR* path, int startNum);
 
 public:
 	Player();

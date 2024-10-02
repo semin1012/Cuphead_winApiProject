@@ -5,6 +5,7 @@
 #include "framework.h"
 #include "WorldMap.h"
 #include "Collider.h"
+#include "Player.h"
 
 #define WINDOWS_WIDTH 1280
 #define WINDOWS_HEIGHT 800
@@ -17,6 +18,7 @@ class GameManager
 private:
 	std::vector<Collider*>  worldMapCollisions;
 	WorldMap*				worldMap;
+	Player*					player;
 	bool					debugMode;
 	RECT					cameraView;
 	int						camera_x;

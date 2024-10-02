@@ -8,6 +8,7 @@ GameManager::GameManager()
 	SetCameraView();
 
 	mouseDelta = new POINT;
+	player = new Player();
 }
 
 GameManager::~GameManager()
