@@ -13,48 +13,63 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\Manager&amp;parents">
+      <UniqueIdentifier>{ad1ce9f1-5211-4b3c-958e-52dec94a0162}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObjects">
+      <UniqueIdentifier>{f26a1d7f-3507-4fc3-8d9f-e7f4159b4ae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Managers&amp;parents">
+      <UniqueIdentifier>{caa1c9c5-27f0-4710-bb8a-d63f3220df61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Others">
+      <UniqueIdentifier>{7e6fb681-effd-4b0a-b92c-a77302e8c8c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects">
+      <UniqueIdentifier>{813d9007-965b-46a0-a134-9b272be90b95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CupheadProject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Collider.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일\Others</Filter>
     </ClInclude>
-    <ClInclude Include="WorldMap.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일\Others</Filter>
     </ClInclude>
     <ClInclude Include="GameManager.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Managers&amp;parents</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>헤더 파일\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldMap.h">
+      <Filter>헤더 파일\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CupheadProject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Collider.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>소스 파일\Manager&amp;parents</Filter>
     </ClCompile>
     <ClCompile Include="WorldMap.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>소스 파일\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

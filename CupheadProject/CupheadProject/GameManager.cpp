@@ -8,7 +8,8 @@ GameManager::GameManager()
 	SetCameraView();
 
 	mouseDelta = new POINT;
-	player = new Player();
+	player = new Player(WINDOWS_WIDTH / 2, WINDOWS_HEIGHT / 2);
+	bMouseDrag = false;
 }
 
 GameManager::~GameManager()
@@ -28,6 +29,7 @@ void GameManager::Draw(HDC& hdc)
 	if (worldMap != nullptr)
 		worldMap->Draw(hdc);
 
+#pragma region Debug Mode
 	if (debugMode == true)
 	{
 		HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
@@ -38,9 +40,20 @@ void GameManager::Draw(HDC& hdc)
 
 		for (auto collider : worldMapCollisions)
 		{
-			if ( CompairTilePos(*collider))
+			if (CompairTilePos(*collider))
 				Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
 		}
+
+		if (player != nullptr)
+		{
+			RECT* collider = player->GetCollider();
+			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
+		}
+#pragma endregion
+
+	if (player != nullptr)
+		player->Draw(hdc);
+
 
 		SelectObject(hdc, oldBrush);
 		SelectObject(hdc, hOldPen);
@@ -168,6 +181,11 @@ void GameManager::SetWorldMap(WorldMap* worldMap)
 	this->worldMap = worldMap;
 }
 
+void GameManager::SetMouseDrageState(bool state)
+{
+	bMouseDrag = state;
+}
+
 int GameManager::GetCameraXPos()
 {
 	return camera_x;
@@ -176,6 +194,11 @@ int GameManager::GetCameraXPos()
 int GameManager::GetCameraYPos()
 {
 	return camera_y;
+}
+
+bool GameManager::GetMouseDragState()
+{
+	return bMouseDrag;
 }
 
 void GameManager::SetMouseDeltaPos(HWND& hWnd)

@@ -16,16 +16,24 @@ class Player
 private:
 	int		x;
 	int		y;
+	int		currAnimMax;
+	int		currAnimCnt;
+
 	EPlayerState			state;
-	vector<vector<CImage>> playerImg;
+	vector<vector<CImage>>	playerImg;
+
+	RECT					collider;
 
 private:
-	void CreateImage();
-	void ParsingToImagePath(EPlayerState state, int spriteSize, TCHAR* path, int startNum);
+	void		CreateImage();
+	void		ParsingToImagePath(EPlayerState state, int spriteSize, TCHAR* path, int startNum);
 
 public:
 	Player();
 	Player(int x, int y);
 	~Player();
+
+	void		Draw(HDC& hdc);
+	RECT*		GetCollider();
 };
 

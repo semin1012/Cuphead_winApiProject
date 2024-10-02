@@ -1,5 +1,7 @@
 #include "Player.h"
 #include <string>
+using namespace std;
+
 void Player::CreateImage()
 {
 	playerImg.resize((int)EPlayerState::Max);
@@ -8,8 +10,11 @@ void Player::CreateImage()
 	TCHAR path[128] = L"../Resource/Image/Cuphead/cuphead_idle_000";
 	ParsingToImagePath(EPlayerState::Idle, PLAYER_IDEL_SIZE, path, 1);
 
+	currAnimCnt = 0;
+	currAnimMax = playerImg[(int)EPlayerState::Idle].size();
 }
 
+// path에 startNum부터 startNum + spriteSize까지의 숫자를 추가해서 Load하는 함수, 기본이 png 파일임
 void Player::ParsingToImagePath(EPlayerState state, int spriteSize, TCHAR* path, int startNum)
 {
 	playerImg[(int)state].resize(spriteSize);
@@ -36,11 +41,24 @@ void Player::ParsingToImagePath(EPlayerState state, int spriteSize, TCHAR* path,
 
 Player::Player()
 {
+	state = EPlayerState::Idle;
 	CreateImage();
+	collider.left = 0;
+	collider.top = 0;
+	collider.right = 0;
+	collider.bottom = 0;
 }
 
 Player::Player(int x, int y)
 {
+	state = EPlayerState::Idle;
+	CreateImage();
+	collider.left = 0;
+	collider.top = 0;
+	collider.right = 0;
+	collider.bottom = 0;
+	this->x = x; 
+	this->y = y;
 }
 
 Player::~Player()
@@ -54,4 +72,33 @@ Player::~Player()
 	}
 
 	playerImg.clear();
+}
+
+void Player::Draw(HDC& hdc)
+{
+	HDC hMemDC;
+	HBITMAP hOldBitmap;
+	int bx, by;
+
+	currAnimMax = playerImg[(int)state].size();
+	currAnimCnt++;
+	if (currAnimCnt >= currAnimMax)
+	{
+		currAnimCnt = 0;
+	}
+	
+	// x, y를 피벗으로 두면 바닥 가운데로 해야 함
+	collider.left = x - playerImg[(int)state][currAnimCnt].GetWidth() / 2;
+	collider.top = y - playerImg[(int)state][currAnimCnt].GetHeight();
+	collider.right = x + playerImg[(int)state][currAnimCnt].GetWidth() / 2;
+	collider.bottom = y;
+
+	int pos_y = collider.top + 200;
+
+	playerImg[(int)state][currAnimCnt].Draw(hdc, collider.left, collider.top);
+}
+
+RECT* Player::GetCollider()
+{
+	return &collider;
 }

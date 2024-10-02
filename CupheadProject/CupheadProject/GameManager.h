@@ -24,6 +24,7 @@ private:
 	int						camera_x;
 	int						camera_y;
 	LPPOINT					mouseDelta;
+	bool					bMouseDrag;
 
 
 public:
@@ -41,9 +42,12 @@ public:
 	void			ClearWorldMapInfo();
 
 	void			SetWorldMap(WorldMap* worldMap);
+	void			SetMouseDrageState(bool state);
 
 	int				GetCameraXPos();
 	int				GetCameraYPos();
+	bool			GetMouseDragState();
+
 
 	// mouse event
 	void			SetMouseDeltaPos(HWND& hWnd);

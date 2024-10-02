@@ -13,6 +13,8 @@
 
 using namespace std;
 #define MAX_LOADSTRING 100
+#define TIMER_ANI 0
+#define TIMER_DRAG 1
 
 #pragma region WinMain
 HINSTANCE hInst;
@@ -147,16 +149,18 @@ void CreateDoubbleBuffering(HWND hWnd);
 void EndDoubleBuffering(HWND hWnd);
 /* ---------------------------------- */
 
+// timer
+VOID CALLBACK AniProc(HWND, UINT, UINT_PTR, DWORD);
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static LPPOINT mousePos;
-    static bool mouseDrag = false;
 
     switch (message)
     {
     case WM_CREATE:
     {
-        SetTimer(hWnd, 1, 20, NULL);
+        SetTimer(hWnd, TIMER_ANI, 33, AniProc);
         mousePos = new POINT;
         Init(hWnd);
         GetWindowRect(hWnd, &rectView);
@@ -185,11 +189,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
     case WM_RBUTTONDOWN:
-        mouseDrag = true;
+        gameMgr->SetMouseDrageState(true);
         gameMgr->SetMouseDeltaPos(hWnd);
         break;
     case WM_RBUTTONUP:
-        mouseDrag = false;
+        gameMgr->SetMouseDrageState(false);
         break;
     case WM_KEYDOWN:
         switch (wParam)
@@ -204,11 +208,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         gameMgr->AddTile(hWnd, mousePos);
         break;
     case WM_TIMER:
-        if (mouseDrag)
-        {
-            gameMgr->DragAndMoveWorldMap(hWnd);
-        }
-        InvalidateRect(hWnd, NULL, false);
         break;
     case WM_PAINT:
         CreateDoubbleBuffering(hWnd);
@@ -267,3 +266,12 @@ void EndDoubleBuffering(HWND hWnd)
     EndPaint(hWnd, &ps);
 }
 #pragma endregion
+
+VOID CALLBACK AniProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
+{
+    if (gameMgr->GetMouseDragState())
+    {
+        gameMgr->DragAndMoveWorldMap(hWnd);
+    }
+    InvalidateRect(hWnd, NULL, false);
+}

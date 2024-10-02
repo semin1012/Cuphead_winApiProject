@@ -10,7 +10,7 @@ WorldMap::~WorldMap()
 {
 }
 
-void WorldMap::Draw(HDC hdc)
+void WorldMap::Draw(HDC& hdc)
 {
 	HDC hMemDC;
 	HBITMAP hOldBitmap;

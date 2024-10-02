@@ -18,7 +18,7 @@ class WorldMap
 public:
 	WorldMap();
 	~WorldMap();
-	void		Draw(HDC hdc);
+	void		Draw(HDC& hdc);
 	void		CreateBitmap();
 	void		SetRectView(RECT& rectView);
 
