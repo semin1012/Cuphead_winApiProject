@@ -76,20 +76,80 @@ void GameManager::SetCameraView()
 	cameraView.bottom = camera_y + WINDOWS_HEIGHT;
 }
 
+
 void GameManager::SetCameraPos(int x, int y)
 {
+//	const float midpoint = std::lerp(a, b, 0.5f);
+
+
+	static bool isMoveCameraY = true;
+	static bool isMoveCameraX = true;
+
+	int deltaX = (camera_x - x);
+	int deltaY = (camera_y - y);
+
 	camera_x = x;
 	camera_y = y;
 
+
 	if (worldMap != nullptr)
 	{
-		worldMap->x = -camera_x;
-		worldMap->y = -camera_y;
+		if (isMoveCameraX)
+			worldMap->x = -camera_x;
+		if (isMoveCameraY)
+			worldMap->y = -camera_y;
+	}
+
+	// check player camera 
+	if (isMoveCameraX && camera_x < 5)
+	{
+		isMoveCameraX = false;
+		camera_x = 0;
+	}
+	if (!isMoveCameraX && player->GetXPos() > 650)
+	{
+		camera_x = 0;
+		isMoveCameraX = true;
+		player->SetXPos(645);
+	}
+	if (isMoveCameraY && camera_y < 5)
+	{
+		isMoveCameraY = false;
+		camera_y = 10;
+	}
+	if (!isMoveCameraY && player->GetYPos() > 400)
+	{
+		camera_y = 0;
+		isMoveCameraY = true;
+		player->SetYPos(405);
 	}
 
 	if (player != nullptr)
 	{
-		player->SetCameraPos(camera_x, camera_y);
+		if (isMoveCameraX && isMoveCameraY)
+		{
+			player->SetCameraPosY(camera_y - deltaY);
+			player->SetCameraPosX(camera_x + deltaX);
+			SetCameraView();
+			return;
+		}
+		if (isMoveCameraX)
+		{
+			player->Move(0, deltaY);
+			player->SetCameraPosX(camera_x - deltaX);
+		}
+		if (isMoveCameraY)
+		{
+			player->Move(deltaX, 0);
+			player->SetCameraPosY(camera_y + deltaY);
+		}
+		if (!isMoveCameraX && !isMoveCameraY)
+		{
+			player->Move(0, deltaY);
+			player->SetCameraPosX(camera_x - deltaX);
+			player->Move(deltaX, 0);
+			player->SetCameraPosY(camera_y + deltaY);
+		}
 	}
 
 	SetCameraView();

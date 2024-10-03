@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <fstream>
+#include <cmath>	
 #include "framework.h"
 #include "WorldMap.h"
 #include "Collider.h"

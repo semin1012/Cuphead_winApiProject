@@ -73,8 +73,15 @@ public:
 	RECT*		GetCollider();
 
 	void		SetCameraPos(int x, int y);
+	void		SetCameraPosX(int x);
+	void		SetCameraPosY(int y);
 	void		SetState(EPlayerWorldState state, EWorldSpriteY spriteY);
 	void		SetState(EPlayerState state);
 	void		SetInWorld(bool isWorld);
+	void		Move(int x, int y);
+	int			GetXPos();
+	int			GetYPos();
+	void		SetXPos(int x);
+	void		SetYPos(int y);
 };
 

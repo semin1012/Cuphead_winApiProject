@@ -13,6 +13,13 @@ class WorldMap
 	BITMAP				bitRightMap;
 	BITMAP				bitLeftOcean;
 	BITMAP				bitRightOcean;
+
+
+	CImage				leftMapImg;
+	CImage				rightMapImg;
+	CImage				leftOcean;
+	CImage				rightOcean;
+
 	RECT*				rectView;
 
 public:
@@ -20,6 +27,7 @@ public:
 	~WorldMap();
 	void		Draw(HDC& hdc);
 	void		CreateBitmap();
+	void		CreateImage();
 	void		SetRectView(RECT& rectView);
 
 	int					x;

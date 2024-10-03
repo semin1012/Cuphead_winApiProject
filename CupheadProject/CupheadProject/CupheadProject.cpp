@@ -162,7 +162,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
     {
-        SetTimer(hWnd, TIMER_ANI, 33, AniProc);
+        //SetTimer(hWnd, TIMER_ANI, 33, AniProc);
         SetTimer(hWnd, TIMER_KEYSTATE, 10, KeyStateProc);
         mousePos = new POINT;
         Init(hWnd);
@@ -242,7 +242,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         EndDoubleBuffering(hWnd);
         break;
     case WM_DESTROY:
-        KillTimer(hWnd, 1);
+        //KillTimer(hWnd, TIMER_ANI);
+        KillTimer(hWnd, TIMER_KEYSTATE);
         PostQuitMessage(0);
         break;
     default:
@@ -290,32 +291,18 @@ void EndDoubleBuffering(HWND hWnd)
 
 VOID CALLBACK AniProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
 {
-    if (gameMgr->GetMouseDragState())
-    {
-        gameMgr->DragAndMoveWorldMap(hWnd);
-    }
-
-    InvalidateRect(hWnd, NULL, false);
 }
 
 VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
 {
     if (GetAsyncKeyState(VK_UP) & 0x8000)
-    {
         gameMgr->GetPlayer()->dir.y = -1;
-    }
     if (GetAsyncKeyState(VK_DOWN) & 0x8000)
-    {
         gameMgr->GetPlayer()->dir.y = 1;
-    }
     if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-    {
         gameMgr->GetPlayer()->dir.x = -1;
-    }
     if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-    {
         gameMgr->GetPlayer()->dir.x = 1;
-    }
 
     if (gameMgr->GetIsWorld())
     {
@@ -353,4 +340,11 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
 
 
     gameMgr->SetCameraPos(gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * MOVE_DISTANCE, gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * MOVE_DISTANCE);
+
+    if (gameMgr->GetMouseDragState())
+    {
+        gameMgr->DragAndMoveWorldMap(hWnd);
+    }
+
+    InvalidateRect(hWnd, NULL, false);
 }

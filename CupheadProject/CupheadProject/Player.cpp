@@ -195,6 +195,20 @@ void Player::SetCameraPos(int x, int y)
 	camera_y = y;
 }
 
+void Player::SetCameraPosX(int x)
+{
+	int deltaX = (camera_x - x);
+	this->x -= deltaX;
+	camera_x = x;
+}
+
+void Player::SetCameraPosY(int y)
+{
+	int deltaY = (camera_y - y);
+	this->y -= deltaY;
+	camera_y = y;
+}
+
 void Player::SetState(EPlayerWorldState state, EWorldSpriteY spriteY)
 {
 	this->worldState = state;
@@ -209,4 +223,30 @@ void Player::SetState(EPlayerState state)
 void Player::SetInWorld(bool isWorld)
 {
 	inWorld = isWorld;
+}
+
+void Player::Move(int x, int y)
+{
+	this->x -= x;
+	this->y -= y;
+}
+
+int Player::GetXPos()
+{
+	return x;
+}
+
+int Player::GetYPos()
+{
+	return y;
+}
+
+void Player::SetXPos(int x)
+{
+	this->x = x;
+}
+
+void Player::SetYPos(int y)
+{
+	this->y = y;
 }
