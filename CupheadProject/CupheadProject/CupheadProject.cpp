@@ -13,10 +13,7 @@
 
 using namespace std;
 #define MAX_LOADSTRING 100
-#define TIMER_ANI 0
-#define TIMER_KEYSTATE 1
-
-#define MOVE_DISTANCE 5
+#define TIMER_KEYSTATE 0
 
 #pragma region WinMain
 HINSTANCE hInst;
@@ -152,7 +149,6 @@ void EndDoubleBuffering(HWND hWnd);
 /* ---------------------------------- */
 
 // timer
-VOID CALLBACK AniProc(HWND, UINT, UINT_PTR, DWORD);
 VOID CALLBACK KeyStateProc(HWND, UINT, UINT_PTR, DWORD);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -162,7 +158,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
     {
-        //SetTimer(hWnd, TIMER_ANI, 33, AniProc);
         SetTimer(hWnd, TIMER_KEYSTATE, 10, KeyStateProc);
         mousePos = new POINT;
         Init(hWnd);
@@ -289,12 +284,24 @@ void EndDoubleBuffering(HWND hWnd)
 }
 #pragma endregion
 
-VOID CALLBACK AniProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
-{
-}
-
 VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
 {
+    static clock_t last = clock();
+    clock_t cur;
+    
+    cur = clock();
+
+    if (cur - last > 20)
+    {
+        InvalidateRect(hWnd, NULL, false);
+        last = clock();
+    }
+
+    if (gameMgr->GetMouseDragState())
+    {
+        gameMgr->DragAndMoveWorldMap(hWnd);
+    }
+
     if (GetAsyncKeyState(VK_UP) & 0x8000)
         gameMgr->GetPlayer()->dir.y = -1;
     if (GetAsyncKeyState(VK_DOWN) & 0x8000)
@@ -338,13 +345,6 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
         }
     }
 
-
     gameMgr->SetCameraPos(gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * MOVE_DISTANCE, gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * MOVE_DISTANCE);
 
-    if (gameMgr->GetMouseDragState())
-    {
-        gameMgr->DragAndMoveWorldMap(hWnd);
-    }
-
-    InvalidateRect(hWnd, NULL, false);
 }

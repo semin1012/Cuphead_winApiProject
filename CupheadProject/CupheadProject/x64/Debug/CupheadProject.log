@@ -1,14 +1,4 @@
-﻿  WorldMap.cpp
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(52,90): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(52,49): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(53,135): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(53,93): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(53,25): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(54,143): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(54,100): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(54,26): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(55,93): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(55,51): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(21,10): warning C4101: 'by' :참조되지 않은 지역 변수입니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(21,6): warning C4101: 'bx' :참조되지 않은 지역 변수입니다.
-  CupheadProject.vcxproj -> D:\Cuphead_winApiProject\CupheadProject\x64\Debug\CupheadProject.exe
+﻿  GameManager.cpp
+E:\00.project\Cuphead_winApiProject\CupheadProject\CupheadProject\GameManager.cpp(98,19): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\00.project\Cuphead_winApiProject\CupheadProject\CupheadProject\GameManager.cpp(99,20): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CupheadProject.vcxproj -> E:\00.project\Cuphead_winApiProject\CupheadProject\x64\Debug\CupheadProject.exe

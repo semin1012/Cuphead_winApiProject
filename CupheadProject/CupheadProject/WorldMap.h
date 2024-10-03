@@ -5,28 +5,19 @@
 
 class WorldMap
 {
-	HBITMAP				hLeftMapImg;
-	HBITMAP				hRightMapImg;
-	HBITMAP				hLeftOcean;
-	HBITMAP				hRightOcean;
-	BITMAP				bitLeftMap;
-	BITMAP				bitRightMap;
-	BITMAP				bitLeftOcean;
-	BITMAP				bitRightOcean;
+	RECT*				rectView;
 
-
+public:
 	CImage				leftMapImg;
 	CImage				rightMapImg;
 	CImage				leftOcean;
 	CImage				rightOcean;
 
-	RECT*				rectView;
 
 public:
 	WorldMap();
 	~WorldMap();
 	void		Draw(HDC& hdc);
-	void		CreateBitmap();
 	void		CreateImage();
 	void		SetRectView(RECT& rectView);
 

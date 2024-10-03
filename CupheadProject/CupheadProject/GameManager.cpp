@@ -76,20 +76,15 @@ void GameManager::SetCameraView()
 	cameraView.bottom = camera_y + WINDOWS_HEIGHT;
 }
 
-
 void GameManager::SetCameraPos(int x, int y)
 {
 //	const float midpoint = std::lerp(a, b, 0.5f);
-
 
 	static bool isMoveCameraY = true;
 	static bool isMoveCameraX = true;
 
 	int deltaX = (camera_x - x);
 	int deltaY = (camera_y - y);
-
-	camera_x = x;
-	camera_y = y;
 
 
 	if (worldMap != nullptr)
@@ -100,59 +95,89 @@ void GameManager::SetCameraPos(int x, int y)
 			worldMap->y = -camera_y;
 	}
 
+	int mapSizeWidth = worldMap->leftMapImg.GetWidth() * WORLD_MAP_SCALE + worldMap->rightMapImg.GetWidth() * WORLD_MAP_SCALE;
+	int mapSizeHeight = worldMap->leftMapImg.GetHeight() * WORLD_MAP_SCALE;
+
 	// check player camera 
-	if (isMoveCameraX && camera_x < 5)
+	// x
+	if (isMoveCameraX && camera_x < MOVE_DISTANCE)
 	{
 		isMoveCameraX = false;
 		camera_x = 0;
 	}
-	if (!isMoveCameraX && player->GetXPos() > 650)
+	if (isMoveCameraX && camera_x + WINDOWS_WIDTH >= mapSizeWidth)
+	{
+		isMoveCameraX = false;
+		camera_x = mapSizeWidth - WINDOWS_WIDTH;
+	}
+	if (!isMoveCameraX && player->GetXPos() > WINDOWS_WIDTH / 2 + MOVE_DISTANCE && camera_x <= 100 )
 	{
 		camera_x = 0;
 		isMoveCameraX = true;
-		player->SetXPos(645);
+		player->SetXPos(WINDOWS_WIDTH / 2 + MOVE_DISTANCE);
 	}
-	if (isMoveCameraY && camera_y < 5)
+	if (!isMoveCameraX && player->GetXPos() < mapSizeWidth - WINDOWS_WIDTH / 2 && camera_x >= 1000)
+	{
+		camera_x = mapSizeWidth - WINDOWS_WIDTH / 2;
+		isMoveCameraX = true;
+		player->SetXPos(mapSizeWidth - WINDOWS_WIDTH / 2);
+	}
+	// y
+	if (isMoveCameraY && camera_y < MOVE_DISTANCE * 2)
 	{
 		isMoveCameraY = false;
-		camera_y = 10;
+		camera_y = MOVE_DISTANCE * 2;
 	}
-	if (!isMoveCameraY && player->GetYPos() > 400)
+	if (isMoveCameraY && camera_y + WINDOWS_HEIGHT >= mapSizeHeight)
+	{
+		isMoveCameraY = false;
+		camera_y = mapSizeHeight - WINDOWS_HEIGHT;
+	}
+	if (!isMoveCameraY && player->GetYPos() > 405&& camera_y <= 50)
 	{
 		camera_y = 0;
 		isMoveCameraY = true;
 		player->SetYPos(405);
 	}
+	if (!isMoveCameraY && player->GetYPos() < mapSizeHeight - WINDOWS_HEIGHT / 2 && camera_y >= 800)
+	{
+		camera_y = 1275;
+		isMoveCameraY = true;
+		player->SetYPos(1670);
+	}
 
+	if ( isMoveCameraX)
+		camera_x = x;
+	if ( isMoveCameraY)
+		camera_y = y;
+
+	SetCameraView();
 	if (player != nullptr)
 	{
 		if (isMoveCameraX && isMoveCameraY)
 		{
-			player->SetCameraPosY(camera_y - deltaY);
-			player->SetCameraPosX(camera_x + deltaX);
-			SetCameraView();
+			player->SetCameraPosY(camera_y + deltaY);
+			player->SetCameraPosX(camera_x + deltaY);
+			return;
+		}
+		if (!isMoveCameraX && !isMoveCameraY)
+		{
+			player->Move(deltaX, deltaY);
+			player->SetCameraPos(camera_x + deltaY, camera_y + deltaY);
 			return;
 		}
 		if (isMoveCameraX)
 		{
 			player->Move(0, deltaY);
-			player->SetCameraPosX(camera_x - deltaX);
+			player->SetCameraPosX(camera_x + deltaY);
 		}
 		if (isMoveCameraY)
 		{
 			player->Move(deltaX, 0);
 			player->SetCameraPosY(camera_y + deltaY);
 		}
-		if (!isMoveCameraX && !isMoveCameraY)
-		{
-			player->Move(0, deltaY);
-			player->SetCameraPosX(camera_x - deltaX);
-			player->Move(deltaX, 0);
-			player->SetCameraPosY(camera_y + deltaY);
-		}
 	}
 
-	SetCameraView();
 }
 
 void GameManager::AddTile(HWND& hWnd, LPPOINT& mousePos)
