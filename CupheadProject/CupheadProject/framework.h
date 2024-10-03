@@ -15,5 +15,5 @@
 #include <tchar.h>
 #include <atlImage.h>
 
-#define WORLD_START_POINT_X 400
-#define WORLD_START_POINT_Y 570
+#define WORLD_START_POINT_X 300
+#define WORLD_START_POINT_Y 550

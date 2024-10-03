@@ -24,6 +24,7 @@ private:
 	LPPOINT					mouseDelta;
 	bool					bMouseDrag;
 	RECT*					rectView;
+	bool					inWorld;
 
 
 public:
@@ -48,6 +49,9 @@ public:
 	int			GetCameraYPos();
 	bool		GetMouseDragState();
 	Player*		GetPlayer();
+
+	bool		GetIsWorld();
+	void		SetInWorld(bool isWorld);
 
 
 	// mouse event

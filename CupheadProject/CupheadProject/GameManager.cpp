@@ -212,6 +212,17 @@ Player* GameManager::GetPlayer()
 	return player;
 }
 
+bool GameManager::GetIsWorld()
+{
+	return inWorld;
+}
+
+void GameManager::SetInWorld(bool isWorld)
+{
+	inWorld = isWorld;
+	player->SetInWorld(isWorld);
+}
+
 void GameManager::SetMouseDeltaPos(HWND& hWnd)
 {
 	GetCursorPos(mouseDelta);

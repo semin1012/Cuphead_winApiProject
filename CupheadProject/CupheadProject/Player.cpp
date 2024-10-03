@@ -8,7 +8,7 @@ void Player::CreateImage()
 
 	// Image Load
 	playerImg[(int)EPlayerState::World].resize(1);
-	playerImg[(int)EPlayerState::World][0].Load(L"../Resource/Image/Cuphead/CupHead_Word.png");
+	playerImg[(int)EPlayerState::World][0].Load(L"../Resource/Image/Cuphead/CupHead_Word01.png");
 
 	TCHAR path[128] = L"../Resource/Image/Cuphead/cuphead_idle_000";
 	ParsingToImagePath(EPlayerState::Idle, PLAYER_IDEL_SIZE, path, 1);
@@ -44,6 +44,7 @@ void Player::ParsingToImagePath(EPlayerState state, int spriteSize, TCHAR* path,
 
 Player::Player()
 {
+	worldState = EPlayerWorldState::Idle;
 	state = EPlayerState::World;
 	CreateImage();
 	collider.left = 0;
@@ -57,6 +58,7 @@ Player::Player()
 
 Player::Player(int x, int y)
 {
+	worldState = EPlayerWorldState::Idle;
 	state = EPlayerState::World;
 	CreateImage();
 	collider.left = 0;
@@ -104,6 +106,7 @@ void Player::Draw(HDC& hdc)
 		collider.top = y - playerImg[(int)state][currAnimCnt].GetHeight();
 		collider.right = x + playerImg[(int)state][currAnimCnt].GetWidth() / 2;
 		collider.bottom = y;
+
 		playerImg[(int)state][currAnimCnt].Draw(hdc, collider.left, collider.top);
 	}
 
@@ -113,19 +116,60 @@ void Player::Draw(HDC& hdc)
 		bx = playerImg[(int)EPlayerState::World][0].GetWidth();
 		by = playerImg[(int)EPlayerState::World][0].GetHeight();
 
+		const int unitX = bx / (WORLD_SPRITE_SIZE_X);
+		const int unitY = by / (WORLD_SPRITE_SIZE_Y * 2);
+
 		// idleÀÎ °æ¿ì
-		currAnimMax = (int)EWorldSpriteCount::IdleMax;
-		currAnimCnt++;
-		if (currAnimCnt >= currAnimMax)
+		if (worldState == EPlayerWorldState::Idle)
 		{
-			currAnimCnt = 0;
+			currAnimMax = (int)EPlayerWorldState::Idle;
+			currAnimCnt++;
+			if (currAnimCnt >= currAnimMax)
+			{
+				currAnimCnt = 0;
+			}
 		}
 
-		int unitX = bx / WORLD_SPRITE_SIZE_X;
-		int unitY = by / WORLD_SPRITE_SIZE_Y;
+		else
+		{
+			if (dir.x == 1)
+			{
+				currAnimMax = (int)worldState;
+				currAnimCnt++;
+				if (currAnimCnt >= currAnimMax)
+					currAnimCnt = 4;
+			}
+			else if (dir.x == 0)
+			{
+				currAnimMax = (int)worldState;
+				currAnimCnt++;
+				if (dir.y == 1)
+				{
+					if (currAnimCnt >= currAnimMax)
+						currAnimCnt = 0;
+				}
+				if (dir.y == -1)
+				{
+					if (currAnimCnt >= currAnimMax)
+						currAnimCnt = 4;
+				}
+			}
+			else
+			{
+				currAnimMax = WORLD_SPRITE_SIZE_X - 4;
+				currAnimCnt++;
+				if (currAnimCnt >= currAnimMax)
+				{
+					currAnimCnt = (WORLD_SPRITE_SIZE_X - (int)worldState);
+				}
+			}
+		}
+
 
 		int animX = unitX * currAnimCnt;
-		int animY = unitY;
+		int animY = unitY * (int)worldSpriteY;
+		if (dir.x == -1)
+			animY = unitY * ((int)worldSpriteY + WORLD_SPRITE_SIZE_Y);
 
 		collider.left	= x - unitX / 4;
 		collider.top	= y - unitY / 5;
@@ -149,4 +193,20 @@ void Player::SetCameraPos(int x, int y)
 	this->y -= deltaY;
 	camera_x = x;
 	camera_y = y;
+}
+
+void Player::SetState(EPlayerWorldState state, EWorldSpriteY spriteY)
+{
+	this->worldState = state;
+	this->worldSpriteY = spriteY;
+}
+
+void Player::SetState(EPlayerState state)
+{
+	this->state = state;
+}
+
+void Player::SetInWorld(bool isWorld)
+{
+	inWorld = isWorld;
 }

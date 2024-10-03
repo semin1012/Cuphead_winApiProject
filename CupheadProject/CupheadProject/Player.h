@@ -16,33 +16,47 @@ enum class EPlayerState
 
 enum class EPlayerWorldState
 {
-	RightWalk,
-	LeftWalk,
-
+	Idle = 9,
+	RightWalk = 13,
+	BackRightWalk = 14,
+	FrontRightWalk = 15,
+	BackWalk = 15,
+	FrontWalk = 12,
+	LeftWalk = 13,
 };
 
-enum class EWorldSpriteCount
+enum class EWorldSpriteY
 {
-	IdleMax = 3,
-	BackWalk = 15,
-	BackRightWalk = 14,
+	BackWalk = 0,
+	BackRightWalk,
+	RightWalk,
+	RightWalkFast,
+	FrontRightWalk,
+	FrontIdle,
+	FrontWalk,
+	Action
 };
 
 class Player
 {
 private:
-	int		x;
-	int		y;
-	int		camera_x;
-	int		camera_y;
-	int		currAnimMax;
-	int		currAnimCnt;
-	bool	inWorld;
+	int						x;
+	int						y;
+	int						camera_x;
+	int						camera_y;
+	int						currAnimMax;
+	int						currAnimCnt;
+	bool					inWorld;
 
 	EPlayerState			state;
+	EPlayerWorldState		worldState;
+	EWorldSpriteY			worldSpriteY;
 	vector<vector<CImage>>	playerImg;
 
 	RECT					collider;
+
+public:
+	POINT					dir = { 0, 0 };
 
 private:
 	void		CreateImage();
@@ -57,5 +71,8 @@ public:
 	RECT*		GetCollider();
 
 	void		SetCameraPos(int x, int y);
+	void		SetState(EPlayerWorldState state, EWorldSpriteY spriteY);
+	void		SetState(EPlayerState state);
+	void		SetInWorld(bool isWorld);
 };
 

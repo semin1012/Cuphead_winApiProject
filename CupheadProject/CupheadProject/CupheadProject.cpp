@@ -16,7 +16,7 @@ using namespace std;
 #define TIMER_ANI 0
 #define TIMER_KEYSTATE 1
 
-#define MOVE_DISTANCE 4
+#define MOVE_DISTANCE 5
 
 #pragma region WinMain
 HINSTANCE hInst;
@@ -138,7 +138,6 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 RECT                rectView;
 GameManager*        gameMgr;
-POINT               dir = { 0, 0 };
 void Init(HWND hWnd);
 
 
@@ -196,20 +195,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wParam)
         {
         case VK_UP:
-            if (dir.y == -1)
-                dir.y = 0;
+            if (gameMgr->GetPlayer()->dir.y == -1)
+                gameMgr->GetPlayer()->dir.y = 0;
             break;
         case VK_DOWN:
-            if (dir.y == 1)
-                dir.y = 0;
+            if (gameMgr->GetPlayer()->dir.y == 1)
+                gameMgr->GetPlayer()->dir.y = 0;
             break;
         case VK_LEFT:
-            if (dir.x == -1)
-                dir.x = 0;
+            if (gameMgr->GetPlayer()->dir.x == -1)
+                gameMgr->GetPlayer()->dir.x = 0;
             break;
         case VK_RIGHT:
-            if (dir.x == 1)
-                dir.x = 0;
+            if (gameMgr->GetPlayer()->dir.x == 1)
+                gameMgr->GetPlayer()->dir.x = 0;
             break;
         }
         break;
@@ -224,6 +223,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wParam)
         {
         case 'D':
+        case 'd':
             gameMgr->SetDebugMode();
             break;
         }
@@ -302,20 +302,51 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
 {
     if (GetAsyncKeyState(VK_UP) & 0x8000)
     {
-        dir.y = -1;
+        gameMgr->GetPlayer()->dir.y = -1;
     }
     if (GetAsyncKeyState(VK_DOWN) & 0x8000)
     {
-        dir.y = 1;
+        gameMgr->GetPlayer()->dir.y = 1;
     }
     if (GetAsyncKeyState(VK_LEFT) & 0x8000)
     {
-        dir.x = -1;
+        gameMgr->GetPlayer()->dir.x = -1;
     }
     if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
     {
-        dir.x = 1;
+        gameMgr->GetPlayer()->dir.x = 1;
     }
 
-    gameMgr->SetCameraPos(gameMgr->GetCameraXPos() + dir.x * MOVE_DISTANCE, gameMgr->GetCameraYPos() + dir.y * MOVE_DISTANCE);
+    if (gameMgr->GetIsWorld())
+    {
+        switch (gameMgr->GetPlayer()->dir.y)
+        {
+        // 아래로 이동
+        case 1:
+            if (gameMgr->GetPlayer()->dir.x == 1)
+                gameMgr->GetPlayer()->SetState(EPlayerWorldState::FrontRightWalk, EWorldSpriteY::FrontRightWalk);
+            else if (gameMgr->GetPlayer()->dir.x == 0)
+                gameMgr->GetPlayer()->SetState(EPlayerWorldState::FrontWalk, EWorldSpriteY::FrontWalk);
+            break;
+        // 위로 이동
+        case -1:
+            if (gameMgr->GetPlayer()->dir.x == 1)
+                gameMgr->GetPlayer()->SetState(EPlayerWorldState::BackRightWalk, EWorldSpriteY::BackRightWalk);
+            else if (gameMgr->GetPlayer()->dir.x == 0)
+                gameMgr->GetPlayer()->SetState(EPlayerWorldState::BackWalk, EWorldSpriteY::BackWalk);
+            break;
+        // y축 제자리
+        case 0:
+            if (gameMgr->GetPlayer()->dir.x == 0)
+                gameMgr->GetPlayer()->SetState(EPlayerWorldState::Idle, EWorldSpriteY::FrontIdle);
+            else if (gameMgr->GetPlayer()->dir.x == 1)
+                gameMgr->GetPlayer()->SetState(EPlayerWorldState::RightWalk, EWorldSpriteY::RightWalkFast);
+            else if (gameMgr->GetPlayer()->dir.x == -1)
+                gameMgr->GetPlayer()->SetState(EPlayerWorldState::LeftWalk, EWorldSpriteY::RightWalkFast);
+            break;
+        }
+    }
+
+
+    gameMgr->SetCameraPos(gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * MOVE_DISTANCE, gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * MOVE_DISTANCE);
 }
