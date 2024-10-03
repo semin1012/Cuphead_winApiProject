@@ -23,6 +23,8 @@ enum class EPlayerWorldState
 	BackWalk = 15,
 	FrontWalk = 12,
 	LeftWalk = 13,
+	BackLeftWalk = 14,
+	FrontLeftWalk = 15,
 };
 
 enum class EWorldSpriteY

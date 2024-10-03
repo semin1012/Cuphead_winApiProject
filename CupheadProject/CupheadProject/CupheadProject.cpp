@@ -323,17 +323,21 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
         {
         // 아래로 이동
         case 1:
-            if (gameMgr->GetPlayer()->dir.x == 1)
-                gameMgr->GetPlayer()->SetState(EPlayerWorldState::FrontRightWalk, EWorldSpriteY::FrontRightWalk);
-            else if (gameMgr->GetPlayer()->dir.x == 0)
+            if (gameMgr->GetPlayer()->dir.x == 0)
                 gameMgr->GetPlayer()->SetState(EPlayerWorldState::FrontWalk, EWorldSpriteY::FrontWalk);
+            else if (gameMgr->GetPlayer()->dir.x == 1)
+                gameMgr->GetPlayer()->SetState(EPlayerWorldState::FrontRightWalk, EWorldSpriteY::FrontRightWalk);
+            else 
+                gameMgr->GetPlayer()->SetState(EPlayerWorldState::FrontLeftWalk, EWorldSpriteY::FrontRightWalk);
             break;
         // 위로 이동
         case -1:
-            if (gameMgr->GetPlayer()->dir.x == 1)
-                gameMgr->GetPlayer()->SetState(EPlayerWorldState::BackRightWalk, EWorldSpriteY::BackRightWalk);
-            else if (gameMgr->GetPlayer()->dir.x == 0)
+            if (gameMgr->GetPlayer()->dir.x == 0)
                 gameMgr->GetPlayer()->SetState(EPlayerWorldState::BackWalk, EWorldSpriteY::BackWalk);
+            else if (gameMgr->GetPlayer()->dir.x == 1)
+                gameMgr->GetPlayer()->SetState(EPlayerWorldState::BackRightWalk, EWorldSpriteY::BackRightWalk);
+            else
+                gameMgr->GetPlayer()->SetState(EPlayerWorldState::BackLeftWalk, EWorldSpriteY::BackRightWalk);
             break;
         // y축 제자리
         case 0:

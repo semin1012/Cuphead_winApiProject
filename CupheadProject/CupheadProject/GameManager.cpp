@@ -2,7 +2,7 @@
 
 GameManager::GameManager(RECT* rectView)
 {
-	debugMode = true;
+	debugMode = false;
 	camera_x = WORLD_START_POINT_X;
 	camera_y = WORLD_START_POINT_Y;
 	
@@ -97,25 +97,28 @@ void GameManager::SetCameraPos(int x, int y)
 
 void GameManager::AddTile(HWND& hWnd, LPPOINT& mousePos)
 {
-	GetCursorPos(mousePos);
-	ScreenToClient(hWnd, mousePos);
-
-	mousePos->x = (mousePos->x + camera_x ) / TILE_SIZE;
-	mousePos->y = (mousePos->y + camera_y )/ TILE_SIZE;
-
-	Collider* collider = new Collider( mousePos->x * TILE_SIZE, mousePos->y * TILE_SIZE, mousePos->x * TILE_SIZE + TILE_SIZE, mousePos->y * TILE_SIZE + TILE_SIZE);
-
-	for (int i = 0; i < worldMapCollisions.size(); i++)
+	if (debugMode)
 	{
-		if (worldMapCollisions[i]->Compare(*collider))
-		{
-			worldMapCollisions.erase(worldMapCollisions.begin() + i);
-			return;
-		}
-	}
+		GetCursorPos(mousePos);
+		ScreenToClient(hWnd, mousePos);
 
-	worldMapCollisions.push_back(collider);
-	worldMapCollisions.erase(std::unique(worldMapCollisions.begin(), worldMapCollisions.end()), worldMapCollisions.end());
+		mousePos->x = (mousePos->x + camera_x) / TILE_SIZE;
+		mousePos->y = (mousePos->y + camera_y) / TILE_SIZE;
+
+		Collider* collider = new Collider(mousePos->x * TILE_SIZE, mousePos->y * TILE_SIZE, mousePos->x * TILE_SIZE + TILE_SIZE, mousePos->y * TILE_SIZE + TILE_SIZE);
+
+		for (int i = 0; i < worldMapCollisions.size(); i++)
+		{
+			if (worldMapCollisions[i]->Compare(*collider))
+			{
+				worldMapCollisions.erase(worldMapCollisions.begin() + i);
+				return;
+			}
+		}
+
+		worldMapCollisions.push_back(collider);
+		worldMapCollisions.erase(std::unique(worldMapCollisions.begin(), worldMapCollisions.end()), worldMapCollisions.end());
+	}
 }
 
 bool GameManager::CompairTilePos(Collider& collider)
