@@ -17,7 +17,7 @@ void Player::CreateImage()
 	currAnimCnt = 0;
 }
 
-// path에 startNum부터 startNum + spriteSize까지의 숫자를 추가해서 Load하는 함수, 기본이 png 파일임
+// path에 startNum부터 startNum + spriteSize까지의 숫자를 이름으로 해서 Load하는 함수, 기본이 png 파일임
 void Player::ParsingToImagePath(EPlayerState state, int spriteSize, TCHAR* path, int startNum)
 {
 	playerImg[(int)state].resize(spriteSize);
@@ -51,8 +51,8 @@ Player::Player()
 	collider.right = 0;
 	collider.bottom = 0;
 	inWorld = true;
-	camera_x = 0;
-	camera_y = 0;
+	camera_x = WORLD_START_POINT_X;
+	camera_y = WORLD_START_POINT_Y;
 }
 
 Player::Player(int x, int y)
@@ -66,8 +66,8 @@ Player::Player(int x, int y)
 	this->x = x; 
 	this->y = y;
 	inWorld = true;
-	camera_x = 0;
-	camera_y = 0;
+	camera_x = WORLD_START_POINT_X;
+	camera_y = WORLD_START_POINT_Y;
 }
 
 Player::~Player()
@@ -143,6 +143,10 @@ RECT* Player::GetCollider()
 
 void Player::SetCameraPos(int x, int y)
 {
+	int deltaX = (camera_x - x);
+	int deltaY = (camera_y - y);
+	this->x -= deltaX;
+	this->y -= deltaY;
 	camera_x = x;
 	camera_y = y;
 }

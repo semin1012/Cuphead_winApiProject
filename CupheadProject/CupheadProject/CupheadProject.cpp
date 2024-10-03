@@ -14,7 +14,9 @@
 using namespace std;
 #define MAX_LOADSTRING 100
 #define TIMER_ANI 0
-#define TIMER_DRAG 1
+#define TIMER_KEYSTATE 1
+
+#define MOVE_DISTANCE 4
 
 #pragma region WinMain
 HINSTANCE hInst;
@@ -136,7 +138,9 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 RECT                rectView;
 GameManager*        gameMgr;
+POINT               dir = { 0, 0 };
 void Init(HWND hWnd);
+
 
 /* -------- Double Buffering -------- */
 HDC                 hdc, MemDC, tmpDC;
@@ -150,16 +154,17 @@ void EndDoubleBuffering(HWND hWnd);
 
 // timer
 VOID CALLBACK AniProc(HWND, UINT, UINT_PTR, DWORD);
+VOID CALLBACK KeyStateProc(HWND, UINT, UINT_PTR, DWORD);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static LPPOINT mousePos;
-
     switch (message)
     {
     case WM_CREATE:
     {
         SetTimer(hWnd, TIMER_ANI, 33, AniProc);
+        SetTimer(hWnd, TIMER_KEYSTATE, 10, KeyStateProc);
         mousePos = new POINT;
         Init(hWnd);
         GetWindowRect(hWnd, &rectView);
@@ -187,6 +192,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
+    case WM_KEYUP:
+        switch (wParam)
+        {
+        case VK_UP:
+            if (dir.y == -1)
+                dir.y = 0;
+            break;
+        case VK_DOWN:
+            if (dir.y == 1)
+                dir.y = 0;
+            break;
+        case VK_LEFT:
+            if (dir.x == -1)
+                dir.x = 0;
+            break;
+        case VK_RIGHT:
+            if (dir.x == 1)
+                dir.x = 0;
+            break;
+        }
+        break;
     case WM_RBUTTONDOWN:
         gameMgr->SetMouseDrageState(true);
         gameMgr->SetMouseDeltaPos(hWnd);
@@ -194,7 +220,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_RBUTTONUP:
         gameMgr->SetMouseDrageState(false);
         break;
-    case WM_KEYDOWN:
+    case WM_CHAR:
         switch (wParam)
         {
         case 'D':
@@ -268,5 +294,28 @@ VOID CALLBACK AniProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
     {
         gameMgr->DragAndMoveWorldMap(hWnd);
     }
+
     InvalidateRect(hWnd, NULL, false);
+}
+
+VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
+{
+    if (GetAsyncKeyState(VK_UP) & 0x8000)
+    {
+        dir.y = -1;
+    }
+    if (GetAsyncKeyState(VK_DOWN) & 0x8000)
+    {
+        dir.y = 1;
+    }
+    if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+    {
+        dir.x = -1;
+    }
+    if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+    {
+        dir.x = 1;
+    }
+
+    gameMgr->SetCameraPos(gameMgr->GetCameraXPos() + dir.x * MOVE_DISTANCE, gameMgr->GetCameraYPos() + dir.y * MOVE_DISTANCE);
 }

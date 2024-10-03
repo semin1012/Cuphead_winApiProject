@@ -207,6 +207,11 @@ bool GameManager::GetMouseDragState()
 	return bMouseDrag;
 }
 
+Player* GameManager::GetPlayer()
+{
+	return player;
+}
+
 void GameManager::SetMouseDeltaPos(HWND& hWnd)
 {
 	GetCursorPos(mouseDelta);

@@ -9,8 +9,6 @@
 
 #define WINDOWS_WIDTH 1280
 #define WINDOWS_HEIGHT 800
-#define WORLD_START_POINT_X 400
-#define WORLD_START_POINT_Y 570
 #define TILE_SIZE 30
 
 class GameManager
@@ -49,6 +47,7 @@ public:
 	int			GetCameraXPos();
 	int			GetCameraYPos();
 	bool		GetMouseDragState();
+	Player*		GetPlayer();
 
 
 	// mouse event
