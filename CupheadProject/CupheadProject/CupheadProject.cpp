@@ -291,7 +291,7 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
     
     cur = clock();
 
-    if (cur - last > 20)
+    if (cur - last > 33)
     {
         InvalidateRect(hWnd, NULL, false);
         last = clock();
