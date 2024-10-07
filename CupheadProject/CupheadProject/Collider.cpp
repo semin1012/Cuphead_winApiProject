@@ -19,3 +19,12 @@ bool Collider::Compare(Collider& collider)
     if (bottom != collider.bottom) return false;
     return true;
 }
+
+bool Collider::IsOverlaps(Collider& collider)
+{
+    if (right < collider.left) return false;
+    if (left > collider.right) return false;
+    if (top > collider.bottom) return false;
+    if (bottom < collider.top) return false;
+    return true;
+}

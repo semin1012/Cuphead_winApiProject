@@ -58,5 +58,8 @@ public:
 	// mouse event
 	void		SetMouseDeltaPos(HWND& hWnd);
 	void		DragAndMoveWorldMap(HWND& hWnd);
+
+	// World Map
+	bool		CollidedPlayerWithWorldCollisions(int deltaX, int deltaY);
 };
 

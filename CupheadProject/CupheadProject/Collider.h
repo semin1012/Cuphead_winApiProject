@@ -14,6 +14,7 @@ public:
     Collider(LONG left, LONG top, LONG right, LONG bottom) : left(left), top(top), right(right), bottom(bottom) {}
 
     bool Compare(Collider& collider);
+    bool IsOverlaps(Collider& collider);
 
     bool operator==(Collider& rect)
     {

@@ -119,6 +119,7 @@ void Player::Draw(HDC& hdc)
 
 
 	// 월드라면
+	else 
 	{
 		bx = playerImg[(int)EPlayerState::World][0].GetWidth();
 		by = playerImg[(int)EPlayerState::World][0].GetHeight();
@@ -187,16 +188,16 @@ void Player::Draw(HDC& hdc)
 		if (dir.x == -1)
 			animY = unitY * ((int)worldSpriteY + WORLD_SPRITE_SIZE_Y);
 
-		collider.left	= x - unitX / 4;
-		collider.top	= y - unitY / 5;
-		collider.right	= x + unitX / 4;
+		collider.left	= x - 103 / 6;
+		collider.top	= y - 113 / 5;
+		collider.right	= x + 103 / 6;
 		collider.bottom = y;
 
-		playerImg[(int)EPlayerState::World][0].Draw(hdc, collider.left - unitX / 4 - camera_x, collider.top - unitY * 3 / 5 - camera_y, unitX, unitY, animX, animY, unitX, unitY);
+		playerImg[(int)EPlayerState::World][0].Draw(hdc, collider.left - unitX / 3 - camera_x, collider.top - unitY * 5 / 7 - camera_y, unitX, unitY, animX, animY, unitX, unitY);
 	}
 }
 
-RECT* Player::GetCollider()
+Collider* Player::GetCollider()
 {
 	return &collider;
 }

@@ -22,7 +22,7 @@ void TitleMap::Draw(HDC& hdc)
 {
 	clock_t curTime = clock();
 	
-	if (curTime - lastTime > 25)
+	if (curTime - lastTime > 30)
 	{
 		curAnimCnt++;
 

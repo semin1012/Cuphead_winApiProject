@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "framework.h"
+#include "Collider.h"
 using namespace std;
 #define PLAYER_IDEL_SIZE 5
 #define WORLD_SPRITE_SIZE_X 16
@@ -56,7 +57,7 @@ private:
 	EWorldSpriteY			worldSpriteY;
 	vector<vector<CImage>>	playerImg;
 
-	RECT					collider;
+	Collider				collider;
 
 public:
 	POINT					dir = { 0, 0 };
@@ -71,7 +72,7 @@ public:
 	~Player();
 
 	void		Draw(HDC& hdc);
-	RECT*		GetCollider();
+	Collider*	GetCollider();
 
 	void		SetCameraPos(int x, int y);
 	void		SetCameraPosX(int x);

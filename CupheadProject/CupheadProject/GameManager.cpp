@@ -54,7 +54,7 @@ void GameManager::Draw(HDC& hdc)
 
 		if (player != nullptr)
 		{
-			RECT* collider = player->GetCollider();
+			Collider* collider = player->GetCollider();
 			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
 		}
 
@@ -65,7 +65,7 @@ void GameManager::Draw(HDC& hdc)
 	}
 #pragma endregion
 
-	if (player != nullptr)
+ 	if (player != nullptr)
 		player->Draw(hdc);
 }
 
@@ -79,7 +79,9 @@ void GameManager::SetCameraView()
 
 void GameManager::SetCameraPos(int x, int y)
 {
-//	const float midpoint = std::lerp(a, b, 0.5f);
+	// 타이틀에서는 건들 일 없음
+	if (isTitle)
+		return;
 
 	static bool isMoveCameraY = true;
 	static bool isMoveCameraX = true;
@@ -87,15 +89,18 @@ void GameManager::SetCameraPos(int x, int y)
 	int deltaX = (camera_x - x);
 	int deltaY = (camera_y - y);
 
-	if (isTitle)
-		return;
-
 	if (background != nullptr)
 	{
 		if (isMoveCameraX)
 			background->SetXPos(-camera_x);
 		if (isMoveCameraY)
 			background->SetYPos(-camera_y);
+	}
+
+	if (CollidedPlayerWithWorldCollisions(deltaX, deltaY))
+	{
+
+		return;
 	}
 
 	int mapSizeWidth = background->GetWidth();
@@ -149,9 +154,9 @@ void GameManager::SetCameraPos(int x, int y)
 		player->SetYPos(1670);
 	}
 
-	if ( isMoveCameraX)
+	if (isMoveCameraX)
 		camera_x = x;
-	if ( isMoveCameraY)
+	if (isMoveCameraY)
 		camera_y = y;
 
 	SetCameraView();
@@ -350,4 +355,22 @@ void GameManager::DragAndMoveWorldMap(HWND& hWnd)
 	SetCameraPos(camera_x + x, camera_y + y);
 	mouseDelta->x = temp.x;
 	mouseDelta->y = temp.y;
+}
+
+bool GameManager::CollidedPlayerWithWorldCollisions(int deltaX, int deltaY)
+{
+	Collider temp = *player->GetCollider();
+	temp.left -= deltaX - 1;
+	temp.right -= deltaX + 1;
+	temp.top -= deltaY - 1;
+	temp.bottom -= deltaY + 1;
+
+	for (auto collider : worldMapCollisions)
+	{
+		if (temp.IsOverlaps(*collider))
+		{
+			return true;
+		}
+	}
+	return false;
 }
