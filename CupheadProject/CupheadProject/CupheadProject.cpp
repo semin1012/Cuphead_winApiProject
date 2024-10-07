@@ -10,6 +10,7 @@
 #include "TitleMap.h"
 #include "WorldMap.h"
 #include "GameManager.h"
+#include "FadeEffect.h"
 #include "CupheadProject.h"
 #include "commdlg.h"
 #pragma comment(lib, "Msimg32.lib")
@@ -157,6 +158,8 @@ void CreateDoubbleBuffering(HWND hWnd);
 void EndDoubleBuffering(HWND hWnd);
 /* ---------------------------------- */
 
+FadeEffect* fadeEffect;
+
 // timer
 VOID CALLBACK KeyStateProc(HWND, UINT, UINT_PTR, DWORD);
 
@@ -199,7 +202,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         if (gameMgr->GetIsTitle() == true)
         {
             if (wParam == VK_SPACE)
-                gameMgr->SetIsTitle(false);
+            {
+                fadeEffect = new FadeEffect();
+            }
             break;
         }
         if (gameMgr->GetPlayer() == nullptr)
@@ -250,6 +255,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         CreateDoubbleBuffering(hWnd);
 
         gameMgr->Draw(hdc);
+        if (fadeEffect != nullptr)
+        {
+            fadeEffect->Draw(hdc);
+            if (fadeEffect->GetIsFadeIn())
+            {
+                if ( gameMgr->GetIsTitle() )
+                    gameMgr->SetIsTitle(false);
+            }
+            if (fadeEffect->GetIsEnd())
+            {
+                delete fadeEffect;
+                fadeEffect = nullptr;
+            }
+        }
 
         EndDoubleBuffering(hWnd);
         break;

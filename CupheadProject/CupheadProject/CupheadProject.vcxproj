@@ -130,6 +130,7 @@
     <ClInclude Include="Background.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CupheadProject.h" />
+    <ClInclude Include="FadeEffect.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Player.h" />
@@ -143,6 +144,7 @@
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CupheadProject.cpp" />
+    <ClCompile Include="FadeEffect.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="TitleMap.cpp" />
