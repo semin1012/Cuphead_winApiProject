@@ -3,10 +3,13 @@
 
 #include <queue>
 #include <string>
+#include "framework.h"
+
 #include "Collider.h"
+#include "Background.h"
+#include "TitleMap.h"
 #include "WorldMap.h"
 #include "GameManager.h"
-#include "framework.h"
 #include "CupheadProject.h"
 #include "commdlg.h"
 #pragma comment(lib, "Msimg32.lib")
@@ -164,7 +167,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
     {
-        SetTimer(hWnd, TIMER_KEYSTATE, 10, KeyStateProc);
+        SetTimer(hWnd, TIMER_KEYSTATE, 20, KeyStateProc);
         mousePos = new POINT;
         Init(hWnd);
         GetWindowRect(hWnd, &rectView);
@@ -193,6 +196,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
     case WM_KEYUP:
+        if (gameMgr->GetIsTitle() == true)
+        {
+            if (wParam == VK_SPACE)
+                gameMgr->SetIsTitle(false);
+            break;
+        }
+        if (gameMgr->GetPlayer() == nullptr)
+            break;
         switch (wParam)
         {
         case VK_UP:
@@ -292,28 +303,10 @@ void EndDoubleBuffering(HWND hWnd)
 
 VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
 {
-    static clock_t last = clock();
-    clock_t cur;
-    
-    cur = clock();
+    InvalidateRect(hWnd, NULL, false);
 
-    if (cur - last > 33)
-    {
-        // world idle인 경우에만 0.066초로 프레임 맞춤 (idle 애니메이션이 너무 빨라서)
-        if (gameMgr->GetPlayer()->GetWorldState() == EPlayerWorldState::Idle)
-        {
-            if (cur - last > 66)
-            {
-                InvalidateRect(hWnd, NULL, false);
-                last = clock();
-            }
-        }
-        else 
-        {
-            InvalidateRect(hWnd, NULL, false);
-            last = clock();
-        }
-    }
+    if (gameMgr->GetPlayer() == nullptr)
+        return;
 
     if (gameMgr->GetMouseDragState())
     {
@@ -364,5 +357,4 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
     }
 
     gameMgr->SetCameraPos(gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * MOVE_DISTANCE, gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * MOVE_DISTANCE);
-
 }

@@ -10,12 +10,13 @@ GameManager::GameManager(RECT* rectView)
 	mouseDelta = new POINT;
 	bMouseDrag = false;
 
-	player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
+	player = nullptr;
 
-	worldMap = new WorldMap();
-	worldMap->SetRectView(*rectView);
+	background = new TitleMap();
+	background->SetRectView(*rectView);
+	isTitle = true;
+
 	LoadWorldMapInfo();
-
 	SetCameraPos(camera_x, camera_y);
 }
 
@@ -27,14 +28,14 @@ GameManager::~GameManager()
 	}
 
 	worldMapCollisions.clear();
-	delete worldMap;
+	delete background;
 	delete mouseDelta;
 }
 
 void GameManager::Draw(HDC& hdc)
 {
-	if (worldMap != nullptr)
-		worldMap->Draw(hdc);
+	if (background != nullptr)
+		background->Draw(hdc);
 
 #pragma region Debug Mode
 	if (debugMode == true)
@@ -86,17 +87,19 @@ void GameManager::SetCameraPos(int x, int y)
 	int deltaX = (camera_x - x);
 	int deltaY = (camera_y - y);
 
+	if (isTitle)
+		return;
 
-	if (worldMap != nullptr)
+	if (background != nullptr)
 	{
 		if (isMoveCameraX)
-			worldMap->SetXPos(-camera_x);
+			background->SetXPos(-camera_x);
 		if (isMoveCameraY)
-			worldMap->SetYPos(-camera_y);
+			background->SetYPos(-camera_y);
 	}
 
-	int mapSizeWidth = worldMap->GetLeftMapImg()->GetWidth() * WORLD_MAP_SCALE + worldMap->GetRightMapImg()->GetWidth() * WORLD_MAP_SCALE;
-	int mapSizeHeight = worldMap->GetLeftMapImg()->GetHeight() * WORLD_MAP_SCALE;
+	int mapSizeWidth = background->GetWidth();
+	int mapSizeHeight = background->GetHeight();
 
 	// check player camera 
 	// x
@@ -309,6 +312,25 @@ void GameManager::SetInWorld(bool isWorld)
 {
 	inWorld = isWorld;
 	player->SetInWorld(isWorld);
+}
+
+bool GameManager::GetIsTitle()
+{
+	return isTitle;
+}
+
+void GameManager::SetIsTitle(bool isTitle)
+{
+	this->isTitle = isTitle;
+	if (isTitle == false)
+	{
+		inWorld = true;
+		delete background;
+
+		background = new WorldMap();
+		background->SetRectView(*rectView);
+		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
+	}
 }
 
 void GameManager::SetMouseDeltaPos(HWND& hWnd)

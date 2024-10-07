@@ -54,6 +54,7 @@ Player::Player()
 	inWorld = true;
 	camera_x = WORLD_START_POINT_X;
 	camera_y = WORLD_START_POINT_Y;
+	lastTime = clock();
 }
 
 Player::Player(int x, int y)
@@ -70,6 +71,7 @@ Player::Player(int x, int y)
 	inWorld = true;
 	camera_x = WORLD_START_POINT_X;
 	camera_y = WORLD_START_POINT_Y;
+	lastTime = clock();
 }
 
 Player::~Player()
@@ -90,15 +92,20 @@ void Player::Draw(HDC& hdc)
 	HDC hMemDC;
 	HBITMAP hOldBitmap;
 	int bx, by;
+	clock_t curTime = clock();
 
 	// 월드가 아니라면
 	if (!inWorld)
 	{
-		currAnimMax = playerImg[(int)state].size();
-		currAnimCnt++;
-		if (currAnimCnt >= currAnimMax)
+		if (curTime - lastTime > 20)
 		{
-			currAnimCnt = 0;
+			currAnimMax = playerImg[(int)state].size();
+			currAnimCnt++;
+			if (currAnimCnt >= currAnimMax)
+			{
+				currAnimCnt = 0;
+			}
+			lastTime = clock();
 		}
 
 		// x, y를 피벗으로 두면 바닥 가운데로 해야 함
@@ -122,47 +129,56 @@ void Player::Draw(HDC& hdc)
 		// idle인 경우
 		if (worldState == EPlayerWorldState::Idle)
 		{
-			currAnimMax = (int)EPlayerWorldState::Idle;
-			currAnimCnt++;
-			if (currAnimCnt >= currAnimMax)
+			if (curTime - lastTime > 50)
 			{
-				currAnimCnt = 0;
+				currAnimMax = (int)EPlayerWorldState::Idle;
+				currAnimCnt++;
+				if (currAnimCnt >= currAnimMax)
+				{
+					currAnimCnt = 0;
+				}
+				lastTime = clock();
 			}
 		}
 
 		else
 		{
-			if (dir.x == 1)
+			if (curTime - lastTime > 33)
 			{
-				currAnimMax = (int)worldState;
-				currAnimCnt++;
-				if (currAnimCnt >= currAnimMax)
-					currAnimCnt = 4;
-			}
-			else if (dir.x == 0)
-			{
-				currAnimMax = (int)worldState;
-				currAnimCnt++;
-				if (dir.y == 1)
+				if (dir.x == 1)
 				{
-					if (currAnimCnt >= currAnimMax)
-						currAnimCnt = 0;
-				}
-				if (dir.y == -1)
-				{
+					currAnimMax = (int)worldState;
+					currAnimCnt++;
 					if (currAnimCnt >= currAnimMax)
 						currAnimCnt = 4;
 				}
-			}
-			else
-			{
-				currAnimMax = WORLD_SPRITE_SIZE_X - 4;
-				currAnimCnt++;
-				if (currAnimCnt >= currAnimMax)
+				else if (dir.x == 0)
 				{
-					currAnimCnt = (WORLD_SPRITE_SIZE_X - (int)worldState);
+					currAnimMax = (int)worldState;
+					currAnimCnt++;
+					if (dir.y == 1)
+					{
+						if (currAnimCnt >= currAnimMax)
+							currAnimCnt = 0;
+					}
+					if (dir.y == -1)
+					{
+						if (currAnimCnt >= currAnimMax)
+							currAnimCnt = 4;
+					}
 				}
+				else
+				{
+					currAnimMax = WORLD_SPRITE_SIZE_X - 4;
+					currAnimCnt++;
+					if (currAnimCnt >= currAnimMax)
+					{
+						currAnimCnt = (WORLD_SPRITE_SIZE_X - (int)worldState);
+					}
+				}
+				lastTime = clock();
 			}
+			
 		}
 
 

@@ -48,6 +48,7 @@ private:
 	int						camera_y;
 	int						currAnimMax;
 	int						currAnimCnt;
+	clock_t					lastTime;
 	bool					inWorld;
 
 	EPlayerState			state;

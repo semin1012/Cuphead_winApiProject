@@ -5,6 +5,8 @@ WorldMap::WorldMap()
 	x = WORLD_START_POINT_X;
 	y = WORLD_START_POINT_Y;
 	CreateImage();
+	width = leftMapImg.GetWidth() * WORLD_MAP_SCALE + rightMapImg.GetWidth() * WORLD_MAP_SCALE;
+	height = leftMapImg.GetHeight() * WORLD_MAP_SCALE;
 }
 
 WorldMap::~WorldMap()
@@ -48,31 +50,6 @@ void WorldMap::CreateImage()
 		DWORD dwError = GetLastError();
 		MessageBox(NULL, _T("Ocean02.png 파일을 열 수 없습니다."), _T("에러"), MB_OK);
 	}
-}
-
-void WorldMap::SetRectView(RECT& rectView)
-{
-	this->rectView = &rectView;
-}
-
-int WorldMap::GetXPos()
-{
-	return x;
-}
-
-int WorldMap::GetYPos()
-{
-	return y;
-}
-
-void WorldMap::SetXPos(int x)
-{
-	this->x = x;
-}
-
-void WorldMap::SetYPos(int y)
-{
-	this->y = y;
 }
 
 CImage* WorldMap::GetLeftMapImg()

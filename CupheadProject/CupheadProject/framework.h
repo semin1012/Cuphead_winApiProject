@@ -15,7 +15,12 @@
 #include <tchar.h>
 #include <atlImage.h>
 
+#include <ctime>
+
 #define WORLD_START_POINT_X 300
 #define WORLD_START_POINT_Y 550
 
-#define MOVE_DISTANCE 2
+#define MOVE_DISTANCE 3
+
+#define WINDOWS_WIDTH 1280
+#define WINDOWS_HEIGHT 800

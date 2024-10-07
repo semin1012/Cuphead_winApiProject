@@ -4,19 +4,17 @@
 #include <fstream>
 #include <cmath>	
 #include "framework.h"
+#include "TitleMap.h"
 #include "WorldMap.h"
 #include "Collider.h"
 #include "Player.h"
-
-#define WINDOWS_WIDTH 1280
-#define WINDOWS_HEIGHT 800
 #define TILE_SIZE 30
 
 class GameManager
 {
 private:
 	std::vector<Collider*>  worldMapCollisions;
-	WorldMap*				worldMap;
+	Background*				background;
 	Player*					player;
 	bool					debugMode;
 	RECT					cameraView;
@@ -26,6 +24,7 @@ private:
 	bool					bMouseDrag;
 	RECT*					rectView;
 	bool					inWorld;
+	bool					isTitle;
 
 
 public:
@@ -53,7 +52,8 @@ public:
 
 	bool		GetIsWorld();
 	void		SetInWorld(bool isWorld);
-
+	bool		GetIsTitle();
+	void		SetIsTitle(bool isTitle);
 
 	// mouse event
 	void		SetMouseDeltaPos(HWND& hWnd);
