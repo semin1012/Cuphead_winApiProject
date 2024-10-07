@@ -250,3 +250,13 @@ void Player::SetYPos(int y)
 {
 	this->y = y;
 }
+
+EPlayerWorldState Player::GetWorldState()
+{
+	return worldState;
+}
+
+EPlayerState Player::GetPlayerState()
+{
+	return state;
+}

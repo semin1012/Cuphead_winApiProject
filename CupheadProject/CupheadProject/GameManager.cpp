@@ -90,13 +90,13 @@ void GameManager::SetCameraPos(int x, int y)
 	if (worldMap != nullptr)
 	{
 		if (isMoveCameraX)
-			worldMap->x = -camera_x;
+			worldMap->SetXPos(-camera_x);
 		if (isMoveCameraY)
-			worldMap->y = -camera_y;
+			worldMap->SetYPos(-camera_y);
 	}
 
-	int mapSizeWidth = worldMap->leftMapImg.GetWidth() * WORLD_MAP_SCALE + worldMap->rightMapImg.GetWidth() * WORLD_MAP_SCALE;
-	int mapSizeHeight = worldMap->leftMapImg.GetHeight() * WORLD_MAP_SCALE;
+	int mapSizeWidth = worldMap->GetLeftMapImg()->GetWidth() * WORLD_MAP_SCALE + worldMap->GetRightMapImg()->GetWidth() * WORLD_MAP_SCALE;
+	int mapSizeHeight = worldMap->GetLeftMapImg()->GetHeight() * WORLD_MAP_SCALE;
 
 	// check player camera 
 	// x

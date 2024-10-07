@@ -11,6 +11,12 @@
 #include "commdlg.h"
 #pragma comment(lib, "Msimg32.lib")
 
+#ifdef UNICODE
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#else
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
+
 using namespace std;
 #define MAX_LOADSTRING 100
 #define TIMER_KEYSTATE 0
@@ -293,8 +299,20 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
 
     if (cur - last > 33)
     {
-        InvalidateRect(hWnd, NULL, false);
-        last = clock();
+        // world idle인 경우에만 0.066초로 프레임 맞춤 (idle 애니메이션이 너무 빨라서)
+        if (gameMgr->GetPlayer()->GetWorldState() == EPlayerWorldState::Idle)
+        {
+            if (cur - last > 66)
+            {
+                InvalidateRect(hWnd, NULL, false);
+                last = clock();
+            }
+        }
+        else 
+        {
+            InvalidateRect(hWnd, NULL, false);
+            last = clock();
+        }
     }
 
     if (gameMgr->GetMouseDragState())

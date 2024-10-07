@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Background.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CupheadProject.h" />
     <ClInclude Include="framework.h" />
@@ -137,6 +138,7 @@
     <ClInclude Include="WorldMap.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Background.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CupheadProject.cpp" />
     <ClCompile Include="GameManager.cpp" />

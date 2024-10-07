@@ -54,3 +54,33 @@ void WorldMap::SetRectView(RECT& rectView)
 {
 	this->rectView = &rectView;
 }
+
+int WorldMap::GetXPos()
+{
+	return x;
+}
+
+int WorldMap::GetYPos()
+{
+	return y;
+}
+
+void WorldMap::SetXPos(int x)
+{
+	this->x = x;
+}
+
+void WorldMap::SetYPos(int y)
+{
+	this->y = y;
+}
+
+CImage* WorldMap::GetLeftMapImg()
+{
+	return &leftMapImg;
+}
+
+CImage* WorldMap::GetRightMapImg()
+{
+	return &rightMapImg;
+}

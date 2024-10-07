@@ -5,13 +5,16 @@
 
 class WorldMap
 {
-	RECT*				rectView;
 
-public:
+private:
+	RECT*				rectView;
 	CImage				leftMapImg;
 	CImage				rightMapImg;
 	CImage				leftOcean;
 	CImage				rightOcean;
+
+	int					x;
+	int					y;
 
 
 public:
@@ -21,7 +24,12 @@ public:
 	void		CreateImage();
 	void		SetRectView(RECT& rectView);
 
-	int					x;
-	int					y;
+	int			GetXPos();
+	int			GetYPos();
+	void		SetXPos(int x);
+	void		SetYPos(int y);
+
+	CImage*		GetLeftMapImg();
+	CImage*		GetRightMapImg();
 };
 

@@ -83,5 +83,8 @@ public:
 	int			GetYPos();
 	void		SetXPos(int x);
 	void		SetYPos(int y);
+	
+	EPlayerWorldState	GetWorldState();
+	EPlayerState		GetPlayerState();
 };
 

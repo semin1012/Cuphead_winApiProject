@@ -54,6 +54,9 @@
     <ClInclude Include="WorldMap.h">
       <Filter>헤더 파일\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Background.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CupheadProject.cpp">
@@ -70,6 +73,9 @@
     </ClCompile>
     <ClCompile Include="Collider.cpp">
       <Filter>소스 파일\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Background.cpp">
+      <Filter>소스 파일\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
