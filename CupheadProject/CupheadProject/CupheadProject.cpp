@@ -273,7 +273,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         EndDoubleBuffering(hWnd);
         break;
     case WM_DESTROY:
-        //KillTimer(hWnd, TIMER_ANI);
         KillTimer(hWnd, TIMER_KEYSTATE);
         PostQuitMessage(0);
         break;
