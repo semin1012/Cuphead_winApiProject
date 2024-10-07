@@ -2,6 +2,7 @@
 #include <vector>
 #include "framework.h"
 #include "Background.h"
+#include "Tripper.h"
 #define WORLD_MAP_SCALE (1.1)
 
 class WorldMap : public Background

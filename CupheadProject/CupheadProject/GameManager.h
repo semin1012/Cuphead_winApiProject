@@ -61,5 +61,6 @@ public:
 
 	// World Map
 	bool		CollidedPlayerWithWorldCollisions(int deltaX, int deltaY);
+	bool		CollidedPlayer(Collider* collider, int deltaX, int deltaY);
 };
 

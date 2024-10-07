@@ -36,7 +36,6 @@ void TitleMap::Draw(HDC& hdc)
 	characterImgs[curAnimCnt].Draw(hdc, WINDOWS_WIDTH / 2 - characterImgs[curAnimCnt].GetWidth() / 2, WINDOWS_HEIGHT - characterImgs[curAnimCnt].GetHeight()
 		, characterImgs[curAnimCnt].GetWidth(), characterImgs[curAnimCnt].GetHeight(), 0, 0, characterImgs[curAnimCnt].GetWidth(), characterImgs[curAnimCnt].GetHeight());
 	pressKeyImg.Draw(hdc, x, y, WINDOWS_WIDTH, WINDOWS_HEIGHT, 0, 0, pressKeyImg.GetWidth(), pressKeyImg.GetHeight());
-
 }
 
 void TitleMap::CreateImage()

@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include <iostream>
 
 GameManager::GameManager(RECT* rectView)
 {
@@ -58,6 +59,14 @@ void GameManager::Draw(HDC& hdc)
 			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
 		}
 
+		if (background->GetTripper() != nullptr)
+		{
+			Collider* collider = background->GetTripper()->GetCollider();
+			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
+			collider = background->GetTripper()->GetKeyCollider();
+			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
+		}
+
 		SelectObject(hdc, oldBrush);
 		SelectObject(hdc, hOldPen);
 		DeleteObject(myBrush);
@@ -79,7 +88,6 @@ void GameManager::SetCameraView()
 
 void GameManager::SetCameraPos(int x, int y)
 {
-	// 타이틀에서는 건들 일 없음
 	if (isTitle)
 		return;
 
@@ -98,9 +106,16 @@ void GameManager::SetCameraPos(int x, int y)
 	}
 
 	if (CollidedPlayerWithWorldCollisions(deltaX, deltaY))
-	{
-
 		return;
+
+	if (background->GetTripper() != nullptr)
+	{
+		if (CollidedPlayer(background->GetTripper()->GetKeyCollider(), deltaX, deltaY))
+			background->GetTripper()->SetCollidedPlayer(true);
+		else 
+			background->GetTripper()->SetCollidedPlayer(false);
+		if (CollidedPlayer(background->GetTripper()->GetCollider(), deltaX, deltaY))
+			return;
 	}
 
 	int mapSizeWidth = background->GetWidth();
@@ -185,7 +200,6 @@ void GameManager::SetCameraPos(int x, int y)
 			player->SetCameraPosY(camera_y + deltaY);
 		}
 	}
-
 }
 
 void GameManager::AddTile(HWND& hWnd, LPPOINT& mousePos)
@@ -226,6 +240,7 @@ bool GameManager::CompairTilePos(Collider& collider)
 void GameManager::SetDebugMode()
 {
 	debugMode = !debugMode;
+	background->SetDebugMode(debugMode);
 }
 
 void GameManager::SaveWorldMapInfo()
@@ -368,9 +383,21 @@ bool GameManager::CollidedPlayerWithWorldCollisions(int deltaX, int deltaY)
 	for (auto collider : worldMapCollisions)
 	{
 		if (temp.IsOverlaps(*collider))
-		{
 			return true;
-		}
 	}
+	return false;
+}
+
+bool GameManager::CollidedPlayer(Collider* collider, int deltaX, int deltaY)
+{
+	Collider temp = *player->GetCollider();
+	temp.left	-= deltaX - 1;
+	temp.right	-= deltaX + 1;
+	temp.top	-= deltaY - 1;
+	temp.bottom -= deltaY + 1;
+
+	if (temp.IsOverlaps(*collider))
+		return true;
+
 	return false;
 }

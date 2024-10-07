@@ -7,10 +7,12 @@ WorldMap::WorldMap()
 	CreateImage();
 	width = leftMapImg.GetWidth() * WORLD_MAP_SCALE + rightMapImg.GetWidth() * WORLD_MAP_SCALE;
 	height = leftMapImg.GetHeight() * WORLD_MAP_SCALE;
+	tripper = new Tripper();
 }
 
 WorldMap::~WorldMap()
 {
+	delete tripper;
 }
 
 void WorldMap::Draw(HDC& hdc)
@@ -21,6 +23,12 @@ void WorldMap::Draw(HDC& hdc)
 	rightOcean.Draw(hdc, x + rightOcean.GetWidth() * WORLD_MAP_SCALE, y - 8, rightOcean.GetWidth() * WORLD_MAP_SCALE, rightOcean.GetHeight() * WORLD_MAP_SCALE, 0, 0, rightOcean.GetWidth(), leftMapImg.GetHeight());
 	leftMapImg.Draw(hdc, x, y, leftMapImg.GetWidth() * WORLD_MAP_SCALE, leftMapImg.GetHeight() * WORLD_MAP_SCALE, 0, 0, leftMapImg.GetWidth(), leftMapImg.GetHeight());
 	rightMapImg.Draw(hdc, x + rightMapImg.GetWidth() * WORLD_MAP_SCALE, y - 8, rightMapImg.GetWidth() * WORLD_MAP_SCALE, rightMapImg.GetHeight() * WORLD_MAP_SCALE, 0, 0, rightMapImg.GetWidth(), rightMapImg.GetHeight());
+
+	tripper->SetCameraX(x);
+	tripper->SetCameraY(y);
+
+	if (tripper != nullptr)
+		tripper->Draw(hdc);
 }
 
 void WorldMap::CreateImage()

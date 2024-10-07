@@ -7,6 +7,8 @@ Background::Background()
     y = 0;
     width = 0;
     height = 0;
+    debugMode = false;
+    tripper = nullptr;
 }
 
 Background::Background(RECT& rectView, int x, int y)
@@ -16,6 +18,8 @@ Background::Background(RECT& rectView, int x, int y)
     this->y = y;
     width = 0;
     height = 0;
+    debugMode = false;
+    tripper = nullptr;
 }
 
 Background::~Background()
@@ -47,6 +51,11 @@ void Background::SetYPos(int y)
     this->y = y;
 }
 
+void Background::SetDebugMode(bool debugMode)
+{
+    this->debugMode = debugMode;
+}
+
 int Background::GetWidth()
 {
     return width;
@@ -65,4 +74,9 @@ void Background::SetWidth(int width)
 void Background::SetHeight(int height)
 {
     this->height = height;
+}
+
+Tripper* Background::GetTripper()
+{
+    return tripper;
 }

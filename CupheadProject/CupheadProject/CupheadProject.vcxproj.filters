@@ -60,6 +60,9 @@
     <ClInclude Include="TitleMap.h">
       <Filter>헤더 파일\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Tripper.h">
+      <Filter>헤더 파일\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CupheadProject.cpp">
@@ -81,6 +84,9 @@
       <Filter>소스 파일\Manager</Filter>
     </ClCompile>
     <ClCompile Include="TitleMap.cpp">
+      <Filter>소스 파일\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Tripper.cpp">
       <Filter>소스 파일\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
