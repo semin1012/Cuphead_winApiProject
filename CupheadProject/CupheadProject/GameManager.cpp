@@ -52,12 +52,21 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (!player->GetIsDashing())
 					player->SetIsDashing(true);
 				break;
+			case VK_DOWN:
+				if (!player->GetIsDown())
+					player->SetIsDown(true);
+				break;
 			}
 		}
 		break;
 	case WM_KEYUP:
 		if (isTitle)
 			break;
+		if (GetIsStage())
+		{
+			if (wParam == VK_DOWN && player->GetIsDown())
+				player->SetIsDown(false);
+		}
 		switch (wParam)
 		{
 		case VK_LEFT:
@@ -77,7 +86,6 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					fadeEffect = new FadeEffect();
 			}
 			break;
-
 		}
 		break;
 		{

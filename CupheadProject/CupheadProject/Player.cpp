@@ -28,6 +28,12 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::RightDash, 8, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Dash/R_cuphead_dash_000");
 	ParsingToImagePath(EPlayerState::LeftDash, 8, path, 1);
+	// down
+	_tcscpy(path, L"../Resource/Image/Cuphead/Down/cuphead_duck_000");
+	ParsingToImagePath(EPlayerState::DownStartRight, 7, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Down/cuphead_duck_idle_000");
+	ParsingToImagePath(EPlayerState::DownIdleRight, 5, path, 1);
+
 
 	currAnimMax = playerImg[(int)EPlayerState::World].size();
 	currAnimCnt = 0;
@@ -53,7 +59,8 @@ void Player::ParsingToImagePath(EPlayerState state, int spriteSize, TCHAR* path,
 		if (playerImg[(int)state][i] == NULL)
 		{
 			DWORD dwError = GetLastError();
-			MessageBox(NULL, _T("플레이어 이미지 파일을 열 수 없습니다."), _T("에러"), MB_OK);
+			_tcscat(temp, L" 파일을 열 수 없습니다.");
+			MessageBox(NULL, temp, _T("에러"), MB_OK);
 		}
 	}
 }
@@ -73,6 +80,7 @@ Player::Player()
 	isJumping = false;
 	isDashing = false;
 	isDashAndJump = false;
+	isDown = false;
 	speed = 1;
 	CreateImage();
 }
@@ -94,6 +102,7 @@ Player::Player(int x, int y)
 	isJumping = false;
 	isDashing = false;
 	isDashAndJump = false;
+	isDown = false;
 	speed = 1;
 	CreateImage();
 }
@@ -124,15 +133,18 @@ void Player::Draw(HDC& hdc)
 		if (curTime - lastTime > 33)
 		{
 			currAnimCnt++;
-			if (currAnimCnt >= currAnimMax)
-			{
-				currAnimCnt = 0;
-			}
 			lastTime = clock();
 		}
 
-		else if (currAnimMax <= currAnimCnt)
+		if (currAnimMax <= currAnimCnt)
+		{
+			if (state == EPlayerState::DownStartRight)
+			{
+				state = EPlayerState::DownIdleRight;
+				currAnimMax = playerImg[(int)state].size();
+			}
 			currAnimCnt = 0;
+		}
 
 		collider.left = x - playerImg[(int)state][currAnimCnt].GetWidth() / 2;
 		collider.top = y - playerImg[(int)state][currAnimCnt].GetHeight();
@@ -334,11 +346,16 @@ void Player::SetState(EPlayerWorldState state, EWorldSpriteY spriteY)
 
 void Player::SetState(EPlayerState state)
 {
-	if (!isJumping && !isDashing)
+	if (!isJumping && !isDashing && !isDown)
 	{
 		this->state = state;
 		currAnimMax = playerImg[(int)state].size();
 	}
+}
+
+void Player::SetStateOnce(EPlayerState state)
+{
+	this->state = state;
 }
 
 void Player::SetInWorld(bool isWorld)
@@ -429,6 +446,23 @@ void Player::SetIsDashing(bool isDashing)
 	currAnimMax = playerImg[(int)state].size();
 	speed = DASH_SPEED;
 	startDashTime = clock();
+}
+
+bool Player::GetIsDown()
+{
+	return isDown;
+}
+
+void Player::SetIsDown(bool isDown)
+{
+	if (isJumping || isDashAndJump || isDashing)
+		return;
+
+	this->isDown = isDown;
+	currAnimCnt = 0;
+	if (isDown)
+		state = EPlayerState::DownStartRight;
+	currAnimMax = playerImg[(int)state].size();
 }
 
 void Player::SetStage()

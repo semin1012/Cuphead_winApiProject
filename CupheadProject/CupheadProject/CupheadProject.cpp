@@ -301,14 +301,15 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
         return;
 
     if (gameMgr->GetMouseDragState())
-    {
         gameMgr->DragAndMoveWorldMap(hWnd);
-    }
 
-    if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-        gameMgr->GetPlayer()->dir.x = -1;
-    if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-        gameMgr->GetPlayer()->dir.x = 1;
+    if (!gameMgr->GetPlayer()->GetIsDown())
+    {
+        if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+            gameMgr->GetPlayer()->dir.x = -1;
+        if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+            gameMgr->GetPlayer()->dir.x = 1;
+    }
 
     if (gameMgr->GetIsWorld())
     {

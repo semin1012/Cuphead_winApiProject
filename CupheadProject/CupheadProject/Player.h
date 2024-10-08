@@ -22,6 +22,8 @@ enum class EPlayerState
 	LeftJump,
 	RightDash,
 	LeftDash,
+	DownStartRight,
+	DownIdleRight,
 	Max
 };
 
@@ -71,6 +73,8 @@ private:
 	bool					isDashAndJump;
 	clock_t					startDashTime;
 
+	bool					isDown;
+
 	EPlayerState			state;
 	EPlayerWorldState		worldState;
 	EWorldSpriteY			worldSpriteY;
@@ -99,6 +103,7 @@ public:
 	void		SetCameraPosY(int y);
 	void		SetState(EPlayerWorldState state, EWorldSpriteY spriteY);
 	void		SetState(EPlayerState state);
+	void		SetStateOnce(EPlayerState state);
 	void		SetInWorld(bool isWorld);
 
 	void		Move(int x, int y);
@@ -114,6 +119,8 @@ public:
 	void		SetIsJumping(bool isJumping);
 	bool		GetIsDashing();
 	void		SetIsDashing(bool isDashing);
+	bool		GetIsDown();
+	void		SetIsDown(bool isDown);
 
 	void		SetStage();
 	
