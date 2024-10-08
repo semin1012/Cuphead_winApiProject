@@ -33,6 +33,10 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::DownStartRight, 7, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Down/cuphead_duck_idle_000");
 	ParsingToImagePath(EPlayerState::DownIdleRight, 5, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Down/R_cuphead_duck_000");
+	ParsingToImagePath(EPlayerState::DownStartLeft, 7, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Down/R_cuphead_duck_idle_000");
+	ParsingToImagePath(EPlayerState::DownIdleLeft, 5, path, 1);
 
 
 	currAnimMax = playerImg[(int)EPlayerState::World].size();
@@ -139,10 +143,10 @@ void Player::Draw(HDC& hdc)
 		if (currAnimMax <= currAnimCnt)
 		{
 			if (state == EPlayerState::DownStartRight)
-			{
 				state = EPlayerState::DownIdleRight;
-				currAnimMax = playerImg[(int)state].size();
-			}
+			else if (state == EPlayerState::DownStartLeft)
+				state = EPlayerState::DownIdleLeft;
+			currAnimMax = playerImg[(int)state].size();
 			currAnimCnt = 0;
 		}
 
@@ -461,7 +465,11 @@ void Player::SetIsDown(bool isDown)
 	this->isDown = isDown;
 	currAnimCnt = 0;
 	if (isDown)
-		state = EPlayerState::DownStartRight;
+	{
+		if (dir.x == -1)
+			state = EPlayerState::DownStartLeft;
+		else state = EPlayerState::DownStartRight;
+	}
 	currAnimMax = playerImg[(int)state].size();
 }
 

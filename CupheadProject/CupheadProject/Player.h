@@ -24,6 +24,8 @@ enum class EPlayerState
 	LeftDash,
 	DownStartRight,
 	DownIdleRight,
+	DownStartLeft,
+	DownIdleLeft,
 	Max
 };
 
