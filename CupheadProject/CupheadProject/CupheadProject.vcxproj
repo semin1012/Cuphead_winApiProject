@@ -135,6 +135,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="StageMap.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TitleMap.h" />
     <ClInclude Include="Tripper.h" />
@@ -147,6 +148,7 @@
     <ClCompile Include="FadeEffect.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="StageMap.cpp" />
     <ClCompile Include="TitleMap.cpp" />
     <ClCompile Include="Tripper.cpp" />
     <ClCompile Include="WorldMap.cpp" />

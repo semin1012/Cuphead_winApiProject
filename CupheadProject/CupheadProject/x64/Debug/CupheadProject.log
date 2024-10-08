@@ -1,3 +1,7 @@
-﻿  CupheadProject.cpp
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\CupheadProject.cpp(284,1): warning C4715: 'WndProc': 모든 제어 경로에서 값을 반환하지는 않습니다.
+﻿  StageMap.cpp
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(58,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(61,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(62,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(63,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(70,4): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   CupheadProject.vcxproj -> D:\Cuphead_winApiProject\CupheadProject\x64\Debug\CupheadProject.exe

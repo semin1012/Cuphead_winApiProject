@@ -110,11 +110,11 @@ void GameManager::SetCameraPos(int x, int y)
 
 	if (background->GetTripper() != nullptr)
 	{
-		if (CollidedPlayer(background->GetTripper()->GetKeyCollider(), deltaX, deltaY))
+		if (background->GetTripper()->CollidedKey(player->GetCollider(), deltaX, deltaY))
 			background->GetTripper()->SetCollidedPlayer(true);
-		else 
-			background->GetTripper()->SetCollidedPlayer(false);
-		if (CollidedPlayer(background->GetTripper()->GetCollider(), deltaX, deltaY))
+		else background->GetTripper()->SetCollidedPlayer(false);
+
+		if (background->GetTripper()->Collided(player->GetCollider(), deltaX, deltaY) )
 			return;
 	}
 
@@ -243,6 +243,9 @@ void GameManager::SetDebugMode()
 	background->SetDebugMode(debugMode);
 }
 
+#pragma region Text file Load & save
+
+
 void GameManager::SaveWorldMapInfo()
 {
 	std::ofstream ofs("../Resource/Save/Map/WorldMapCollider.txt", std::ios::out);
@@ -273,7 +276,7 @@ void GameManager::LoadWorldMapInfo()
 		return;
 	}
 
-	if ( !ifs.eof() )
+	if (!ifs.eof())
 		ifs >> size;
 
 	while (!ifs.eof())
@@ -284,7 +287,6 @@ void GameManager::LoadWorldMapInfo()
 		worldMapCollisions.push_back(collider);
 	}
 
-	// MessageBox(NULL, _T("WorldMapCollider.txt 파일에 월드 맵의 정보를 가지고 왔습니다."), _T("성공"), MB_OK);
 	ifs.close();
 }
 
@@ -295,8 +297,9 @@ void GameManager::ClearWorldMapInfo()
 		delete (*it);
 	}
 
-	worldMapCollisions.clear();	
+	worldMapCollisions.clear();
 }
+#pragma endregion
 
 void GameManager::SetMouseDrageState(bool state)
 {
@@ -323,6 +326,11 @@ Player* GameManager::GetPlayer()
 	return player;
 }
 
+Background* GameManager::GetBackground()
+{
+	return background;
+}
+
 bool GameManager::GetIsWorld()
 {
 	return inWorld;
@@ -347,10 +355,27 @@ void GameManager::SetIsTitle(bool isTitle)
 		inWorld = true;
 		delete background;
 
-		background = new WorldMap();
+		//background = new WorldMap();
+		background = new StageMap();
 		background->SetRectView(*rectView);
 		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
 	}
+}
+
+void GameManager::SetStage(int stage)
+{
+	std::cout << "Set Stage()\n";
+	inWorld = false;
+	stage = 1;
+	delete background;
+
+	background = new StageMap();
+	background->SetRectView(*rectView);
+
+	camera_x = WINDOWS_WIDTH / 2;
+	camera_y = WINDOWS_HEIGHT / 2;
+	player->SetXPos(WINDOWS_WIDTH / 2);
+	player->SetYPos(WINDOWS_HEIGHT / 2);
 }
 
 void GameManager::SetMouseDeltaPos(HWND& hWnd)

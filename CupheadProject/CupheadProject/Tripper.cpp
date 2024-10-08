@@ -16,6 +16,7 @@ Tripper::Tripper()
 	camera_y = 0;
 	deltaX = 0;
 	deltaY = 0;
+	stage = 0;
 	CreateImage();
 }
 
@@ -34,6 +35,7 @@ Tripper::Tripper(RECT& rectView, int x, int y)
 	camera_y = 0;
 	deltaX = 0;
 	deltaY = 0;
+	stage = 0;
 	CreateImage();
 }
 
@@ -85,6 +87,34 @@ void Tripper::CreateImage()
 void Tripper::SetRectView(RECT& rectView)
 {
 	this->rectView = &rectView;
+}
+
+bool Tripper::Collided(Collider* collider, int deltaX, int deltaY)
+{
+	Collider temp = *collider;
+	temp.left -= deltaX - 1;
+	temp.right -= deltaX + 1;
+	temp.top -= deltaY - 1;
+	temp.bottom -= deltaY + 1;
+
+	if (temp.IsOverlaps(this->collider))
+		return true;
+
+	return false;
+}
+
+bool Tripper::CollidedKey(Collider* collider, int deltaX, int deltaY)
+{
+	Collider temp = *collider;
+	temp.left -= deltaX - 1;
+	temp.right -= deltaX + 1;
+	temp.top -= deltaY - 1;
+	temp.bottom -= deltaY + 1;
+
+	if (temp.IsOverlaps(this->keyCollider))
+		return true;
+
+	return false;
 }
 
 int Tripper::GetXPos()
@@ -151,6 +181,16 @@ void Tripper::SetWidth(int width)
 void Tripper::SetHeight(int height)
 {
 	this->height = height;
+}
+
+int Tripper::GetStage()
+{
+	return stage;
+}
+
+void Tripper::SetStage(int stage)
+{
+	this->stage = stage;
 }
 
 Collider* Tripper::GetCollider()

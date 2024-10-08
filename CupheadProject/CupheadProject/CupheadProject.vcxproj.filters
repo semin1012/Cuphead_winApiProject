@@ -66,6 +66,9 @@
     <ClInclude Include="FadeEffect.h">
       <Filter>헤더 파일\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="StageMap.h">
+      <Filter>헤더 파일\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CupheadProject.cpp">
@@ -93,6 +96,9 @@
       <Filter>소스 파일\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="FadeEffect.cpp">
+      <Filter>소스 파일\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="StageMap.cpp">
       <Filter>소스 파일\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>

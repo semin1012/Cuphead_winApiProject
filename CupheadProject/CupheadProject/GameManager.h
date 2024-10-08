@@ -8,6 +8,7 @@
 #include "WorldMap.h"
 #include "Collider.h"
 #include "Player.h"
+#include "StageMap.h"
 #define TILE_SIZE 30
 
 class GameManager
@@ -25,6 +26,7 @@ private:
 	RECT*					rectView;
 	bool					inWorld;
 	bool					isTitle;
+	int						stage;
 
 
 public:
@@ -49,11 +51,14 @@ public:
 	int			GetCameraYPos();
 	bool		GetMouseDragState();
 	Player*		GetPlayer();
+	Background* GetBackground();
 
 	bool		GetIsWorld();
 	void		SetInWorld(bool isWorld);
 	bool		GetIsTitle();
 	void		SetIsTitle(bool isTitle);
+
+	void		SetStage(int stage);
 
 	// mouse event
 	void		SetMouseDeltaPos(HWND& hWnd);

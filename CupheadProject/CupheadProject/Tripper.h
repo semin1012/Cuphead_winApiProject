@@ -27,6 +27,8 @@ class Tripper
 	int					maxAnimCnt;
 	clock_t				lastTime;
 
+	int					stage;
+
 
 public:
 	Tripper();
@@ -36,6 +38,9 @@ public:
 	void		Draw(HDC& hdc);
 	void		CreateImage();
 	void		SetRectView(RECT& rectView);
+
+	bool		Collided(Collider* collider, int deltaX, int deltaY);
+	bool		CollidedKey(Collider* collider, int deltaX, int deltaY);
 
 	int			GetXPos();
 	int			GetYPos();
@@ -51,6 +56,9 @@ public:
 	int			GetHeight();
 	void		SetWidth(int width);
 	void		SetHeight(int height);
+
+	int			GetStage();
+	void		SetStage(int stage);
 
 	Collider*	GetCollider();
 	Collider*	GetKeyCollider();

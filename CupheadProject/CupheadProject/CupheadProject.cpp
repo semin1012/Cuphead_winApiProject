@@ -199,7 +199,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
     case WM_KEYUP:
-        if (gameMgr->GetIsTitle() == true)
+        if (gameMgr->GetIsTitle())
         {
             if (wParam == VK_SPACE)
             {
@@ -209,24 +209,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         if (gameMgr->GetPlayer() == nullptr)
             break;
-        switch (wParam)
+        if (gameMgr->GetIsWorld())
         {
-        case VK_UP:
-            if (gameMgr->GetPlayer()->dir.y == -1)
-                gameMgr->GetPlayer()->dir.y = 0;
-            break;
-        case VK_DOWN:
-            if (gameMgr->GetPlayer()->dir.y == 1)
-                gameMgr->GetPlayer()->dir.y = 0;
-            break;
-        case VK_LEFT:
-            if (gameMgr->GetPlayer()->dir.x == -1)
-                gameMgr->GetPlayer()->dir.x = 0;
-            break;
-        case VK_RIGHT:
-            if (gameMgr->GetPlayer()->dir.x == 1)
-                gameMgr->GetPlayer()->dir.x = 0;
-            break;
+            switch (wParam)
+            {
+            case VK_UP:
+                if (gameMgr->GetPlayer()->dir.y == -1)
+                    gameMgr->GetPlayer()->dir.y = 0;
+                break;
+            case VK_DOWN:
+                if (gameMgr->GetPlayer()->dir.y == 1)
+                    gameMgr->GetPlayer()->dir.y = 0;
+                break;
+            case VK_LEFT:
+                if (gameMgr->GetPlayer()->dir.x == -1)
+                    gameMgr->GetPlayer()->dir.x = 0;
+                break;
+            case VK_RIGHT:
+                if (gameMgr->GetPlayer()->dir.x == 1)
+                    gameMgr->GetPlayer()->dir.x = 0;
+                break;
+            case 'a':
+            case 'A':
+                Tripper *tripper = gameMgr->GetBackground()->GetTripper();
+                if (tripper->GetCollidedPlayer())
+                    gameMgr->SetStage(tripper->GetStage());
+                break;
+            }
         }
         break;
     case WM_RBUTTONDOWN:
@@ -255,12 +264,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         CreateDoubbleBuffering(hWnd);
 
         gameMgr->Draw(hdc);
+
         if (fadeEffect != nullptr)
         {
             fadeEffect->Draw(hdc);
             if (fadeEffect->GetIsFadeIn())
             {
-                if ( gameMgr->GetIsTitle() )
+                if (gameMgr->GetIsTitle())
                     gameMgr->SetIsTitle(false);
             }
             if (fadeEffect->GetIsEnd())
