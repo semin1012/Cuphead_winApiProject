@@ -16,6 +16,9 @@ GameManager::GameManager(RECT* rectView)
 	background = new TitleMap();
 	background->SetRectView(*rectView);
 	isTitle = true;
+	isWorld = false;
+	isStage = false;
+	fadeEffect = nullptr;
 
 	SetCameraPos(camera_x, camera_y);
 }
@@ -24,6 +27,53 @@ GameManager::~GameManager()
 {
 	delete background;
 	delete mouseDelta;
+}
+
+void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_KEYDOWN:
+		if (GetIsTitle())
+		{
+			if (wParam == VK_SPACE)
+				fadeEffect = new FadeEffect();
+			break;
+		}
+		if (!GetIsWorld() && !GetIsTitle())
+		{
+			switch (wParam)
+			{
+			case 'Z':
+				if (!player->GetIsJumping())
+					player->SetIsJumping(true);
+				break;
+			}
+		}
+		break;
+	case WM_KEYUP:
+		switch (wParam)
+		{
+		case VK_LEFT:
+			if (GetPlayer()->dir.x == -1)
+				GetPlayer()->dir.x = 0;
+			break;
+		case VK_RIGHT:
+			if (GetPlayer()->dir.x == 1)
+				GetPlayer()->dir.x = 0;
+			break;
+		case 'a':
+		case 'A':
+			Tripper *tripper = GetBackground()->GetTripper();
+			if (tripper->GetCollidedPlayer())
+				fadeEffect = new FadeEffect();
+			break;
+
+		}
+		break;
+		{
+		}
+	}
 }
 
 void GameManager::Draw(HDC& hdc)
@@ -69,6 +119,30 @@ void GameManager::Draw(HDC& hdc)
 
  	if (player != nullptr)
 		player->Draw(hdc);
+
+#pragma region Fade Effect
+	static bool effectOut = false;
+
+	if (fadeEffect != nullptr)
+	{
+		fadeEffect->Draw(hdc);
+		if (fadeEffect->GetIsFadeIn() && !effectOut)
+		{
+			if (GetIsTitle())
+				SetIsTitle(false);
+			else if (!GetIsTitle() && GetIsWorld() && !GetIsStage())
+				SetStage(background->GetTripper()->GetStage());
+			effectOut = true;
+		}
+		if (fadeEffect->GetIsEnd())
+		{
+			delete fadeEffect;
+			fadeEffect = nullptr;
+			effectOut = false;
+		}
+	}
+#pragma endregion
+
 }
 
 void GameManager::SetCameraView()
@@ -87,6 +161,12 @@ void GameManager::SetCameraPos(int x, int y)
 	static bool isMoveCameraY = true;
 	static bool isMoveCameraX = true;
 
+	if (!GetIsWorld())
+	{
+		isMoveCameraX = false;
+		isMoveCameraY = false;
+	}
+
 	int deltaX = (camera_x - x);
 	int deltaY = (camera_y - y);
 
@@ -98,68 +178,72 @@ void GameManager::SetCameraPos(int x, int y)
 			background->SetYPos(-camera_y);
 	}
 
-	if (CollidedPlayerWithWorldCollisions(deltaX, deltaY))
-		return;
-
-	if (background->GetTripper() != nullptr)
-	{
-		if (background->GetTripper()->CollidedKey(player->GetCollider(), deltaX, deltaY))
-			background->GetTripper()->SetCollidedPlayer(true);
-		else background->GetTripper()->SetCollidedPlayer(false);
-
-		if (background->GetTripper()->Collided(player->GetCollider(), deltaX, deltaY) )
-			return;
-	}
-
 	int mapSizeWidth = background->GetWidth();
 	int mapSizeHeight = background->GetHeight();
 
-	// check player camera 
-	// x
-	if (isMoveCameraX && camera_x < MOVE_DISTANCE)
+	if (CollidedPlayerWithWorldCollisions(deltaX, deltaY))
+		return;
+
+	if (GetIsWorld())
 	{
-		isMoveCameraX = false;
-		camera_x = 0;
-	}
-	if (isMoveCameraX && camera_x + WINDOWS_WIDTH >= mapSizeWidth)
-	{
-		isMoveCameraX = false;
-		camera_x = mapSizeWidth - WINDOWS_WIDTH;
-	}
-	if (!isMoveCameraX && player->GetXPos() > WINDOWS_WIDTH / 2 + MOVE_DISTANCE && camera_x <= 100 )
-	{
-		camera_x = 0;
-		isMoveCameraX = true;
-		player->SetXPos(WINDOWS_WIDTH / 2 + MOVE_DISTANCE);
-	}
-	if (!isMoveCameraX && player->GetXPos() < mapSizeWidth - WINDOWS_WIDTH / 2 && camera_x >= 1000)
-	{
-		camera_x = mapSizeWidth - WINDOWS_WIDTH / 2;
-		isMoveCameraX = true;
-		player->SetXPos(mapSizeWidth - WINDOWS_WIDTH / 2);
-	}
-	// y
-	if (isMoveCameraY && camera_y < MOVE_DISTANCE * 2)
-	{
-		isMoveCameraY = false;
-		camera_y = MOVE_DISTANCE * 2;
-	}
-	if (isMoveCameraY && camera_y + WINDOWS_HEIGHT >= mapSizeHeight)
-	{
-		isMoveCameraY = false;
-		camera_y = mapSizeHeight - WINDOWS_HEIGHT;
-	}
-	if (!isMoveCameraY && player->GetYPos() > 405&& camera_y <= 50)
-	{
-		camera_y = 0;
-		isMoveCameraY = true;
-		player->SetYPos(405);
-	}
-	if (!isMoveCameraY && player->GetYPos() < mapSizeHeight - WINDOWS_HEIGHT / 2 && camera_y >= 800)
-	{
-		camera_y = 1275;
-		isMoveCameraY = true;
-		player->SetYPos(1670);
+		if (background->GetTripper() != nullptr)
+		{
+			if (background->GetTripper()->CollidedKey(player->GetCollider(), deltaX, deltaY))
+				background->GetTripper()->SetCollidedPlayer(true);
+			else background->GetTripper()->SetCollidedPlayer(false);
+
+			if (background->GetTripper()->Collided(player->GetCollider(), deltaX, deltaY))
+				return;
+		}
+#pragma region Check player camera
+
+		// x
+		if (isMoveCameraX && camera_x < MOVE_DISTANCE)
+		{
+			isMoveCameraX = false;
+			camera_x = 0;
+		}
+		if (isMoveCameraX && camera_x + WINDOWS_WIDTH >= mapSizeWidth)
+		{
+			isMoveCameraX = false;
+			camera_x = mapSizeWidth - WINDOWS_WIDTH;
+		}
+		if (!isMoveCameraX && player->GetXPos() > WINDOWS_WIDTH / 2 + MOVE_DISTANCE && camera_x <= 100)
+		{
+			camera_x = 0;
+			isMoveCameraX = true;
+			player->SetXPos(WINDOWS_WIDTH / 2 + MOVE_DISTANCE);
+		}
+		if (!isMoveCameraX && player->GetXPos() < mapSizeWidth - WINDOWS_WIDTH / 2 && camera_x >= 1000)
+		{
+			camera_x = mapSizeWidth - WINDOWS_WIDTH / 2;
+			isMoveCameraX = true;
+			player->SetXPos(mapSizeWidth - WINDOWS_WIDTH / 2);
+		}
+		// y
+		if (isMoveCameraY && camera_y < MOVE_DISTANCE * 2)
+		{
+			isMoveCameraY = false;
+			camera_y = MOVE_DISTANCE * 2;
+		}
+		if (isMoveCameraY && camera_y + WINDOWS_HEIGHT >= mapSizeHeight)
+		{
+			isMoveCameraY = false;
+			camera_y = mapSizeHeight - WINDOWS_HEIGHT;
+		}
+		if (!isMoveCameraY && player->GetYPos() > 405 && camera_y <= 50)
+		{
+			camera_y = 0;
+			isMoveCameraY = true;
+			player->SetYPos(405);
+		}
+		if (!isMoveCameraY && player->GetYPos() < mapSizeHeight - WINDOWS_HEIGHT / 2 && camera_y >= 800)
+		{
+			camera_y = 1275;
+			isMoveCameraY = true;
+			player->SetYPos(1670);
+		}
+#pragma endregion
 	}
 
 	if (isMoveCameraX)
@@ -223,10 +307,10 @@ void GameManager::AddTile(HWND& hWnd, LPPOINT& mousePos)
 
 bool GameManager::CompairTilePos(Collider& collider)
 {
-	if (collider.left >= cameraView.right - TILE_SIZE) return false;
-	if (collider.right <= cameraView.left + TILE_SIZE) return false;
-	if (collider.top >= cameraView.bottom - TILE_SIZE) return false;
-	if (collider.bottom <= cameraView.top + TILE_SIZE) return false;
+	if (collider.left >= cameraView.right ) return false;  //- TILE_SIZE) return false;
+	if (collider.right <= cameraView.left ) return false;  //+ TILE_SIZE) return false;
+	if (collider.top >= cameraView.bottom ) return false;  //- TILE_SIZE) return false;
+	if (collider.bottom <= cameraView.top ) return false;  //+ TILE_SIZE) return false;
 	return true;
 }
 
@@ -268,12 +352,12 @@ Background* GameManager::GetBackground()
 
 bool GameManager::GetIsWorld()
 {
-	return inWorld;
+	return isWorld;
 }
 
-void GameManager::SetInWorld(bool isWorld)
+void GameManager::SetIsWorld(bool isWorld)
 {
-	inWorld = isWorld;
+	isWorld = isWorld;
 	player->SetInWorld(isWorld);
 }
 
@@ -287,30 +371,47 @@ void GameManager::SetIsTitle(bool isTitle)
 	this->isTitle = isTitle;
 	if (isTitle == false)
 	{
-		inWorld = true;
+		isWorld = true;
 		delete background;
 
+		// TODO:
 		//background = new WorldMap();
-		background = new StageMap();
+		background = new WorldMap();
 		background->SetRectView(*rectView);
 		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
+
+		// TODO:
+		// SetStage(1);
 	}
+}
+
+bool GameManager::GetIsStage()
+{
+	return isStage;
+}
+
+void GameManager::SetIsStage(bool isStage)
+{
+	this->isStage = isStage;
 }
 
 void GameManager::SetStage(int stage)
 {
 	std::cout << "Set Stage()\n";
-	inWorld = false;
+
+	isWorld = false;
+	isStage = true;
 	stage = 1;
 	delete background;
 
 	background = new StageMap();
 	background->SetRectView(*rectView);
 
-	camera_x = WINDOWS_WIDTH / 2;
-	camera_y = WINDOWS_HEIGHT / 2;
-	player->SetXPos(WINDOWS_WIDTH / 2);
-	player->SetYPos(WINDOWS_HEIGHT / 2);
+	camera_x = 0;
+	camera_y = 0;
+	SetCameraPos(0, 0);
+
+	player->SetStage();
 }
 
 void GameManager::SetMouseDeltaPos(HWND& hWnd)

@@ -10,8 +10,19 @@ void Player::CreateImage()
 	playerImg[(int)EPlayerState::World].resize(1);
 	playerImg[(int)EPlayerState::World][0].Load(L"../Resource/Image/Cuphead/CupHead_Word01.png");
 
+	// idle
 	TCHAR path[128] = L"../Resource/Image/Cuphead/cuphead_idle_000";
 	ParsingToImagePath(EPlayerState::Idle, PLAYER_IDEL_SIZE, path, 1);
+	// run
+	_tcscpy(path, L"../Resource/Image/Cuphead/Run/cuphead_run_00");
+	ParsingToImagePath(EPlayerState::RightRun, 16, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Run/R_cuphead_run_00");
+	ParsingToImagePath(EPlayerState::LeftRun, 16, path, 1);
+	// jump
+	_tcscpy(path, L"../Resource/Image/Cuphead/Jump/cuphead_jump_000");
+	ParsingToImagePath(EPlayerState::RightJump, 8, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Jump/R_cuphead_jump_000");
+	ParsingToImagePath(EPlayerState::LeftJump, 8, path, 1);
 
 	currAnimMax = playerImg[(int)EPlayerState::World].size();
 	currAnimCnt = 0;
@@ -46,7 +57,6 @@ Player::Player()
 {
 	worldState = EPlayerWorldState::Idle;
 	state = EPlayerState::World;
-	CreateImage();
 	collider.left = 0;
 	collider.top = 0;
 	collider.right = 0;
@@ -55,13 +65,14 @@ Player::Player()
 	camera_x = WORLD_START_POINT_X;
 	camera_y = WORLD_START_POINT_Y;
 	lastTime = clock();
+	isJumping = false;
+	CreateImage();
 }
 
 Player::Player(int x, int y)
 {
 	worldState = EPlayerWorldState::Idle;
 	state = EPlayerState::World;
-	CreateImage();
 	collider.left = 0;
 	collider.top = 0;
 	collider.right = 0;
@@ -72,6 +83,8 @@ Player::Player(int x, int y)
 	camera_x = WORLD_START_POINT_X;
 	camera_y = WORLD_START_POINT_Y;
 	lastTime = clock();
+	isJumping = false;
+	CreateImage();
 }
 
 Player::~Player()
@@ -97,9 +110,8 @@ void Player::Draw(HDC& hdc)
 	// 월드가 아니라면
 	if (!inWorld)
 	{
-		if (curTime - lastTime > 20)
+		if (curTime - lastTime > 33)
 		{
-			currAnimMax = playerImg[(int)state].size();
 			currAnimCnt++;
 			if (currAnimCnt >= currAnimMax)
 			{
@@ -108,7 +120,9 @@ void Player::Draw(HDC& hdc)
 			lastTime = clock();
 		}
 
-		// x, y를 피벗으로 두면 바닥 가운데로 해야 함
+		else if (currAnimMax <= currAnimCnt)
+			currAnimCnt = 0;
+
 		collider.left = x - playerImg[(int)state][currAnimCnt].GetWidth() / 2;
 		collider.top = y - playerImg[(int)state][currAnimCnt].GetHeight();
 		collider.right = x + playerImg[(int)state][currAnimCnt].GetWidth() / 2;
@@ -116,7 +130,6 @@ void Player::Draw(HDC& hdc)
 
 		playerImg[(int)state][currAnimCnt].Draw(hdc, collider.left, collider.top);
 	}
-
 
 	// 월드라면
 	else 
@@ -195,6 +208,35 @@ void Player::Draw(HDC& hdc)
 
 		playerImg[(int)EPlayerState::World][0].Draw(hdc, collider.left - unitX / 3 - camera_x, collider.top - unitY * 5 / 7 - camera_y, unitX, unitY, animX, animY, unitX, unitY);
 	}
+
+	Update();
+}
+
+void Player::Update()
+{
+	if (isJumping)
+	{
+		y -= curJumpPower;
+		curJumpPower -= 5;
+
+		if (y >= GROUND_POSITION_Y)
+		{
+			isJumping = false;
+			y = GROUND_POSITION_Y;
+			switch (dir.y)
+			{
+			case 0:
+				state = EPlayerState::Idle;
+				break;
+			case -1:
+				state = EPlayerState::LeftRun;
+				break;
+			case 1:
+				state = EPlayerState::RightRun;
+				break;
+			}
+		}
+	}
 }
 
 Collider* Player::GetCollider()
@@ -230,16 +272,26 @@ void Player::SetState(EPlayerWorldState state, EWorldSpriteY spriteY)
 {
 	this->worldState = state;
 	this->worldSpriteY = spriteY;
+	//currAnimMax = playerImg[(int)state].size();
 }
 
 void Player::SetState(EPlayerState state)
 {
-	this->state = state;
+	if (!isJumping)
+	{
+		this->state = state;
+		currAnimMax = playerImg[(int)state].size();
+	}
 }
 
 void Player::SetInWorld(bool isWorld)
 {
 	inWorld = isWorld;
+	if (isWorld)
+		state = EPlayerState::World;
+	else
+		state = EPlayerState::Idle;
+	currAnimMax = playerImg[(int)state].size();
 }
 
 void Player::Move(int x, int y)
@@ -266,6 +318,29 @@ void Player::SetXPos(int x)
 void Player::SetYPos(int y)
 {
 	this->y = y;
+}
+
+bool Player::GetIsJumping()
+{
+	return isJumping;
+}
+
+void Player::SetIsJumping(bool isJumping)
+{
+	curJumpPower = JumpMaxPower;
+	this->isJumping = isJumping;
+	if (dir.x == -1)
+		state = EPlayerState::LeftJump;
+	else 
+		state = EPlayerState::RightJump;
+	currAnimMax = playerImg[(int)state].size();
+}
+
+void Player::SetStage()
+{
+	x = WINDOWS_WIDTH / 2 - 300;
+	y = GROUND_POSITION_Y;
+	SetInWorld(false);
 }
 
 EPlayerWorldState Player::GetWorldState()

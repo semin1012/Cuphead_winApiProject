@@ -4,14 +4,21 @@
 #include "Collider.h"
 using namespace std;
 #define PLAYER_IDEL_SIZE 5
+#define PLAYER_IDEL_SIZE 5
+
 #define WORLD_SPRITE_SIZE_X 16
 #define WORLD_SPRITE_SIZE_Y 8
 
+#define GROUND_POSITION_Y 700
+
 enum class EPlayerState
 {
-	World,
+	World = 0,
 	Idle,
-	Jump,
+	RightRun,
+	LeftRun,
+	RightJump,
+	LeftJump,
 	Max
 };
 
@@ -52,6 +59,10 @@ private:
 	clock_t					lastTime;
 	bool					inWorld;
 
+	bool					isJumping;
+	const int				JumpMaxPower = 45;
+	int						curJumpPower;
+
 	EPlayerState			state;
 	EPlayerWorldState		worldState;
 	EWorldSpriteY			worldSpriteY;
@@ -72,6 +83,7 @@ public:
 	~Player();
 
 	void		Draw(HDC& hdc);
+	void		Update();
 	Collider*	GetCollider();
 
 	void		SetCameraPos(int x, int y);
@@ -85,6 +97,11 @@ public:
 	int			GetYPos();
 	void		SetXPos(int x);
 	void		SetYPos(int y);
+
+	bool		GetIsJumping();
+	void		SetIsJumping(bool isJumping);
+
+	void		SetStage();
 	
 	EPlayerWorldState	GetWorldState();
 	EPlayerState		GetPlayerState();

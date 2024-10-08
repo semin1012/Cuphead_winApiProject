@@ -9,6 +9,7 @@
 #include "Collider.h"
 #include "Player.h"
 #include "StageMap.h"
+#include "FadeEffect.h"
 #define TILE_SIZE 30
 
 class GameManager
@@ -23,14 +24,20 @@ private:
 	LPPOINT					mouseDelta;
 	bool					bMouseDrag;
 	RECT*					rectView;
-	bool					inWorld;
+	bool					isWorld;
 	bool					isTitle;
+	bool					isStage;
 	int						stage;
+
+
+	FadeEffect*				fadeEffect;
 
 
 public:
 	GameManager(RECT* rectView);
 	~GameManager();
+
+	void		WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	void		Draw(HDC& hdc);
 	void		SetCameraView();
@@ -49,9 +56,11 @@ public:
 	Background* GetBackground();
 
 	bool		GetIsWorld();
-	void		SetInWorld(bool isWorld);
+	void		SetIsWorld(bool isWorld);
 	bool		GetIsTitle();
 	void		SetIsTitle(bool isTitle);
+	bool		GetIsStage();
+	void		SetIsStage(bool isStage);
 
 	void		SetStage(int stage);
 

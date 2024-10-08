@@ -158,7 +158,6 @@ void CreateDoubbleBuffering(HWND hWnd);
 void EndDoubleBuffering(HWND hWnd);
 /* ---------------------------------- */
 
-FadeEffect* fadeEffect;
 
 // timer
 VOID CALLBACK KeyStateProc(HWND, UINT, UINT_PTR, DWORD);
@@ -166,6 +165,8 @@ VOID CALLBACK KeyStateProc(HWND, UINT, UINT_PTR, DWORD);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static LPPOINT mousePos;
+    gameMgr->WndProc(hWnd, message, wParam, lParam);
+
     switch (message)
     {
     case WM_CREATE:
@@ -199,14 +200,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
     case WM_KEYUP:
-        if (gameMgr->GetIsTitle())
-        {
-            if (wParam == VK_SPACE)
-            {
-                fadeEffect = new FadeEffect();
-            }
-            break;
-        }
         if (gameMgr->GetPlayer() == nullptr)
             break;
         if (gameMgr->GetIsWorld())
@@ -220,20 +213,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case VK_DOWN:
                 if (gameMgr->GetPlayer()->dir.y == 1)
                     gameMgr->GetPlayer()->dir.y = 0;
-                break;
-            case VK_LEFT:
-                if (gameMgr->GetPlayer()->dir.x == -1)
-                    gameMgr->GetPlayer()->dir.x = 0;
-                break;
-            case VK_RIGHT:
-                if (gameMgr->GetPlayer()->dir.x == 1)
-                    gameMgr->GetPlayer()->dir.x = 0;
-                break;
-            case 'a':
-            case 'A':
-                Tripper *tripper = gameMgr->GetBackground()->GetTripper();
-                if (tripper->GetCollidedPlayer())
-                    gameMgr->SetStage(tripper->GetStage());
                 break;
             }
         }
@@ -264,21 +243,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         CreateDoubbleBuffering(hWnd);
 
         gameMgr->Draw(hdc);
-
-        if (fadeEffect != nullptr)
-        {
-            fadeEffect->Draw(hdc);
-            if (fadeEffect->GetIsFadeIn())
-            {
-                if (gameMgr->GetIsTitle())
-                    gameMgr->SetIsTitle(false);
-            }
-            if (fadeEffect->GetIsEnd())
-            {
-                delete fadeEffect;
-                fadeEffect = nullptr;
-            }
-        }
 
         EndDoubleBuffering(hWnd);
         break;
@@ -341,10 +305,6 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
         gameMgr->DragAndMoveWorldMap(hWnd);
     }
 
-    if (GetAsyncKeyState(VK_UP) & 0x8000)
-        gameMgr->GetPlayer()->dir.y = -1;
-    if (GetAsyncKeyState(VK_DOWN) & 0x8000)
-        gameMgr->GetPlayer()->dir.y = 1;
     if (GetAsyncKeyState(VK_LEFT) & 0x8000)
         gameMgr->GetPlayer()->dir.x = -1;
     if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
@@ -352,6 +312,11 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
 
     if (gameMgr->GetIsWorld())
     {
+        if (GetAsyncKeyState(VK_UP) & 0x8000)
+            gameMgr->GetPlayer()->dir.y = -1;
+        if (GetAsyncKeyState(VK_DOWN) & 0x8000)
+            gameMgr->GetPlayer()->dir.y = 1;
+
         switch (gameMgr->GetPlayer()->dir.y)
         {
         // 아래로 이동
@@ -383,6 +348,25 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
             break;
         }
     }
+    else
+    {
+        switch (gameMgr->GetPlayer()->dir.x)
+        {
+        case 0:
+            gameMgr->GetPlayer()->SetState(EPlayerState::Idle);
+            break;
+        case -1:
+            gameMgr->GetPlayer()->SetState(EPlayerState::LeftRun);
+            break;
+        case 1:
+            gameMgr->GetPlayer()->SetState(EPlayerState::RightRun);
+            break;
+        }
+    }
 
-    gameMgr->SetCameraPos(gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * MOVE_DISTANCE, gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * MOVE_DISTANCE);
+    int moveDistance = MOVE_DISTANCE;
+    if (gameMgr->GetIsWorld())
+        moveDistance /= 2;
+
+    gameMgr->SetCameraPos(gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance, gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * moveDistance);
 }
