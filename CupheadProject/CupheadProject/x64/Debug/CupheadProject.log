@@ -1,2 +1,53 @@
-﻿  GameManager.cpp
+﻿  Background.cpp
+  CupheadProject.cpp
+  GameManager.cpp
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\GameManager.cpp(275,40): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\GameManager.cpp(275,24): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\GameManager.cpp(276,61): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\GameManager.cpp(276,34): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Player.cpp
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(32,56): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(17,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(19,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(22,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(24,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(27,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(29,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(44,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(47,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(48,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(49,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(117,10): warning C4101: 'hOldBitmap' :참조되지 않은 지역 변수입니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(116,6): warning C4101: 'hMemDC' :참조되지 않은 지역 변수입니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(340,43): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(351,42): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(412,42): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(429,42): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  StageMap.cpp
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(62,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(65,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(66,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(67,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(74,4): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  TitleMap.cpp
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\TitleMap.cpp(59,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\TitleMap.cpp(62,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\TitleMap.cpp(63,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\TitleMap.cpp(64,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\TitleMap.cpp(71,4): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  WorldMap.cpp
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(8,50): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(9,34): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(23,90): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(23,49): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(24,139): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(24,97): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(24,25): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(25,93): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(25,51): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(26,143): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(26,100): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\WorldMap.cpp(26,26): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\CupheadProject.cpp(258,1): warning C4715: 'WndProc': 모든 제어 경로에서 값을 반환하지는 않습니다.
   CupheadProject.vcxproj -> D:\Cuphead_winApiProject\CupheadProject\x64\Debug\CupheadProject.exe

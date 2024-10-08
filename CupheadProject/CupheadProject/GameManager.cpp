@@ -36,7 +36,7 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		if (GetIsTitle())
 		{
-			if (wParam == VK_SPACE)
+			if (wParam == VK_SPACE && fadeEffect == nullptr)
 				fadeEffect = new FadeEffect();
 			break;
 		}
@@ -45,13 +45,19 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			switch (wParam)
 			{
 			case 'Z':
-				if (!player->GetIsJumping())
+				if (!player->GetIsJumping() && !player->GetIsDashing())
 					player->SetIsJumping(true);
+				break;
+			case VK_SHIFT:
+				if (!player->GetIsDashing())
+					player->SetIsDashing(true);
 				break;
 			}
 		}
 		break;
 	case WM_KEYUP:
+		if (isTitle)
+			break;
 		switch (wParam)
 		{
 		case VK_LEFT:
@@ -64,9 +70,12 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case 'a':
 		case 'A':
-			Tripper *tripper = GetBackground()->GetTripper();
-			if (tripper->GetCollidedPlayer())
-				fadeEffect = new FadeEffect();
+			if (isWorld && fadeEffect == nullptr)
+			{
+				Tripper *tripper = GetBackground()->GetTripper();
+				if (tripper->GetCollidedPlayer())
+					fadeEffect = new FadeEffect();
+			}
 			break;
 
 		}
@@ -262,8 +271,9 @@ void GameManager::SetCameraPos(int x, int y)
 		}
 		if (!isMoveCameraX && !isMoveCameraY)
 		{
-			player->Move(deltaX, deltaY);
-			player->SetCameraPos(camera_x + deltaY, camera_y + deltaY);
+			float speed = player->GetSpeed();
+			player->Move(deltaX * speed, deltaY * speed);
+			player->SetCameraPos(camera_x + deltaY * speed, camera_y + deltaY * speed);
 			return;
 		}
 		if (isMoveCameraX)
@@ -381,7 +391,7 @@ void GameManager::SetIsTitle(bool isTitle)
 		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
 
 		// TODO:
-		// SetStage(1);
+		SetStage(1);
 	}
 }
 

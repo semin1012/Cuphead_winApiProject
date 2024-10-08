@@ -10,6 +10,7 @@ using namespace std;
 #define WORLD_SPRITE_SIZE_Y 8
 
 #define GROUND_POSITION_Y 700
+#define DASH_SPEED (3.0)
 
 enum class EPlayerState
 {
@@ -19,6 +20,8 @@ enum class EPlayerState
 	LeftRun,
 	RightJump,
 	LeftJump,
+	RightDash,
+	LeftDash,
 	Max
 };
 
@@ -60,8 +63,13 @@ private:
 	bool					inWorld;
 
 	bool					isJumping;
-	const int				JumpMaxPower = 45;
+	const int				JumpMaxPower = 55;
 	int						curJumpPower;
+
+	float					speed;
+	bool					isDashing;
+	bool					isDashAndJump;
+	clock_t					startDashTime;
 
 	EPlayerState			state;
 	EPlayerWorldState		worldState;
@@ -92,7 +100,11 @@ public:
 	void		SetState(EPlayerWorldState state, EWorldSpriteY spriteY);
 	void		SetState(EPlayerState state);
 	void		SetInWorld(bool isWorld);
+
 	void		Move(int x, int y);
+	float		GetSpeed();
+	void		SetSpeed(float speed);
+
 	int			GetXPos();
 	int			GetYPos();
 	void		SetXPos(int x);
@@ -100,6 +112,8 @@ public:
 
 	bool		GetIsJumping();
 	void		SetIsJumping(bool isJumping);
+	bool		GetIsDashing();
+	void		SetIsDashing(bool isDashing);
 
 	void		SetStage();
 	

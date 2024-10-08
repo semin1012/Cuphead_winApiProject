@@ -23,6 +23,11 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::RightJump, 8, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Jump/R_cuphead_jump_000");
 	ParsingToImagePath(EPlayerState::LeftJump, 8, path, 1);
+	// dash
+	_tcscpy(path, L"../Resource/Image/Cuphead/Dash/cuphead_dash_000");
+	ParsingToImagePath(EPlayerState::RightDash, 8, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Dash/R_cuphead_dash_000");
+	ParsingToImagePath(EPlayerState::LeftDash, 8, path, 1);
 
 	currAnimMax = playerImg[(int)EPlayerState::World].size();
 	currAnimCnt = 0;
@@ -66,6 +71,9 @@ Player::Player()
 	camera_y = WORLD_START_POINT_Y;
 	lastTime = clock();
 	isJumping = false;
+	isDashing = false;
+	isDashAndJump = false;
+	speed = 1;
 	CreateImage();
 }
 
@@ -84,6 +92,9 @@ Player::Player(int x, int y)
 	camera_y = WORLD_START_POINT_Y;
 	lastTime = clock();
 	isJumping = false;
+	isDashing = false;
+	isDashAndJump = false;
+	speed = 1;
 	CreateImage();
 }
 
@@ -216,11 +227,26 @@ void Player::Update()
 {
 	if (isJumping)
 	{
-		y -= curJumpPower;
-		curJumpPower -= 5;
+		if (!isDashing)
+		{
+			y -= curJumpPower;
+			curJumpPower -= 5;
+		}
+		else isDashAndJump = true;
+		switch (dir.x)
+		{
+		case -1:
+			state = EPlayerState::LeftJump;
+			break;
+		case 1:
+		case 0:
+			state = EPlayerState::RightJump;
+			break;
+		}
 
 		if (y >= GROUND_POSITION_Y)
 		{
+			if (isDashAndJump) isDashAndJump = false;
 			isJumping = false;
 			y = GROUND_POSITION_Y;
 			switch (dir.y)
@@ -233,6 +259,38 @@ void Player::Update()
 				break;
 			case 1:
 				state = EPlayerState::RightRun;
+				break;
+			}
+		}
+	}
+
+	if (isDashing)
+	{
+		clock_t curTime = clock();
+		curJumpPower = 0;
+		switch (dir.x)
+		{
+		case 1:
+			state = EPlayerState::RightDash;
+			break;
+		case -1:
+			state = EPlayerState::LeftDash;
+			break;
+		}
+		if (curTime - startDashTime > 350)
+		{
+			isDashing = false;
+			speed = 1.0f;
+			switch (dir.x)
+			{
+			case 0:
+				state = EPlayerState::Idle;
+				break;
+			case 1:
+				state = EPlayerState::RightRun;
+				break;
+			case -1:
+				state = EPlayerState::LeftRun;
 				break;
 			}
 		}
@@ -272,12 +330,11 @@ void Player::SetState(EPlayerWorldState state, EWorldSpriteY spriteY)
 {
 	this->worldState = state;
 	this->worldSpriteY = spriteY;
-	//currAnimMax = playerImg[(int)state].size();
 }
 
 void Player::SetState(EPlayerState state)
 {
-	if (!isJumping)
+	if (!isJumping && !isDashing)
 	{
 		this->state = state;
 		currAnimMax = playerImg[(int)state].size();
@@ -296,8 +353,26 @@ void Player::SetInWorld(bool isWorld)
 
 void Player::Move(int x, int y)
 {
+	if (!inWorld)
+	{
+		if (this->x - x < 65)
+			return;
+		if (this->x - x > 1215)
+			return;
+	}
+
 	this->x -= x;
 	this->y -= y;
+}
+
+float Player::GetSpeed()
+{
+	return speed;
+}
+
+void Player::SetSpeed(float speed)
+{
+	this->speed = speed;
 }
 
 int Player::GetXPos()
@@ -329,11 +404,31 @@ void Player::SetIsJumping(bool isJumping)
 {
 	curJumpPower = JumpMaxPower;
 	this->isJumping = isJumping;
+	currAnimCnt = 0;
 	if (dir.x == -1)
 		state = EPlayerState::LeftJump;
 	else 
 		state = EPlayerState::RightJump;
 	currAnimMax = playerImg[(int)state].size();
+}
+
+bool Player::GetIsDashing()
+{
+	return isDashing;
+}
+
+void Player::SetIsDashing(bool isDashing)
+{
+	if (isDashAndJump) return;
+
+	this->isDashing = isDashing;
+	currAnimCnt = 0;
+	if (dir.x == -1)
+		state = EPlayerState::LeftDash;
+	else state = EPlayerState::RightDash;
+	currAnimMax = playerImg[(int)state].size();
+	speed = DASH_SPEED;
+	startDashTime = clock();
 }
 
 void Player::SetStage()
