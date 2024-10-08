@@ -21,5 +21,9 @@ public:
 	void		Draw(HDC& hdc);
 	void		CreateImage();
 	void		ParsingToImagePath(int spriteSize, TCHAR* path, int startNum);
+
+	void	SaveMapInfo();
+	void	LoadMapInfo();
+	void	ClearMapInfo();
 };
 

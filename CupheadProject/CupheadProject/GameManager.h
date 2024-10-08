@@ -14,7 +14,6 @@
 class GameManager
 {
 private:
-	std::vector<Collider*>  worldMapCollisions;
 	Background*				background;
 	Player*					player;
 	bool					debugMode;
@@ -40,10 +39,6 @@ public:
 	bool		CompairTilePos(Collider& collide);
 	
 	void		SetDebugMode();
-
-	void		SaveWorldMapInfo();
-	void		LoadWorldMapInfo();
-	void		ClearWorldMapInfo();
 
 	void		SetMouseDrageState(bool state);
 

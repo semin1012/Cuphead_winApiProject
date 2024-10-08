@@ -8,6 +8,7 @@ WorldMap::WorldMap()
 	width = leftMapImg.GetWidth() * WORLD_MAP_SCALE + rightMapImg.GetWidth() * WORLD_MAP_SCALE;
 	height = leftMapImg.GetHeight() * WORLD_MAP_SCALE;
 	tripper = new Tripper();
+	LoadMapInfo();
 }
 
 WorldMap::~WorldMap()
@@ -68,4 +69,58 @@ CImage* WorldMap::GetLeftMapImg()
 CImage* WorldMap::GetRightMapImg()
 {
 	return &rightMapImg;
+}
+
+void WorldMap::SaveMapInfo()
+{
+	std::ofstream ofs("../Resource/Save/Map/WorldMapCollider.txt", std::ios::out);
+	if (ofs.fail())
+	{
+		MessageBox(NULL, _T("WorldMapCollider.txt 파일 열기 실패"), _T("에러"), MB_OK);
+		return;
+	}
+
+	ofs << colliders.size() << std::endl;
+	for (auto collider : colliders)
+	{
+		ofs << collider->left << " " << collider->top << " " << collider->right << " " << collider->bottom << std::endl;
+	}
+
+	MessageBox(NULL, _T("WorldMapCollider.txt 파일에 월드 맵의 정보를 저장했습니다."), _T("성공"), MB_OK);
+	ofs.close();
+}
+
+void WorldMap::LoadMapInfo()
+{
+	int size;
+
+	std::ifstream ifs("../Resource/Save/Map/WorldMapCollider.txt", std::ios::in);
+	if (ifs.fail())
+	{
+		MessageBox(NULL, _T("WorldMapCollider.txt 파일 열기 실패"), _T("에러"), MB_OK);
+		return;
+	}
+
+	if (!ifs.eof())
+		ifs >> size;
+
+	while (!ifs.eof())
+	{
+		Collider* collider = new Collider();
+		ifs >> collider->left >> collider->top >> collider->right >> collider->bottom;
+
+		colliders.push_back(collider);
+	}
+
+	ifs.close();
+}
+
+void WorldMap::ClearMapInfo()
+{
+	for (auto it = colliders.begin(); it != colliders.end(); it++)
+	{
+		delete (*it);
+	}
+
+	colliders.clear();
 }

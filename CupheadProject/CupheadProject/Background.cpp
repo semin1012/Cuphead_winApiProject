@@ -56,6 +56,16 @@ void Background::SetDebugMode(bool debugMode)
     this->debugMode = debugMode;
 }
 
+void Background::SetColliders(std::vector<Collider*> *colliders)
+{
+    this->colliders = *colliders;
+}
+
+std::vector<Collider*>* Background::GetColliders()
+{
+    return &colliders;
+}
+
 int Background::GetWidth()
 {
     return width;

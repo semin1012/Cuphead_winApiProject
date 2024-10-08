@@ -22,5 +22,9 @@ public:
 
 	CImage*		GetLeftMapImg();
 	CImage*		GetRightMapImg();
+
+	void	SaveMapInfo();
+	void	LoadMapInfo();
+	void	ClearMapInfo();
 };
 

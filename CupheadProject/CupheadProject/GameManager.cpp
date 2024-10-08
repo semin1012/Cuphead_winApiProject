@@ -17,18 +17,11 @@ GameManager::GameManager(RECT* rectView)
 	background->SetRectView(*rectView);
 	isTitle = true;
 
-	LoadWorldMapInfo();
 	SetCameraPos(camera_x, camera_y);
 }
 
 GameManager::~GameManager()
 {
-	for (auto it = worldMapCollisions.begin(); it != worldMapCollisions.end(); it++)
-	{
-		delete (*it);
-	}
-
-	worldMapCollisions.clear();
 	delete background;
 	delete mouseDelta;
 }
@@ -47,7 +40,7 @@ void GameManager::Draw(HDC& hdc)
 		HBRUSH myBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
 		HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
 
-		for (auto collider : worldMapCollisions)
+		for (auto collider : *background->GetColliders())
 		{
 			if (CompairTilePos(*collider))
 				Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
@@ -214,17 +207,17 @@ void GameManager::AddTile(HWND& hWnd, LPPOINT& mousePos)
 
 		Collider* collider = new Collider(mousePos->x * TILE_SIZE, mousePos->y * TILE_SIZE, mousePos->x * TILE_SIZE + TILE_SIZE, mousePos->y * TILE_SIZE + TILE_SIZE);
 
-		for (int i = 0; i < worldMapCollisions.size(); i++)
+		for (int i = 0; i < background->GetColliders()->size(); i++)
 		{
-			if (worldMapCollisions[i]->Compare(*collider))
+			if ((*background->GetColliders())[i]->Compare(*collider))
 			{
-				worldMapCollisions.erase(worldMapCollisions.begin() + i);
+				(*background->GetColliders()).erase((*background->GetColliders()).begin() + i);
 				return;
 			}
 		}
 
-		worldMapCollisions.push_back(collider);
-		worldMapCollisions.erase(std::unique(worldMapCollisions.begin(), worldMapCollisions.end()), worldMapCollisions.end());
+		(*background->GetColliders()).push_back(collider);
+		(*background->GetColliders()).erase(std::unique((*background->GetColliders()).begin(), (*background->GetColliders()).end()), (*background->GetColliders()).end());
 	}
 }
 
@@ -242,64 +235,6 @@ void GameManager::SetDebugMode()
 	debugMode = !debugMode;
 	background->SetDebugMode(debugMode);
 }
-
-#pragma region Text file Load & save
-
-
-void GameManager::SaveWorldMapInfo()
-{
-	std::ofstream ofs("../Resource/Save/Map/WorldMapCollider.txt", std::ios::out);
-	if (ofs.fail())
-	{
-		MessageBox(NULL, _T("WorldMapCollider.txt 파일 열기 실패"), _T("에러"), MB_OK);
-		return;
-	}
-
-	ofs << worldMapCollisions.size() << std::endl;
-	for (auto collider : worldMapCollisions)
-	{
-		ofs << collider->left << " " << collider->top << " " << collider->right << " " << collider->bottom << std::endl;
-	}
-
-	MessageBox(NULL, _T("WorldMapCollider.txt 파일에 월드 맵의 정보를 저장했습니다."), _T("성공"), MB_OK);
-	ofs.close();
-}
-
-void GameManager::LoadWorldMapInfo()
-{
-	int size;
-
-	std::ifstream ifs("../Resource/Save/Map/WorldMapCollider.txt", std::ios::in);
-	if (ifs.fail())
-	{
-		MessageBox(NULL, _T("WorldMapCollider.txt 파일 열기 실패"), _T("에러"), MB_OK);
-		return;
-	}
-
-	if (!ifs.eof())
-		ifs >> size;
-
-	while (!ifs.eof())
-	{
-		Collider* collider = new Collider();
-		ifs >> collider->left >> collider->top >> collider->right >> collider->bottom;
-
-		worldMapCollisions.push_back(collider);
-	}
-
-	ifs.close();
-}
-
-void GameManager::ClearWorldMapInfo()
-{
-	for (auto it = worldMapCollisions.begin(); it != worldMapCollisions.end(); it++)
-	{
-		delete (*it);
-	}
-
-	worldMapCollisions.clear();
-}
-#pragma endregion
 
 void GameManager::SetMouseDrageState(bool state)
 {
@@ -405,7 +340,7 @@ bool GameManager::CollidedPlayerWithWorldCollisions(int deltaX, int deltaY)
 	temp.top -= deltaY - 1;
 	temp.bottom -= deltaY + 1;
 
-	for (auto collider : worldMapCollisions)
+	for (auto collider : (*background->GetColliders()))
 	{
 		if (temp.IsOverlaps(*collider))
 			return true;

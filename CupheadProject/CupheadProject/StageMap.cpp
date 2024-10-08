@@ -9,6 +9,9 @@ StageMap::StageMap()
 	maxAnimCnt = 12;
 	CreateImage();
 	lastTime = clock();
+	width = groundImg.GetWidth();
+	height = groundImg.GetHeight();
+	LoadMapInfo();
 }
 
 StageMap::~StageMap()
@@ -33,7 +36,7 @@ void StageMap::Draw(HDC& hdc)
 	treeImg.Draw(hdc, 0, 50, treeImg.GetWidth(), treeImg.GetHeight(), 0, 0, treeImg.GetWidth(), treeImg.GetHeight());
 	woodImg.Draw(hdc, -200, 0, woodImg.GetWidth(), woodImg.GetHeight(), 0, 0, woodImg.GetWidth(), woodImg.GetHeight());
 	waveLinesImg[curAnimCnt].Draw(hdc, 525, 420, waveLinesImg[curAnimCnt].GetWidth(), waveLinesImg[curAnimCnt].GetHeight(), 0, 0, waveLinesImg[curAnimCnt].GetWidth(), waveLinesImg[curAnimCnt].GetHeight());
-	groundImg.Draw(hdc, 0, 0, WINDOWS_WIDTH, WINDOWS_HEIGHT, 0, 0, groundImg.GetWidth(), groundImg.GetHeight());
+	groundImg.Draw(hdc, 0, 0, groundImg.GetWidth(), WINDOWS_HEIGHT, 0, 0, groundImg.GetWidth(), groundImg.GetHeight());
 }
 
 void StageMap::CreateImage()
@@ -72,4 +75,16 @@ void StageMap::ParsingToImagePath(int spriteSize, TCHAR* path, int startNum)
 		}
 	}
 
+}
+
+void StageMap::SaveMapInfo()
+{
+}
+
+void StageMap::LoadMapInfo()
+{
+}
+
+void StageMap::ClearMapInfo()
+{
 }

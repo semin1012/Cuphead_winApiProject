@@ -1,7 +1,2 @@
-﻿  StageMap.cpp
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(58,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(61,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(62,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(63,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\StageMap.cpp(70,4): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+﻿  GameManager.cpp
   CupheadProject.vcxproj -> D:\Cuphead_winApiProject\CupheadProject\x64\Debug\CupheadProject.exe

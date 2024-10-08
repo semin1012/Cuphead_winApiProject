@@ -2,17 +2,19 @@
 #include "framework.h"
 #include "Player.h"
 #include "Tripper.h"
+#include "Collider.h"	
 
 class Background
 {
 protected:
-	RECT*		rectView;
-	Tripper*	tripper;
-	int			x;
-	int			y;
-	int			width;
-	int			height;
-	bool		debugMode;
+	RECT*					rectView;
+	Tripper*				tripper;
+	int						x;
+	int						y;
+	int						width;
+	int						height;
+	bool					debugMode;
+	std::vector<Collider*>  colliders;
 
 public:
 	Background();
@@ -29,6 +31,13 @@ public:
 	void		SetYPos(int y);
 
 	void		SetDebugMode(bool debugMode);
+
+	virtual void	SaveMapInfo() = 0;
+	virtual void	LoadMapInfo() = 0;
+	virtual void	ClearMapInfo() = 0;
+
+	void		SetColliders(std::vector<Collider*> *colliders);
+	std::vector<Collider*>* GetColliders();
 
 	int			GetWidth();
 	int			GetHeight();

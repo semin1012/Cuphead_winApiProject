@@ -185,13 +185,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
         case ID_WORLD_SAVE:
-            gameMgr->SaveWorldMapInfo();
+            gameMgr->GetBackground()->SaveMapInfo();
             break;
         case ID_WORLD_LOAD:
-            gameMgr->LoadWorldMapInfo();
+            gameMgr->GetBackground()->LoadMapInfo();
             break;
         case ID_WORLD_CLEAR:
-            gameMgr->ClearWorldMapInfo();
+            gameMgr->GetBackground()->ClearMapInfo();
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);

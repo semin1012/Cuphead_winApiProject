@@ -11,6 +11,7 @@ TitleMap::TitleMap()
 	width = backgroundImg.GetWidth();
 	height = backgroundImg.GetHeight();
 	lastTime = clock();
+	LoadMapInfo();
 }
 
 TitleMap::~TitleMap()
@@ -71,4 +72,16 @@ void TitleMap::ParsingToImagePath(int spriteSize, TCHAR* path, int startNum)
 			MessageBox(NULL, temp, _T("¿¡·¯"), MB_OK);
 		}
 	}
+}
+
+void TitleMap::SaveMapInfo()
+{
+}
+
+void TitleMap::LoadMapInfo()
+{
+}
+
+void TitleMap::ClearMapInfo()
+{
 }
