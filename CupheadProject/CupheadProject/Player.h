@@ -26,6 +26,18 @@ enum class EPlayerState
 	DownIdleRight,
 	DownStartLeft,
 	DownIdleLeft,
+	ShootingRunRight,
+	ShootingRunRightUp,
+	ShootingRight,
+	ShootingRightUp,
+	ShootingRightDown,
+	ShootingUp,
+	ShootingDown,
+	AimRight,
+	AimRightUp,
+	AimRightDown,
+	AimUp,
+	AimDown,
 	Max
 };
 
@@ -66,16 +78,18 @@ private:
 	clock_t					lastTime;
 	bool					inWorld;
 
+	bool					isDown;
 	bool					isJumping;
+	bool					isDashing;
+	bool					isShooting;
+	bool					isLockin;
+
 	const int				JumpMaxPower = 55;
 	int						curJumpPower;
 
 	float					speed;
-	bool					isDashing;
 	bool					isDashAndJump;
 	clock_t					startDashTime;
-
-	bool					isDown;
 
 	EPlayerState			state;
 	EPlayerWorldState		worldState;
@@ -123,6 +137,10 @@ public:
 	void		SetIsDashing(bool isDashing);
 	bool		GetIsDown();
 	void		SetIsDown(bool isDown);
+	bool		GetIsShooting();
+	void		SetIsShooting(bool isShooting);
+	bool		GetIsLockin();
+	void		SetIsLockin(bool isLockin);
 
 	void		SetStage();
 	

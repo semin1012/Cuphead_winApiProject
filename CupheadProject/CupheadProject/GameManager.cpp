@@ -45,16 +45,27 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			switch (wParam)
 			{
 			case 'Z':
+			case 'z':
 				if (!player->GetIsJumping() && !player->GetIsDashing())
 					player->SetIsJumping(true);
 				break;
 			case VK_SHIFT:
-				if (!player->GetIsDashing())
+				if (!player->GetIsDashing() && player->dir.x != 0)
 					player->SetIsDashing(true);
 				break;
 			case VK_DOWN:
 				if (!player->GetIsDown())
 					player->SetIsDown(true);
+				break;
+			case 'X':
+			case 'x':
+				if (!player->GetIsShooting())
+					player->SetIsShooting(true);
+				break;
+			case 'C':
+			case 'c':
+				if (!player->GetIsLockin())
+					player->SetIsLockin(true);
 				break;
 			}
 		}
@@ -86,10 +97,17 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					fadeEffect = new FadeEffect();
 			}
 			break;
+		case 'X':
+		case 'x':
+			if (player->GetIsShooting())
+				player->SetIsShooting(false);
+			break;
+		case 'C':
+		case 'c':
+			if (player->GetIsLockin())
+				player->SetIsLockin(false);
 		}
 		break;
-		{
-		}
 	}
 }
 
