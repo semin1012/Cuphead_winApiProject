@@ -27,15 +27,23 @@ enum class EPlayerState
 	DownStartLeft,
 	DownIdleLeft,
 	ShootingRunRight,
+	ShootingRunLeft,
 	ShootingRunRightUp,
+	ShootingRunLeftUp,
 	ShootingRight,
+	ShootingLeft,
 	ShootingRightUp,
+	ShootingLeftUp,
 	ShootingRightDown,
+	ShootingLeftDown,
 	ShootingUp,
 	ShootingDown,
 	AimRight,
+	AimLeft,
 	AimRightUp,
+	AimLeftUp,
 	AimRightDown,
+	AimLeftDown,
 	AimUp,
 	AimDown,
 	Max
@@ -83,6 +91,7 @@ private:
 	bool					isDashing;
 	bool					isShooting;
 	bool					isLockin;
+	bool					lastForward;	// 1Àº right, 0Àº left
 
 	const int				JumpMaxPower = 55;
 	int						curJumpPower;
@@ -141,6 +150,8 @@ public:
 	void		SetIsShooting(bool isShooting);
 	bool		GetIsLockin();
 	void		SetIsLockin(bool isLockin);
+	bool		GetLastForward();
+	void		SetLastForward(bool lastForward);
 
 	void		SetStage();
 	

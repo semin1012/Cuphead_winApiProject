@@ -47,19 +47,23 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'Z':
 			case 'z':
 				if (!player->GetIsJumping() && !player->GetIsDashing())
+				{
+					if (player->GetIsShooting())
+						player->SetIsShooting(false);
 					player->SetIsJumping(true);
+				}
 				break;
 			case VK_SHIFT:
 				if (!player->GetIsDashing() && player->dir.x != 0)
 					player->SetIsDashing(true);
 				break;
 			case VK_DOWN:
-				if (!player->GetIsDown())
+				if (!player->GetIsDown() && !player->GetIsLockin())
 					player->SetIsDown(true);
 				break;
 			case 'X':
 			case 'x':
-				if (!player->GetIsShooting())
+				if (!player->GetIsShooting() && !player->GetIsJumping())
 					player->SetIsShooting(true);
 				break;
 			case 'C':
@@ -82,11 +86,17 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case VK_LEFT:
 			if (GetPlayer()->dir.x == -1)
+			{
 				GetPlayer()->dir.x = 0;
+				GetPlayer()->SetLastForward(LAST_FORWARD_IS_LEFT);
+			}
 			break;
 		case VK_RIGHT:
 			if (GetPlayer()->dir.x == 1)
+			{
 				GetPlayer()->dir.x = 0;
+				GetPlayer()->SetLastForward(LAST_FORWARD_IS_RIGHT);
+			}
 			break;
 		case 'a':
 		case 'A':

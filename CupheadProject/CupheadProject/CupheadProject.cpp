@@ -302,13 +302,10 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
     if (gameMgr->GetMouseDragState())
         gameMgr->DragAndMoveWorldMap(hWnd);
 
-    if (!gameMgr->GetPlayer()->GetIsDown() || gameMgr->GetPlayer()->GetIsLockin())
-    {
-        if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-            gameMgr->GetPlayer()->dir.x = -1;
-        if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-            gameMgr->GetPlayer()->dir.x = 1;
-    }
+    if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+        gameMgr->GetPlayer()->dir.x = -1;
+    if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+        gameMgr->GetPlayer()->dir.x = 1;
 
     if (GetAsyncKeyState(VK_UP) & 0x8000)
         gameMgr->GetPlayer()->dir.y = -1;
@@ -369,5 +366,6 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
     if (gameMgr->GetIsWorld())
         moveDistance /= 2;
 
-    gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance) * abs(1 - gameMgr->GetPlayer()->GetIsLockin()), (gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * moveDistance) * gameMgr->GetIsWorld());
+    gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance) * abs(1 - gameMgr->GetPlayer()->GetIsLockin()), 
+        (gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * moveDistance) * gameMgr->GetIsWorld());
 }

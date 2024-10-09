@@ -42,13 +42,23 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::ShootingRunRight, 16, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/RunShooting/cuphead_run_shoot_diagonal_up_00");
 	ParsingToImagePath(EPlayerState::ShootingRunRightUp, 16, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/RunShooting/R_cuphead_run_shoot_00");
+	ParsingToImagePath(EPlayerState::ShootingRunLeft, 16, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/RunShooting/R_cuphead_run_shoot_diagonal_up_00");
+	ParsingToImagePath(EPlayerState::ShootingRunLeftUp, 16, path, 1);
 	// shooting
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_straight_000");
 	ParsingToImagePath(EPlayerState::ShootingRight, 6, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/R_cuphead_shoot_straight_000");
+	ParsingToImagePath(EPlayerState::ShootingLeft, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_diagonal_up_000");
 	ParsingToImagePath(EPlayerState::ShootingRightUp, 6, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/R_cuphead_shoot_diagonal_up_000");
+	ParsingToImagePath(EPlayerState::ShootingLeftUp, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_diagonal_down_000");
 	ParsingToImagePath(EPlayerState::ShootingRightDown, 6, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/R_cuphead_shoot_diagonal_down_000");
+	ParsingToImagePath(EPlayerState::ShootingLeftDown, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_up_000");
 	ParsingToImagePath(EPlayerState::ShootingUp, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_down_000");
@@ -60,18 +70,17 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::AimRightUp, 5, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/cuphead_aim_diagonal_down_000");
 	ParsingToImagePath(EPlayerState::AimRightDown, 5, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/R_cuphead_aim_straight_000");
+	ParsingToImagePath(EPlayerState::AimLeft, 5, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/R_cuphead_aim_diagonal_up_000");
+	ParsingToImagePath(EPlayerState::AimLeftUp, 5, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/R_cuphead_aim_diagonal_down_000");
+	ParsingToImagePath(EPlayerState::AimLeftDown, 5, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/cuphead_aim_up_000");
 	ParsingToImagePath(EPlayerState::AimUp, 5, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/cuphead_aim_down_000");
 	ParsingToImagePath(EPlayerState::AimDown, 5, path, 1);
 
-
-
-	/*ShootingRight,
-		ShootingRightUp,
-		ShootingRightDown,
-		ShootingUp,
-		ShootingDown,*/
 	currAnimMax = playerImg[(int)EPlayerState::World].size();
 	currAnimCnt = 0;
 }
@@ -120,6 +129,8 @@ Player::Player()
 	isDashAndJump = false;
 	isDown = false;
 	isShooting = false;
+	isLockin = false;
+	lastForward = true;
 	speed = 1;
 	CreateImage();
 }
@@ -144,6 +155,8 @@ Player::Player(int x, int y)
 	isDashAndJump = false;
 	isDown = false;
 	isShooting = false;
+	isLockin = false;
+	lastForward = true;
 	speed = 1;
 	CreateImage();
 }
@@ -177,16 +190,16 @@ void Player::Draw(HDC& hdc)
 		{
 			currAnimCnt++;
 			lastTime = clock();
-		}
 
-		if (currAnimMax <= currAnimCnt)
-		{
-			currAnimCnt = 0;
-			if (state == EPlayerState::DownStartRight)
-				state = EPlayerState::DownIdleRight;
-			else if (state == EPlayerState::DownStartLeft)
-				state = EPlayerState::DownIdleLeft;
-			currAnimMax = playerImg[(int)state].size();
+			if (currAnimMax <= currAnimCnt)
+			{
+				currAnimCnt = 0;
+				if (state == EPlayerState::DownStartRight)
+					state = EPlayerState::DownIdleRight;
+				else if (state == EPlayerState::DownStartLeft)
+					state = EPlayerState::DownIdleLeft;
+				currAnimMax = playerImg[(int)state].size();
+			}
 		}
 
 		collider.left = x - playerImg[(int)state][currAnimCnt].GetWidth() / 2;
@@ -394,50 +407,73 @@ void Player::SetState(EPlayerWorldState state, EWorldSpriteY spriteY)
 
 void Player::SetState(EPlayerState state)
 {
+	EPlayerState temp = this->state;
 	if (!isJumping && !isDashing && !isDown && !isShooting)
 	{
-		this->state = state;
+		temp = state;
 	}
 
-	if (isShooting)
+	if (isShooting && !isJumping && !isDashing)
 	{
 		switch (dir.y)
 		{
 		case -1:
-			if (isLockin)
-				this->state = EPlayerState::ShootingUp;
-			else this->state = EPlayerState::ShootingRunRightUp;
+			if (dir.x == 1) temp = EPlayerState::ShootingRunRightUp;
+			else if (dir.x == -1) temp = EPlayerState::ShootingRunLeftUp;
+			else temp = EPlayerState::ShootingUp;
 			break;
 		case 0:
-			if (isLockin)
-				this->state = EPlayerState::ShootingRight;
-			else this->state = EPlayerState::ShootingRunRight;
+			if (dir.x == 1) temp = EPlayerState::ShootingRunRight;
+			else if (dir.x == -1) temp = EPlayerState::ShootingRunLeft;
+			else
+			{
+				if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::ShootingLeft;
+				else temp = EPlayerState::ShootingRight;
+			}
 			break;
 		case 1:
-			if (isLockin)
-				this->state = EPlayerState::ShootingDown;
-			else this->state = EPlayerState::ShootingRunRight;
+			if (dir.x == 1) temp = EPlayerState::ShootingRunRight;
+			else if (dir.x == -1) temp = EPlayerState::ShootingRunLeft;
+			else
+			{
+				if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::ShootingLeft;
+				else temp = EPlayerState::ShootingRight;
+			}
 			break;
 		}
 	}
 
-	else if (isLockin)
+	if (isLockin && !isJumping && !isDashing)
 	{
 		switch (dir.y)
 		{
 		case -1:
-			if (dir.x == 1) this->state = EPlayerState::AimRightUp;
-			else this->state = EPlayerState::AimUp;
+			if (dir.x == 1) temp = EPlayerState::AimRightUp;
+			else if (dir.x == -1) temp = EPlayerState::AimLeftUp;
+			else temp = EPlayerState::AimUp;
 			break;
 		case 0:
-			this->state = EPlayerState::AimRight;
+			if (dir.x == -1) temp = EPlayerState::AimLeft;
+			else if (dir.x == 1) temp = EPlayerState::AimRight;
+			else
+			{
+				if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::AimLeft;
+				else temp = EPlayerState::AimRight;
+			}
 			break;
 		case 1:
-			if (dir.x == 1) 
-				this->state = EPlayerState::AimRightDown;
-			else this->state = EPlayerState::AimDown;
+			if (dir.x == 1) temp = EPlayerState::AimRightDown;
+			else if (dir.x == -1) temp = EPlayerState::AimLeftDown;
+			else temp = EPlayerState::AimDown;
 			break;
 		}
+	}
+
+	if (temp != this->state)
+	{
+		currAnimCnt = 0;
+		this->state = temp;
+		currAnimMax = playerImg[(int)state].size();
 	}
 }
 
@@ -574,6 +610,16 @@ bool Player::GetIsLockin()
 void Player::SetIsLockin(bool isLockin)
 {
 	this->isLockin = isLockin;
+}
+
+bool Player::GetLastForward()
+{
+	return lastForward;
+}
+
+void Player::SetLastForward(bool lastForward)
+{
+	this->lastForward = lastForward;
 }
 
 void Player::SetStage()
