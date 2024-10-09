@@ -565,11 +565,13 @@ void Player::SetIsJumping(bool isJumping)
 	this->isJumping = isJumping;
 	if (isJumping)
 		curJumpPower = JumpMaxPower;
-	currAnimCnt = 0;
+
 	if (dir.x == -1)
 		state = EPlayerState::LeftJump;
 	else 
 		state = EPlayerState::RightJump;
+	currAnimCnt = 0;
+	currAnimMax = playerImg[(int)state].size();
 }
 
 bool Player::GetIsDashing()
@@ -582,12 +584,14 @@ void Player::SetIsDashing(bool isDashing)
 	if (isDashAndJump) return;
 
 	this->isDashing = isDashing;
-	currAnimCnt = 0;
 	if (dir.x == -1)
 		state = EPlayerState::LeftDash;
 	else state = EPlayerState::RightDash;
 	speed = DASH_SPEED;
 	startDashTime = clock();
+
+	currAnimCnt = 0;
+	currAnimMax = playerImg[(int)state].size();
 }
 
 bool Player::GetIsDown()
@@ -601,13 +605,15 @@ void Player::SetIsDown(bool isDown)
 		return;
 
 	this->isDown = isDown;
-	currAnimCnt = 0;
 	if (isDown)
 	{
 		if (dir.x == -1)
 			state = EPlayerState::DownStartLeft;
 		else state = EPlayerState::DownStartRight;
 	}
+
+	currAnimCnt = 0;
+	currAnimMax = playerImg[(int)state].size();
 }
 
 bool Player::GetIsShooting()
@@ -624,6 +630,7 @@ void Player::SetIsShooting(bool isShooting)
 	this->isShooting = isShooting;
 
 	currAnimCnt = 0;
+	currAnimMax = playerImg[(int)state].size();
 }
 
 bool Player::GetIsLockin()
@@ -636,6 +643,8 @@ void Player::SetIsLockin(bool isLockin)
 	if (!ReadyToSetState())
 		return;
 	this->isLockin = isLockin;
+	currAnimCnt = 0;
+	currAnimMax = playerImg[(int)state].size();
 }
 
 bool Player::GetLastForward()
