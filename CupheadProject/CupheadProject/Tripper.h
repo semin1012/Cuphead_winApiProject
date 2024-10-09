@@ -8,7 +8,6 @@ class Tripper
 {
 	CImage				image;
 	CImage				pressKeyImg;
-	Collider			collider;
 	Collider			keyCollider;
 	RECT*				rectView;
 
@@ -39,7 +38,6 @@ public:
 	void		CreateImage();
 	void		SetRectView(RECT& rectView);
 
-	bool		Collided(Collider* collider, int deltaX, int deltaY);
 	bool		CollidedKey(Collider* collider, int deltaX, int deltaY);
 
 	int			GetXPos();
@@ -60,7 +58,6 @@ public:
 	int			GetStage();
 	void		SetStage(int stage);
 
-	Collider*	GetCollider();
 	Collider*	GetKeyCollider();
 	void		SetCollidedPlayer(bool collided);
 	bool		GetCollidedPlayer();

@@ -176,8 +176,6 @@ Player::~Player()
 
 void Player::Draw(HDC& hdc)
 {
-	HDC hMemDC;
-	HBITMAP hOldBitmap;
 	int bx, by;
 	clock_t curTime = clock();
 
@@ -186,7 +184,7 @@ void Player::Draw(HDC& hdc)
 	{
 		currAnimMax = playerImg[(int)state].size();
 
-		if (curTime - lastTime > 33)
+		if (curTime - lastTime > 50)
 		{
 			currAnimCnt++;
 			lastTime = clock();
@@ -364,10 +362,7 @@ void Player::Update()
 		}
 	}
 
-	if (isShooting)
-	{
-
-	}
+	currAnimMax = playerImg[(int)state].size();
 }
 
 Collider* Player::GetCollider()
@@ -413,7 +408,7 @@ void Player::SetState(EPlayerState state)
 		temp = state;
 	}
 
-	if (isShooting && !isJumping && !isDashing)
+	if (!isLockin && isShooting && !isJumping && !isDashing)
 	{
 		switch (dir.y)
 		{
@@ -448,12 +443,28 @@ void Player::SetState(EPlayerState state)
 		switch (dir.y)
 		{
 		case -1:
-			if (dir.x == 1) temp = EPlayerState::AimRightUp;
+			if (isShooting)
+			{
+				if (dir.x == 1) temp = EPlayerState::ShootingRightUp;
+				else if (dir.x == -1) temp = EPlayerState::ShootingLeftUp;
+				else temp = EPlayerState::ShootingUp;
+			}
+			else if (dir.x == 1) temp = EPlayerState::AimRightUp;
 			else if (dir.x == -1) temp = EPlayerState::AimLeftUp;
 			else temp = EPlayerState::AimUp;
 			break;
 		case 0:
-			if (dir.x == -1) temp = EPlayerState::AimLeft;
+			if (isShooting)
+			{
+				if (dir.x == -1) temp = EPlayerState::ShootingLeft;
+				else if (dir.x == 1) temp = EPlayerState::ShootingRight;
+				else
+				{
+					if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::ShootingLeft;
+					else temp = EPlayerState::ShootingRight;
+				}
+			}
+			else if (dir.x == -1) temp = EPlayerState::AimLeft;
 			else if (dir.x == 1) temp = EPlayerState::AimRight;
 			else
 			{
@@ -462,7 +473,13 @@ void Player::SetState(EPlayerState state)
 			}
 			break;
 		case 1:
-			if (dir.x == 1) temp = EPlayerState::AimRightDown;
+			if (isShooting)
+			{
+				if (dir.x == 1) temp = EPlayerState::ShootingRightDown;
+				else if (dir.x == -1) temp = EPlayerState::ShootingLeftDown;
+				else temp = EPlayerState::ShootingDown;
+			}
+			else if (dir.x == 1) temp = EPlayerState::AimRightDown;
 			else if (dir.x == -1) temp = EPlayerState::AimLeftDown;
 			else temp = EPlayerState::AimDown;
 			break;
@@ -473,8 +490,9 @@ void Player::SetState(EPlayerState state)
 	{
 		currAnimCnt = 0;
 		this->state = temp;
-		currAnimMax = playerImg[(int)state].size();
 	}
+
+	currAnimMax = playerImg[(int)state].size();
 }
 
 void Player::SetStateOnce(EPlayerState state)
@@ -543,8 +561,10 @@ bool Player::GetIsJumping()
 
 void Player::SetIsJumping(bool isJumping)
 {
-	curJumpPower = JumpMaxPower;
+	ReadyToSetState();
 	this->isJumping = isJumping;
+	if (isJumping)
+		curJumpPower = JumpMaxPower;
 	currAnimCnt = 0;
 	if (dir.x == -1)
 		state = EPlayerState::LeftJump;
@@ -577,7 +597,7 @@ bool Player::GetIsDown()
 
 void Player::SetIsDown(bool isDown)
 {
-	if (isJumping || isDashAndJump || isDashing)
+	if (!ReadyToSetState())
 		return;
 
 	this->isDown = isDown;
@@ -597,6 +617,10 @@ bool Player::GetIsShooting()
 
 void Player::SetIsShooting(bool isShooting)
 {
+	if (isJumping) return;
+	if (isDashAndJump) return;
+	if (isDashing) return;
+
 	this->isShooting = isShooting;
 
 	currAnimCnt = 0;
@@ -609,6 +633,8 @@ bool Player::GetIsLockin()
 
 void Player::SetIsLockin(bool isLockin)
 {
+	if (!ReadyToSetState())
+		return;
 	this->isLockin = isLockin;
 }
 
@@ -620,6 +646,17 @@ bool Player::GetLastForward()
 void Player::SetLastForward(bool lastForward)
 {
 	this->lastForward = lastForward;
+}
+
+bool Player::ReadyToSetState()
+{
+	if (isJumping || isDashAndJump)
+		return false;
+	isDown = false;
+	isDashing = false;
+	isShooting = false;
+	isLockin = false;
+	return true;
 }
 
 void Player::SetStage()

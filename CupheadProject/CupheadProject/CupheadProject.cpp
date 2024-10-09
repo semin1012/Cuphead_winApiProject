@@ -366,6 +366,6 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
     if (gameMgr->GetIsWorld())
         moveDistance /= 2;
 
-    gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance) * abs(1 - gameMgr->GetPlayer()->GetIsLockin()), 
+    gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance) * abs(1 - gameMgr->GetPlayer()->GetIsLockin()) * abs(1 - gameMgr->GetPlayer()->GetIsDown()),
         (gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * moveDistance) * gameMgr->GetIsWorld());
 }

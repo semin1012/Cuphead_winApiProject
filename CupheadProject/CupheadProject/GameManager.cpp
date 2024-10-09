@@ -47,11 +47,7 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'Z':
 			case 'z':
 				if (!player->GetIsJumping() && !player->GetIsDashing())
-				{
-					if (player->GetIsShooting())
-						player->SetIsShooting(false);
 					player->SetIsJumping(true);
-				}
 				break;
 			case VK_SHIFT:
 				if (!player->GetIsDashing() && player->dir.x != 0)
@@ -59,12 +55,20 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 			case VK_DOWN:
 				if (!player->GetIsDown() && !player->GetIsLockin())
+				{
+					if (player->GetIsShooting())
+						player->SetIsShooting(false);
 					player->SetIsDown(true);
+				}
 				break;
 			case 'X':
 			case 'x':
-				if (!player->GetIsShooting() && !player->GetIsJumping())
+				if (!player->GetIsShooting() && !player->GetIsJumping() && !player->GetIsDashing())
+				{
+					if (player->GetIsDown())
+						player->SetIsDown(false);
 					player->SetIsShooting(true);
+				}
 				break;
 			case 'C':
 			case 'c':
@@ -149,9 +153,7 @@ void GameManager::Draw(HDC& hdc)
 
 		if (background->GetTripper() != nullptr)
 		{
-			Collider* collider = background->GetTripper()->GetCollider();
-			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
-			collider = background->GetTripper()->GetKeyCollider();
+			Collider* collider = background->GetTripper()->GetKeyCollider();
 			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
 		}
 
@@ -237,8 +239,6 @@ void GameManager::SetCameraPos(int x, int y)
 				background->GetTripper()->SetCollidedPlayer(true);
 			else background->GetTripper()->SetCollidedPlayer(false);
 
-			if (background->GetTripper()->Collided(player->GetCollider(), deltaX, deltaY))
-				return;
 		}
 #pragma region Check player camera
 

@@ -153,6 +153,8 @@ public:
 	bool		GetLastForward();
 	void		SetLastForward(bool lastForward);
 
+	bool		ReadyToSetState();
+
 	void		SetStage();
 	
 	EPlayerWorldState	GetWorldState();

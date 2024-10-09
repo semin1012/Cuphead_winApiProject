@@ -62,15 +62,10 @@ void Tripper::Draw(HDC& hdc)
 
 	image.Draw(hdc, TRIPPER_X_POS + camera_x, TRIPPER_Y_POS + camera_y, unitX, unitY, animX, 0, unitX, unitY);
 
-	collider.left	= TRIPPER_X_POS + 45;
-	collider.right	= TRIPPER_X_POS - 45 + width;
-	collider.top	= TRIPPER_Y_POS + 45;
-	collider.bottom = TRIPPER_Y_POS - 45 + height;
-
-	keyCollider.left = collider.left	 - 60;
-	keyCollider.right = collider.right	 + 60;
-	keyCollider.top = collider.top		 - 60;
-	keyCollider.bottom = collider.bottom + 60;
+	keyCollider.left = TRIPPER_X_POS + 45 - 60;
+	keyCollider.right = TRIPPER_X_POS - 45 + width + 60;
+	keyCollider.top = TRIPPER_Y_POS + 45 - 60;
+	keyCollider.bottom = TRIPPER_Y_POS - 45 + height + 60;
 
 	if (isCollidedPlayer)
 		pressKeyImg.Draw(hdc, WINDOWS_WIDTH / 2 - pressKeyImg.GetWidth() / 2, 100, pressKeyImg.GetWidth(), pressKeyImg.GetHeight());
@@ -87,20 +82,6 @@ void Tripper::CreateImage()
 void Tripper::SetRectView(RECT& rectView)
 {
 	this->rectView = &rectView;
-}
-
-bool Tripper::Collided(Collider* collider, int deltaX, int deltaY)
-{
-	Collider temp = *collider;
-	temp.left -= deltaX - 1;
-	temp.right -= deltaX + 1;
-	temp.top -= deltaY - 1;
-	temp.bottom -= deltaY + 1;
-
-	if (temp.IsOverlaps(this->collider))
-		return true;
-
-	return false;
 }
 
 bool Tripper::CollidedKey(Collider* collider, int deltaX, int deltaY)
@@ -191,11 +172,6 @@ int Tripper::GetStage()
 void Tripper::SetStage(int stage)
 {
 	this->stage = stage;
-}
-
-Collider* Tripper::GetCollider()
-{
-	return &collider;
 }
 
 Collider* Tripper::GetKeyCollider()
