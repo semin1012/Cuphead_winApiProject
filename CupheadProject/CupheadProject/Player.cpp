@@ -26,8 +26,12 @@ void Player::CreateImage()
 	// dash
 	_tcscpy(path, L"../Resource/Image/Cuphead/Dash/cuphead_dash_000");
 	ParsingToImagePath(EPlayerState::RightDash, 8, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Dash/cuphead_dash_air_000");
+	ParsingToImagePath(EPlayerState::RightAirDash, 8, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Dash/R_cuphead_dash_000");
 	ParsingToImagePath(EPlayerState::LeftDash, 8, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Dash/R_cuphead_dash_air_000");
+	ParsingToImagePath(EPlayerState::LeftAirDash, 8, path, 1);
 	// down
 	_tcscpy(path, L"../Resource/Image/Cuphead/Down/cuphead_duck_000");
 	ParsingToImagePath(EPlayerState::DownStartRight, 7, path, 1);
@@ -81,8 +85,8 @@ void Player::CreateImage()
 	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/cuphead_aim_down_000");
 	ParsingToImagePath(EPlayerState::AimDown, 5, path, 1);
 
-	currAnimMax = playerImg[(int)EPlayerState::World].size();
-	currAnimCnt = 0;
+	curAnimMax = playerImg[(int)EPlayerState::World].size();
+	curAnimCnt = 0;
 }
 
 // path에 startNum부터 startNum + spriteSize까지의 숫자를 이름으로 해서 Load하는 함수, 기본이 png 파일임
@@ -119,7 +123,7 @@ Player::Player()
 	collider.top = 0;
 	collider.right = 0;
 	collider.bottom = 0;
-	currAnimCnt = 0;
+	curAnimCnt = 0;
 	inWorld = true;
 	camera_x = WORLD_START_POINT_X;
 	camera_y = WORLD_START_POINT_Y;
@@ -143,7 +147,7 @@ Player::Player(int x, int y)
 	collider.top = 0;
 	collider.right = 0;
 	collider.bottom = 0;
-	currAnimCnt = 0;
+	curAnimCnt = 0;
 	this->x = x; 
 	this->y = y;
 	inWorld = true;
@@ -182,30 +186,30 @@ void Player::Draw(HDC& hdc)
 	// 월드가 아니라면
 	if (!inWorld)
 	{
-		currAnimMax = playerImg[(int)state].size();
+		curAnimMax = playerImg[(int)state].size();
 
 		if (curTime - lastTime > 50)
 		{
-			currAnimCnt++;
+			curAnimCnt++;
 			lastTime = clock();
 
-			if (currAnimMax <= currAnimCnt)
+			if (curAnimMax <= curAnimCnt)
 			{
-				currAnimCnt = 0;
+				curAnimCnt = 0;
 				if (state == EPlayerState::DownStartRight)
 					state = EPlayerState::DownIdleRight;
 				else if (state == EPlayerState::DownStartLeft)
 					state = EPlayerState::DownIdleLeft;
-				currAnimMax = playerImg[(int)state].size();
+				curAnimMax = playerImg[(int)state].size();
 			}
 		}
 
-		collider.left = x - playerImg[(int)state][currAnimCnt].GetWidth() / 2;
-		collider.top = y - playerImg[(int)state][currAnimCnt].GetHeight();
-		collider.right = x + playerImg[(int)state][currAnimCnt].GetWidth() / 2;
+		collider.left = x - playerImg[(int)state][curAnimCnt].GetWidth() / 2;
+		collider.top = y - playerImg[(int)state][curAnimCnt].GetHeight();
+		collider.right = x + playerImg[(int)state][curAnimCnt].GetWidth() / 2;
 		collider.bottom = y;
 
-		playerImg[(int)state][currAnimCnt].Draw(hdc, collider.left, collider.top);
+		playerImg[(int)state][curAnimCnt].Draw(hdc, collider.left, collider.top);
 	}
 
 	// 월드라면
@@ -222,11 +226,11 @@ void Player::Draw(HDC& hdc)
 		{
 			if (curTime - lastTime > 50)
 			{
-				currAnimMax = (int)EPlayerWorldState::Idle;
-				currAnimCnt++;
-				if (currAnimCnt >= currAnimMax)
+				curAnimMax = (int)EPlayerWorldState::Idle;
+				curAnimCnt++;
+				if (curAnimCnt >= curAnimMax)
 				{
-					currAnimCnt = 0;
+					curAnimCnt = 0;
 				}
 				lastTime = clock();
 			}
@@ -238,33 +242,33 @@ void Player::Draw(HDC& hdc)
 			{
 				if (dir.x == 1)
 				{
-					currAnimMax = (int)worldState;
-					currAnimCnt++;
-					if (currAnimCnt >= currAnimMax)
-						currAnimCnt = 4;
+					curAnimMax = (int)worldState;
+					curAnimCnt++;
+					if (curAnimCnt >= curAnimMax)
+						curAnimCnt = 4;
 				}
 				else if (dir.x == 0)
 				{
-					currAnimMax = (int)worldState;
-					currAnimCnt++;
+					curAnimMax = (int)worldState;
+					curAnimCnt++;
 					if (dir.y == 1)
 					{
-						if (currAnimCnt >= currAnimMax)
-							currAnimCnt = 0;
+						if (curAnimCnt >= curAnimMax)
+							curAnimCnt = 0;
 					}
 					if (dir.y == -1)
 					{
-						if (currAnimCnt >= currAnimMax)
-							currAnimCnt = 4;
+						if (curAnimCnt >= curAnimMax)
+							curAnimCnt = 4;
 					}
 				}
 				else
 				{
-					currAnimMax = WORLD_SPRITE_SIZE_X - 4;
-					currAnimCnt++;
-					if (currAnimCnt >= currAnimMax)
+					curAnimMax = WORLD_SPRITE_SIZE_X - 4;
+					curAnimCnt++;
+					if (curAnimCnt >= curAnimMax)
 					{
-						currAnimCnt = (WORLD_SPRITE_SIZE_X - (int)worldState);
+						curAnimCnt = (WORLD_SPRITE_SIZE_X - (int)worldState);
 					}
 				}
 				lastTime = clock();
@@ -273,7 +277,7 @@ void Player::Draw(HDC& hdc)
 		}
 
 
-		int animX = unitX * currAnimCnt;
+		int animX = unitX * curAnimCnt;
 		int animY = unitY * (int)worldSpriteY;
 		if (dir.x == -1)
 			animY = unitY * ((int)worldSpriteY + WORLD_SPRITE_SIZE_Y);
@@ -298,7 +302,11 @@ void Player::Update()
 			y -= curJumpPower;
 			curJumpPower -= 5;
 		}
-		else isDashAndJump = true;
+		else
+		{
+			if (!isDashAndJump) 
+				isDashAndJump = true;
+		}
 		switch (dir.x)
 		{
 		case -1:
@@ -337,10 +345,14 @@ void Player::Update()
 		switch (dir.x)
 		{
 		case 1:
-			state = EPlayerState::RightDash;
+			if (isDashAndJump)
+				state = EPlayerState::RightAirDash;
+			else state = EPlayerState::RightDash;
 			break;
 		case -1:
-			state = EPlayerState::LeftDash;
+			if (isDashAndJump)
+				state = EPlayerState::LeftAirDash;
+			else state = EPlayerState::LeftDash;
 			break;
 		}
 		if (curTime - startDashTime > 350)
@@ -362,7 +374,7 @@ void Player::Update()
 		}
 	}
 
-	currAnimMax = playerImg[(int)state].size();
+	curAnimMax = playerImg[(int)state].size();
 }
 
 Collider* Player::GetCollider()
@@ -488,11 +500,11 @@ void Player::SetState(EPlayerState state)
 
 	if (temp != this->state)
 	{
-		currAnimCnt = 0;
+		curAnimCnt = 0;
 		this->state = temp;
 	}
 
-	currAnimMax = playerImg[(int)state].size();
+	curAnimMax = playerImg[(int)state].size();
 }
 
 void Player::SetStateOnce(EPlayerState state)
@@ -507,7 +519,7 @@ void Player::SetInWorld(bool isWorld)
 		state = EPlayerState::World;
 	else
 		state = EPlayerState::Idle;
-	currAnimCnt = 0;
+	curAnimCnt = 0;
 }
 
 void Player::Move(int x, int y)
@@ -570,8 +582,8 @@ void Player::SetIsJumping(bool isJumping)
 		state = EPlayerState::LeftJump;
 	else 
 		state = EPlayerState::RightJump;
-	currAnimCnt = 0;
-	currAnimMax = playerImg[(int)state].size();
+	curAnimCnt = 0;
+	curAnimMax = playerImg[(int)state].size();
 }
 
 bool Player::GetIsDashing()
@@ -590,8 +602,8 @@ void Player::SetIsDashing(bool isDashing)
 	speed = DASH_SPEED;
 	startDashTime = clock();
 
-	currAnimCnt = 0;
-	currAnimMax = playerImg[(int)state].size();
+	curAnimCnt = 0;
+	curAnimMax = playerImg[(int)state].size();
 }
 
 bool Player::GetIsDown()
@@ -612,8 +624,8 @@ void Player::SetIsDown(bool isDown)
 		else state = EPlayerState::DownStartRight;
 	}
 
-	currAnimCnt = 0;
-	currAnimMax = playerImg[(int)state].size();
+	curAnimCnt = 0;
+	curAnimMax = playerImg[(int)state].size();
 }
 
 bool Player::GetIsShooting()
@@ -629,8 +641,8 @@ void Player::SetIsShooting(bool isShooting)
 
 	this->isShooting = isShooting;
 
-	currAnimCnt = 0;
-	currAnimMax = playerImg[(int)state].size();
+	curAnimCnt = 0;
+	curAnimMax = playerImg[(int)state].size();
 }
 
 bool Player::GetIsLockin()
@@ -643,8 +655,8 @@ void Player::SetIsLockin(bool isLockin)
 	if (!ReadyToSetState())
 		return;
 	this->isLockin = isLockin;
-	currAnimCnt = 0;
-	currAnimMax = playerImg[(int)state].size();
+	curAnimCnt = 0;
+	curAnimMax = playerImg[(int)state].size();
 }
 
 bool Player::GetLastForward()

@@ -21,7 +21,9 @@ enum class EPlayerState
 	RightJump,
 	LeftJump,
 	RightDash,
+	RightAirDash,
 	LeftDash,
+	LeftAirDash,
 	DownStartRight,
 	DownIdleRight,
 	DownStartLeft,
@@ -81,8 +83,8 @@ private:
 	int						y;
 	int						camera_x;
 	int						camera_y;
-	int						currAnimMax;
-	int						currAnimCnt;
+	int						curAnimMax;
+	int						curAnimCnt;
 	clock_t					lastTime;
 	bool					inWorld;
 
