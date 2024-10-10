@@ -460,7 +460,7 @@ void GameManager::SetStage(int stage)
 	camera_y = 0;
 	SetCameraPos(0, 0);
 
-	Bullet* bullet = new Bullet(150, 100, {0, 0});
+	Bullet* bullet = new Bullet(150, 100, {1, 0});
 	bullets.push_back(bullet);
 
 	player->SetStage();
@@ -511,7 +511,6 @@ bool GameManager::CollidedPlayer(Collider* collider, int deltaX, int deltaY)
 
 	if (temp.IsOverlaps(*collider))
 		return true;
-
 	return false;
 }
 
@@ -529,7 +528,10 @@ void GameManager::Gdi_Draw(HDC hdc)
 	if (!bullets.empty())
 	{
 		for (auto bullet : bullets)
-			bullet->Draw(hdc, graphics);
+		{
+			if (bullet->GetisActive())
+				bullet->Draw(hdc, graphics);
+		}
 	}
 }
 

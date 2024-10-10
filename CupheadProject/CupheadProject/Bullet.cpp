@@ -3,17 +3,28 @@
 
 Bullet::Bullet(int x, int y, POINT dir) : x(x), y(y), dir(dir)
 {
-	speed = 1.0f;
+	speed = 35.0f;
 	curAnimCnt = 0;
 	curAnimMax = 0;
+	spawnAnimCnt = 0;
 	createTime = clock();
 	animLastTime = clock();
-	state = EBulletState::Spawn;
+	state = EBulletState::Loop;
+	isActive = true;
 	CreateImage();
 }
 
 Bullet::~Bullet()
 {
+	for (auto it = images.begin(); it != images.end(); it++)
+	{
+		for (auto img : *it)
+		{
+			delete (img);
+		}
+	}
+
+	images.clear();
 }
 
 void Bullet::Draw(HDC& hdc, Graphics& graphics)
@@ -21,14 +32,30 @@ void Bullet::Draw(HDC& hdc, Graphics& graphics)
 	clock_t curTime = clock();
 	curAnimMax = images[(int)state].size();
 
+	if (curTime - createTime > 1000)
+		isActive = false;
+
 	if (curTime - animLastTime > 33)
 	{
 		curAnimCnt++;
+		if (spawnAnimCnt >= 0)
+			spawnAnimCnt++;
 
 		if (curAnimCnt >= curAnimMax)
 			curAnimCnt = 0;
 
+		if (spawnAnimCnt >= images[(int)EBulletState::Spawn].size())
+			spawnAnimCnt = -1;
+
 		animLastTime = clock();
+	}
+
+	if (spawnAnimCnt != -1)
+	{
+		int spawnWidth = images[(int)EBulletState::Spawn][spawnAnimCnt]->GetWidth();
+		int spawnHeight = images[(int)EBulletState::Spawn][spawnAnimCnt]->GetHeight();
+		Collider spawnCollider = Collider(x - spawnWidth / 2, y - spawnHeight / 2, x + spawnWidth, y + spawnHeight / 2);
+		graphics.DrawImage(images[(int)EBulletState::Spawn][spawnAnimCnt], spawnCollider.left, spawnCollider.top, spawnWidth, spawnHeight);
 	}
 
 	int width = images[(int)state][curAnimCnt]->GetWidth();
@@ -40,10 +67,9 @@ void Bullet::Draw(HDC& hdc, Graphics& graphics)
 	collider.bottom = y + height / 2;
 
 	graphics.DrawImage(images[(int)state][curAnimCnt], collider.left, collider.top, width, height);
-	/*images[(int)state][curAnimCnt]->DrawImage();
 
-	images[(int)state][curAnimCnt].TransparentBlt(hdc, collider.left, collider.top, width, height, RGB(255,255,255));
-	images[(int)state][curAnimCnt].Draw(hdc, collider.left, collider.top);*/
+	x = x + dir.x * speed;
+	y = y + dir.y * speed;
 }
 
 void Bullet::CreateImage()
@@ -52,6 +78,10 @@ void Bullet::CreateImage()
 
 	TCHAR path[128] = L"../Resource/Image/Bullet/cuphead_bullet_spawn0";
 	ParsingToImagePath(EBulletState::Spawn, 4, path, 1);
+	_tcscpy(path, L"../Resource/Image/Bullet/cuphead_bullet0");
+	ParsingToImagePath(EBulletState::Loop, 8, path, 1);
+	_tcscpy(path, L"../Resource/Image/Bullet/cuphead_bullet_death0");
+	ParsingToImagePath(EBulletState::Death, 6, path, 1);
 }
 
 void Bullet::ParsingToImagePath(EBulletState state, int spriteSize, TCHAR* path, int startNum)
@@ -70,12 +100,5 @@ void Bullet::ParsingToImagePath(EBulletState state, int spriteSize, TCHAR* path,
 
 		Image* pImg = new Image(temp);
 		images[(int)state][i] = pImg;
-
-		/*if (images[(int)state][i] == NULL)
-		{
-			DWORD dwError = GetLastError();
-			_tcscat(temp, L" 파일을 열 수 없습니다.");
-			MessageBox(NULL, temp, _T("에러"), MB_OK);
-		}*/
 	}
 }

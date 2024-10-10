@@ -16,16 +16,18 @@ enum class EBulletState
 class Bullet
 {
 	std::vector<std::vector<Image*>> images;
-	const float			lifeTime = 2.0f;
-	int					x;
-	int					y;
-	int					speed;
-	int					curAnimCnt;
-	int					curAnimMax;
-	POINT				dir;
-	clock_t				createTime;
-	clock_t				animLastTime;
-	EBulletState		state;
+	const float				lifeTime = 2.0f;
+	int						x;
+	int						y;
+	int						speed;
+	int						curAnimCnt;
+	int						curAnimMax;
+	int						spawnAnimCnt;
+	bool					isActive;
+	POINT					dir;
+	clock_t					createTime;
+	clock_t					animLastTime;
+	EBulletState			state;
 	Collider				collider;
 
 public:
@@ -35,5 +37,7 @@ public:
 	void		Draw(HDC& hdc, Graphics& graphics);
 	void		CreateImage();
 	void		ParsingToImagePath(EBulletState fireBall, int spriteSize, TCHAR* path, int startNum);
+
+	bool		GetisActive()		{ return isActive; }
 };
 
