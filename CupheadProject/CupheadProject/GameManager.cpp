@@ -460,9 +460,6 @@ void GameManager::SetStage(int stage)
 	camera_y = 0;
 	SetCameraPos(0, 0);
 
-	Bullet* bullet = new Bullet(150, 100, {1, 0});
-	bullets.push_back(bullet);
-
 	player->SetStage();
 }
 
@@ -525,9 +522,9 @@ void GameManager::Gdi_Draw(HDC hdc)
 {
 	Graphics graphics(hdc);
 
-	if (!bullets.empty())
+	if (player != nullptr && !player->GetBullets().empty())
 	{
-		for (auto bullet : bullets)
+		for (auto bullet : player->GetBullets())
 		{
 			if (bullet->GetisActive())
 				bullet->Draw(hdc, graphics);

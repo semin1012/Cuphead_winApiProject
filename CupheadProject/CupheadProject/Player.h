@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "framework.h"
+#include "Bullet.h"
 #include "Collider.h"
 using namespace std;
 #define PLAYER_IDEL_SIZE 5
@@ -11,6 +12,8 @@ using namespace std;
 
 #define GROUND_POSITION_Y 700
 #define DASH_SPEED (3.0)
+
+#define BULLET_MAX_COUNT 50
 
 enum class EPlayerState
 {
@@ -97,6 +100,8 @@ enum class EWorldSpriteY
 class Player
 {
 private:
+	std::vector<Bullet*>	bullets;
+
 	int						x;
 	int						y;
 	int						camera_x;
@@ -132,6 +137,7 @@ private:
 
 public:
 	POINT					dir = { 0, 0 };
+	POINT					forwardDir = { 0, 0 };
 
 private:
 	void		CreateImage();
@@ -185,5 +191,7 @@ public:
 	
 	EPlayerWorldState	GetWorldState()						{ return worldState; }
 	EPlayerState		GetPlayerState()					{ return state; }
+
+	vector<Bullet*>		GetBullets()						{ return bullets; }
 };
 

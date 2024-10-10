@@ -310,14 +310,30 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
         gameMgr->DragAndMoveWorldMap(hWnd);
 
     if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+    {
+        if (gameMgr->GetPlayer()->GetIsDown())
+            gameMgr->GetPlayer()->forwardDir.x = -1;
         gameMgr->GetPlayer()->dir.x = -1;
+    }
     if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+    {
+        if (gameMgr->GetPlayer()->GetIsDown())
+            gameMgr->GetPlayer()->forwardDir.x = 1;
         gameMgr->GetPlayer()->dir.x = 1;
+    }
 
     if (GetAsyncKeyState(VK_UP) & 0x8000)
+    {
+        if (gameMgr->GetPlayer()->GetIsDown())
+            gameMgr->GetPlayer()->forwardDir.y = -1;
         gameMgr->GetPlayer()->dir.y = -1;
+    }
     if (GetAsyncKeyState(VK_DOWN) & 0x8000)
+    {
+        if (gameMgr->GetPlayer()->GetIsDown())
+            gameMgr->GetPlayer()->forwardDir.y = 1;
         gameMgr->GetPlayer()->dir.y = 1;
+    }
 
     if (gameMgr->GetIsWorld())
     {
@@ -375,94 +391,4 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
 
     gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance) * gameMgr->GetPlayer()->CanMoveDirX(),
         (gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * moveDistance) * gameMgr->GetIsWorld());
-}
-
-
-void Gdi_Draw(HDC hdc)
-{
-   
-
-    // : png 출력
-    // : 컬러 키값 빼고 png 출력
-    //Image img2((WCHAR*)L"../images/zero_run.png");
-    //w = img2.GetWidth() / SPRITE_COUNT;
-    //h = img2.GetHeight() / SPRITE_DIRECTION;
-    //int xStart = curFrame * w;
-    //int yStart = 0; // 한쪽 방향
-
-    //ImageAttributes imgAttr0;
-    //imgAttr0.SetColorKey(Color(245, 0, 245), Color(255, 10, 255));  // 블렌드를 해서 색깔 빼줄 수 있음
-    //graphics.DrawImage(&img2, Rect(200, 100, w, h), xStart, yStart, w, h, UnitPixel, &imgAttr0);
-
-    //// :
-    //brush.SetColor(Color(64, 255, 0, 0));
-    //graphics.FillRectangle(&brush, 100, 100, 200, 300);
-
-    //// :
-    //Image* pImg = nullptr;
-    //pImg = Image::FromFile((WCHAR*)L"../images/sigong.png");
-    //int xPos = 300;
-    //int yPos = 200;
-    //if (pImg)
-    //{
-    //    w = pImg->GetWidth();
-    //    h = pImg->GetHeight();
-
-    //    Gdiplus::Matrix mat;
-    //    static int rot = 0;
-    //    mat.RotateAt((rot % 360), Gdiplus::PointF(xPos + ((float)w / 2), yPos + ((float)h / 2)));
-    //    graphics.SetTransform(&mat);
-    //    graphics.DrawImage(pImg, xPos, yPos, w, h);
-    //    rot += 10;
-
-    //    mat.Reset();
-    //    graphics.SetTransform(&mat);
-    //}
-
-    //// : 
-    //ImageAttributes imgAttr;
-    //imgAttr.SetColorKey(Color(245, 0, 245), Color(255, 10, 255));  // 블렌드를 해서 색깔 빼줄 수 있음
-    //yPos = 300;
-
-    //graphics.DrawImage(pImg, Rect(xPos, yPos, w, h), 0, 0, w, h, UnitPixel, &imgAttr);
-
-    //// : 반투명 이미지
-    //if (pImg)
-    //{
-    //    REAL transparency = 0.5f;
-    //    ColorMatrix colorMatrix =
-    //    {
-    //        1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-    //        0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-    //        0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-    //        0.0f, 0.0f, 0.0f, transparency, 0.0f,
-    //        0.0f, 0.0f, transparency, 0.0f, 1.0f
-    //    };
-    //    imgAttr.SetColorMatrix(&colorMatrix);
-    //    xPos = 400;
-
-    //    graphics.DrawImage(pImg, Rect(xPos, yPos, w, h), 0, 0, w, h, UnitPixel, &imgAttr);
-
-
-    //    // : 흑백 이미지
-    //    ColorMatrix colorMatrix2 =
-    //    { // R     G     B      
-    //        0.3f, 0.3f, 0.3f, 0.0f, 0.0f,   // R
-    //        0.6f, 0.6f, 0.6f, 0.0f, 0.0f,   // G
-    //        0.1f, 0.1f, 0.1f, 0.0f, 0.0f,   // B
-    //        0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-    //        0.0f, 0.0f, 0.0f, 0.0f, 1.0f
-    //    };
-    //    imgAttr.SetColorMatrix(&colorMatrix2);
-    //    xPos = 500;
-
-    //    graphics.DrawImage(pImg, Rect(xPos, yPos, w, h), 0, 0, w, h, UnitPixel, &imgAttr);
-
-    //    // : x축 반전
-    //    xPos = 600;
-    //    pImg->RotateFlip(RotateNoneFlipX);
-    //    graphics.DrawImage(pImg, Rect(xPos, yPos, w, h), 0, 0, w, h, UnitPixel, &imgAttr);
-    //}
-
-    //if (pImg) delete pImg;
 }

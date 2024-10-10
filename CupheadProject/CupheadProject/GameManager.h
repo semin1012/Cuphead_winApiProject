@@ -29,7 +29,6 @@ private:
 	bool					isTitle;
 	bool					isStage;
 	int						stage;
-	std::vector<Bullet*>	bullets;
 
 
 	FadeEffect*				fadeEffect;

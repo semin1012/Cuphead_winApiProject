@@ -17,6 +17,7 @@ class Bullet
 {
 	std::vector<std::vector<Image*>> images;
 	const float				lifeTime = 2.0f;
+	POINT					createPos;
 	int						x;
 	int						y;
 	int						speed;
@@ -31,9 +32,11 @@ class Bullet
 	Collider				collider;
 
 public:
+	Bullet();
 	Bullet(int x, int y, POINT dir);
 	~Bullet();
 
+	void		SetBullet(int x, int y, POINT dir);
 	void		Draw(HDC& hdc, Graphics& graphics);
 	void		CreateImage();
 	void		ParsingToImagePath(EBulletState fireBall, int spriteSize, TCHAR* path, int startNum);

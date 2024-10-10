@@ -177,8 +177,14 @@ Player::Player()
 	isLockin = false;
 	isSpecialAttack = false;
 	isSpecialAttackAndJump = false;
-	lastForward = true;
+	lastForward = LAST_FORWARD_IS_RIGHT;
 	speed = 1;
+
+	for (int i = 0; i < BULLET_MAX_COUNT; i++)
+	{
+		Bullet* bullet = new Bullet();
+		bullets.push_back(bullet);
+	}
 	CreateImage();
 }
 
@@ -205,8 +211,14 @@ Player::Player(int x, int y)
 	isLockin = false;
 	isSpecialAttack = false;
 	isSpecialAttackAndJump = false;
-	lastForward = true;
+	lastForward = LAST_FORWARD_IS_RIGHT;
 	speed = 1;
+
+	for (int i = 0; i < BULLET_MAX_COUNT; i++)
+	{
+		Bullet* bullet = new Bullet();
+		bullets.push_back(bullet);
+	}
 	CreateImage();
 }
 
@@ -722,7 +734,83 @@ void Player::SetIsShooting(bool isShooting)
 		}
 	}
 
+
+
 	this->isShooting = isShooting;
+
+	if (isShooting)
+	{
+		if (isDown)
+		{
+			for (auto bullet : bullets)
+			{
+				if (!bullet->GetisActive())
+				{
+					if (dir.x != 0) bullet->SetBullet(x + dir.x * 80, y - 40, { dir.x, 0 });
+					else
+					{
+						if (lastForward == LAST_FORWARD_IS_LEFT) bullet->SetBullet(x - 80, y - 40, { -1, 0 });
+						else bullet->SetBullet(x + 80, y - 40, { 1, 0 });
+					}
+					break;
+				}
+			}
+		}
+
+		else if (isLockin)
+		{
+			for (auto bullet : bullets)
+			{
+				if (!bullet->GetisActive())
+				{
+					if (dir.x == 0)
+					{
+						if (dir.y == -1) bullet->SetBullet(x + 35, y + 120 * dir.y, { dir.x, dir.y });
+						else if (dir.y == 1) bullet->SetBullet(x + 35, y + 10 * dir.y, { dir.x, dir.y });
+						else
+						{
+							if (lastForward == LAST_FORWARD_IS_LEFT) bullet->SetBullet(x - 80, y - 80, { -1, dir.y });
+							else bullet->SetBullet(x + 80, y - 80, { 1, dir.y });
+						}
+					}
+					else
+					{
+						if (dir.y == 0) bullet->SetBullet(x + dir.x * 80, y - 80, dir);
+						else if (dir.y == -1) bullet->SetBullet(x + dir.x * 60, y - 110, dir);
+						else bullet->SetBullet(x + dir.x * 60, y - 20, dir);
+					}
+					break;
+				}
+			}
+		}
+
+		else
+		{
+			for (auto bullet : bullets)
+			{
+				if (!bullet->GetisActive())
+				{
+					if (dir.x == 0)
+					{
+						if (dir.y == -1) bullet->SetBullet(x + 35, y + 120 * dir.y, { dir.x, dir.y });
+						else
+						{
+							if (lastForward == LAST_FORWARD_IS_LEFT) bullet->SetBullet(x - 80, y - 80, { -1, dir.y });
+							else bullet->SetBullet(x + 80, y - 80, { 1, dir.y });
+						}
+					}
+					else
+					{
+						if ( dir.y != 0)
+							bullet->SetBullet(x + dir.x * 80, y + 80 * dir.y, dir);
+						else bullet->SetBullet(x + dir.x * 80, y - 80, dir);
+					}
+					break;
+				}
+			}
+		}
+
+	}
 
 	curAnimCnt = 0;
 	curAnimMax = playerImg[(int)state].size();
