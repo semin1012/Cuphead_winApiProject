@@ -84,6 +84,18 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::AimUp, 5, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/cuphead_aim_down_000");
 	ParsingToImagePath(EPlayerState::AimDown, 5, path, 1);
+	// Special Attack 
+	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_straight_00");
+	ParsingToImagePath(EPlayerState::SCAttackRight, 13, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_diagonal_down_00");
+	ParsingToImagePath(EPlayerState::SCAttackRightDown, 13, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_diagonal_up_00");
+	ParsingToImagePath(EPlayerState::SCAttackRightUp, 13, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_down_00");
+	ParsingToImagePath(EPlayerState::SCAttackDown, 13, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_up_00");
+	ParsingToImagePath(EPlayerState::SCAttackUp, 13, path, 1);
+
 
 	curAnimMax = playerImg[(int)EPlayerState::World].size();
 	curAnimCnt = 0;
@@ -134,6 +146,7 @@ Player::Player()
 	isDown = false;
 	isShooting = false;
 	isLockin = false;
+	isSpecialAttack = false;
 	lastForward = true;
 	speed = 1;
 	CreateImage();
@@ -160,6 +173,7 @@ Player::Player(int x, int y)
 	isDown = false;
 	isShooting = false;
 	isLockin = false;
+	isSpecialAttack = false;
 	lastForward = true;
 	speed = 1;
 	CreateImage();
@@ -355,7 +369,7 @@ void Player::Update()
 			else state = EPlayerState::LeftDash;
 			break;
 		}
-		if (curTime - startDashTime > 350)
+		if (curTime - startChangeStateTime > 350)
 		{
 			isDashing = false;
 			speed = 1.0f;
@@ -371,15 +385,22 @@ void Player::Update()
 				state = EPlayerState::LeftRun;
 				break;
 			}
+			curAnimCnt = 0;
 		}
 	}
 
-	curAnimMax = playerImg[(int)state].size();
-}
+	if (isSpecialAttack)
+	{
+		clock_t curTime = clock();
 
-Collider* Player::GetCollider()
-{
-	return &collider;
+		if (curTime - startChangeStateTime > 550)
+		{
+			state = prevState;
+			isSpecialAttack = false;
+			curAnimCnt = 0;
+		}
+	}
+	curAnimMax = playerImg[(int)state].size();
 }
 
 void Player::SetCameraPos(int x, int y)
@@ -415,12 +436,13 @@ void Player::SetState(EPlayerWorldState state, EWorldSpriteY spriteY)
 void Player::SetState(EPlayerState state)
 {
 	EPlayerState temp = this->state;
-	if (!isJumping && !isDashing && !isDown && !isShooting)
+	if (!isJumping && !isDashing && !isDown && !isShooting && !isSpecialAttack)
 	{
 		temp = state;
 	}
 
-	if (!isLockin && isShooting && !isJumping && !isDashing)
+	// ½´ÆÃ
+	if (isShooting && !isLockin && !isJumping && !isDashing && !isSpecialAttack)
 	{
 		switch (dir.y)
 		{
@@ -450,7 +472,8 @@ void Player::SetState(EPlayerState state)
 		}
 	}
 
-	if (isLockin && !isJumping && !isDashing)
+	// ·ÏÀÎ
+	if (isLockin && !isJumping && !isDashing && !isSpecialAttack)
 	{
 		switch (dir.y)
 		{
@@ -536,24 +559,9 @@ void Player::Move(int x, int y)
 	this->y -= y;
 }
 
-float Player::GetSpeed()
-{
-	return speed;
-}
-
 void Player::SetSpeed(float speed)
 {
 	this->speed = speed;
-}
-
-int Player::GetXPos()
-{
-	return x;
-}
-
-int Player::GetYPos()
-{
-	return y;
 }
 
 void Player::SetXPos(int x)
@@ -564,11 +572,6 @@ void Player::SetXPos(int x)
 void Player::SetYPos(int y)
 {
 	this->y = y;
-}
-
-bool Player::GetIsJumping()
-{
-	return isJumping;
 }
 
 void Player::SetIsJumping(bool isJumping)
@@ -586,29 +589,21 @@ void Player::SetIsJumping(bool isJumping)
 	curAnimMax = playerImg[(int)state].size();
 }
 
-bool Player::GetIsDashing()
-{
-	return isDashing;
-}
-
 void Player::SetIsDashing(bool isDashing)
 {
 	if (isDashAndJump) return;
+	
+	ReadyToSetState();
 
 	this->isDashing = isDashing;
 	if (dir.x == -1)
 		state = EPlayerState::LeftDash;
 	else state = EPlayerState::RightDash;
 	speed = DASH_SPEED;
-	startDashTime = clock();
+	startChangeStateTime = clock();
 
 	curAnimCnt = 0;
 	curAnimMax = playerImg[(int)state].size();
-}
-
-bool Player::GetIsDown()
-{
-	return isDown;
 }
 
 void Player::SetIsDown(bool isDown)
@@ -628,11 +623,6 @@ void Player::SetIsDown(bool isDown)
 	curAnimMax = playerImg[(int)state].size();
 }
 
-bool Player::GetIsShooting()
-{
-	return isShooting;
-}
-
 void Player::SetIsShooting(bool isShooting)
 {
 	if (isJumping) return;
@@ -645,11 +635,6 @@ void Player::SetIsShooting(bool isShooting)
 	curAnimMax = playerImg[(int)state].size();
 }
 
-bool Player::GetIsLockin()
-{
-	return isLockin;
-}
-
 void Player::SetIsLockin(bool isLockin)
 {
 	if (!ReadyToSetState())
@@ -659,9 +644,44 @@ void Player::SetIsLockin(bool isLockin)
 	curAnimMax = playerImg[(int)state].size();
 }
 
-bool Player::GetLastForward()
+void Player::SetIsSpecialAttack(bool isSpecialAttack)
 {
-	return lastForward;
+	if (isJumping || isDashAndJump || isDashing)
+		return;
+
+	this->isSpecialAttack = isSpecialAttack;
+	if (isSpecialAttack)
+	{
+		startChangeStateTime = clock();
+		prevState = state;
+
+		// set state
+		switch (dir.y)
+		{
+		case -1:
+			if (dir.x == 0) state = EPlayerState::SCAttackUp;
+			else if (dir.x == 1) state = EPlayerState::SCAttackRightUp;
+			else {}
+			break;
+		case 0:
+			if (dir.x == 0)
+			{
+				if (lastForward == LAST_FORWARD_IS_LEFT);
+				else state = EPlayerState::SCAttackRight;
+			}
+			else if (dir.x == 1) state = EPlayerState::SCAttackRight;
+			else {} 
+			break;
+		case 1:
+			if (dir.x == 0) state = EPlayerState::SCAttackDown;
+			else if (dir.x == 1) state = EPlayerState::SCAttackRightDown;
+			else {}
+			break;
+		}
+
+		curAnimCnt = 0;
+		curAnimMax = playerImg[(int)state].size();
+	}
 }
 
 void Player::SetLastForward(bool lastForward)
@@ -687,12 +707,10 @@ void Player::SetStage()
 	SetInWorld(false);
 }
 
-EPlayerWorldState Player::GetWorldState()
+bool Player::CanMoveDirX()
 {
-	return worldState;
-}
-
-EPlayerState Player::GetPlayerState()
-{
-	return state;
+	if (isLockin) return false;
+	if (isDown)	return false;
+	if (isSpecialAttack) return false;
+	return true;
 }

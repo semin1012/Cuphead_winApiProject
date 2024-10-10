@@ -48,6 +48,11 @@ enum class EPlayerState
 	AimLeftDown,
 	AimUp,
 	AimDown,
+	SCAttackRight,
+	SCAttackRightUp,
+	SCAttackRightDown,
+	SCAttackUp,
+	SCAttackDown,
 	Max
 };
 
@@ -93,6 +98,7 @@ private:
 	bool					isDashing;
 	bool					isShooting;
 	bool					isLockin;
+	bool					isSpecialAttack;
 	bool					lastForward;	// 1Àº right, 0Àº left
 
 	const int				JumpMaxPower = 55;
@@ -100,9 +106,10 @@ private:
 
 	float					speed;
 	bool					isDashAndJump;
-	clock_t					startDashTime;
+	clock_t					startChangeStateTime;
 
 	EPlayerState			state;
+	EPlayerState			prevState;
 	EPlayerWorldState		worldState;
 	EWorldSpriteY			worldSpriteY;
 	vector<vector<CImage>>	playerImg;
@@ -123,7 +130,7 @@ public:
 
 	void		Draw(HDC& hdc);
 	void		Update();
-	Collider*	GetCollider();
+	Collider*	GetCollider()								{ return &collider; }	
 
 	void		SetCameraPos(int x, int y);
 	void		SetCameraPosX(int x);
@@ -134,32 +141,35 @@ public:
 	void		SetInWorld(bool isWorld);
 
 	void		Move(int x, int y);
-	float		GetSpeed();
+	float		GetSpeed()									{ return speed; }
 	void		SetSpeed(float speed);
 
-	int			GetXPos();
-	int			GetYPos();
+	int			GetXPos()									{ return x; }
+	int			GetYPos()									{ return y; }
 	void		SetXPos(int x);
 	void		SetYPos(int y);
 
-	bool		GetIsJumping();
+	bool		GetIsJumping()								{ return isJumping; }
 	void		SetIsJumping(bool isJumping);
-	bool		GetIsDashing();
+	bool		GetIsDashing()								{ return isDashing; }
 	void		SetIsDashing(bool isDashing);
-	bool		GetIsDown();
+	bool		GetIsDown()									{ return isDown; }
 	void		SetIsDown(bool isDown);
-	bool		GetIsShooting();
+	bool		GetIsShooting()								{ return isShooting; }
 	void		SetIsShooting(bool isShooting);
-	bool		GetIsLockin();
+	bool		GetIsLockin()								{ return isLockin; }
 	void		SetIsLockin(bool isLockin);
-	bool		GetLastForward();
+	bool		GetIsSpecialAttack()						{ return isSpecialAttack; }
+	void		SetIsSpecialAttack(bool isSpecialAttack);
+	bool		GetLastForward()							{ return lastForward; }
 	void		SetLastForward(bool lastForward);
 
 	bool		ReadyToSetState();
 
 	void		SetStage();
+	bool		CanMoveDirX();
 	
-	EPlayerWorldState	GetWorldState();
-	EPlayerState		GetPlayerState();
+	EPlayerWorldState	GetWorldState()						{ return worldState; }
+	EPlayerState		GetPlayerState()					{ return state; }
 };
 

@@ -46,15 +46,15 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 			case 'Z':
 			case 'z':
-				if (!player->GetIsJumping() && !player->GetIsDashing())
+				if (!player->GetIsJumping() && !player->GetIsDashing() && !player->GetIsSpecialAttack())
 					player->SetIsJumping(true);
 				break;
 			case VK_SHIFT:
-				if (!player->GetIsDashing() && player->dir.x != 0)
+				if (!player->GetIsDashing() && player->dir.x != 0 && !player->GetIsSpecialAttack())
 					player->SetIsDashing(true);
 				break;
 			case VK_DOWN:
-				if (!player->GetIsDown() && !player->GetIsLockin())
+				if (!player->GetIsDown() && !player->GetIsLockin() && !player->GetIsSpecialAttack())
 				{
 					if (player->GetIsShooting())
 						player->SetIsShooting(false);
@@ -63,7 +63,7 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 			case 'X':
 			case 'x':
-				if (!player->GetIsShooting() && !player->GetIsJumping() && !player->GetIsDashing())
+				if (!player->GetIsShooting() && !player->GetIsJumping() && !player->GetIsDashing() && !player->GetIsSpecialAttack())
 				{
 					if (player->GetIsDown())
 						player->SetIsDown(false);
@@ -72,8 +72,13 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 			case 'C':
 			case 'c':
-				if (!player->GetIsLockin())
+				if (!player->GetIsLockin() && !player->GetIsSpecialAttack())
 					player->SetIsLockin(true);
+				break;
+			case 'v':
+			case 'V':
+				if (!player->GetIsSpecialAttack())
+					player->SetIsSpecialAttack(true);
 				break;
 			}
 		}
