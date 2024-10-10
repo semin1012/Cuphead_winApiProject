@@ -87,10 +87,16 @@ void Player::CreateImage()
 	// Special Attack 
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_straight_00");
 	ParsingToImagePath(EPlayerState::SCAttackRight, 13, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/R_cuphead_ex_straight_00");
+	ParsingToImagePath(EPlayerState::SCAttackLeft, 13, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_diagonal_down_00");
 	ParsingToImagePath(EPlayerState::SCAttackRightDown, 13, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/R_cuphead_ex_diagonal_down_00");
+	ParsingToImagePath(EPlayerState::SCAttackLeftDown, 13, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_diagonal_up_00");
 	ParsingToImagePath(EPlayerState::SCAttackRightUp, 13, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/R_cuphead_ex_diagonal_up_00");
+	ParsingToImagePath(EPlayerState::SCAttackLeftUp, 13, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_down_00");
 	ParsingToImagePath(EPlayerState::SCAttackDown, 13, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_up_00");
@@ -661,21 +667,21 @@ void Player::SetIsSpecialAttack(bool isSpecialAttack)
 		case -1:
 			if (dir.x == 0) state = EPlayerState::SCAttackUp;
 			else if (dir.x == 1) state = EPlayerState::SCAttackRightUp;
-			else {}
+			else state = EPlayerState::SCAttackLeftUp;
 			break;
 		case 0:
 			if (dir.x == 0)
 			{
-				if (lastForward == LAST_FORWARD_IS_LEFT);
+				if (lastForward == LAST_FORWARD_IS_LEFT) state = EPlayerState::SCAttackLeft;
 				else state = EPlayerState::SCAttackRight;
 			}
 			else if (dir.x == 1) state = EPlayerState::SCAttackRight;
-			else {} 
+			else state = EPlayerState::SCAttackLeft;
 			break;
 		case 1:
 			if (dir.x == 0) state = EPlayerState::SCAttackDown;
 			else if (dir.x == 1) state = EPlayerState::SCAttackRightDown;
-			else {}
+			else state = EPlayerState::SCAttackLeftDown;
 			break;
 		}
 
