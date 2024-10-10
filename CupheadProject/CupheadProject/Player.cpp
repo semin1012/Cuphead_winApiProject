@@ -41,6 +41,10 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::DownStartLeft, 7, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Down/R_cuphead_duck_idle_000");
 	ParsingToImagePath(EPlayerState::DownIdleLeft, 5, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Down/cuphead_duck_shoot_000");
+	ParsingToImagePath(EPlayerState::DownShootingRight, 6, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Down/R_cuphead_duck_shoot_000");
+	ParsingToImagePath(EPlayerState::DownShootingLeft, 6, path, 1);
 	// run & shooting
 	_tcscpy(path, L"../Resource/Image/Cuphead/RunShooting/cuphead_run_shoot_00");
 	ParsingToImagePath(EPlayerState::ShootingRunRight, 16, path, 1);
@@ -500,31 +504,44 @@ void Player::SetState(EPlayerState state)
 	// ½´ÆÃ
 	if (isShooting && !isLockin && !isJumping && !isDashing && !isSpecialAttack)
 	{
-		switch (dir.y)
+		if (isDown)
 		{
-		case -1:
-			if (dir.x == 1) temp = EPlayerState::ShootingRunRightUp;
-			else if (dir.x == -1) temp = EPlayerState::ShootingRunLeftUp;
-			else temp = EPlayerState::ShootingUp;
-			break;
-		case 0:
-			if (dir.x == 1) temp = EPlayerState::ShootingRunRight;
-			else if (dir.x == -1) temp = EPlayerState::ShootingRunLeft;
+			if (dir.x == 1) temp = EPlayerState::DownShootingRight;
+			else if (dir.x == -1) temp = EPlayerState::DownShootingLeft;
 			else
 			{
-				if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::ShootingLeft;
-				else temp = EPlayerState::ShootingRight;
+				if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::DownShootingLeft;
+				else temp = EPlayerState::DownShootingRight;
 			}
-			break;
-		case 1:
-			if (dir.x == 1) temp = EPlayerState::ShootingRunRight;
-			else if (dir.x == -1) temp = EPlayerState::ShootingRunLeft;
-			else
+		}
+		else
+		{
+			switch (dir.y)
 			{
-				if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::ShootingLeft;
-				else temp = EPlayerState::ShootingRight;
+			case -1:
+				if (dir.x == 1) temp = EPlayerState::ShootingRunRightUp;
+				else if (dir.x == -1) temp = EPlayerState::ShootingRunLeftUp;
+				else temp = EPlayerState::ShootingUp;
+				break;
+			case 0:
+				if (dir.x == 1) temp = EPlayerState::ShootingRunRight;
+				else if (dir.x == -1) temp = EPlayerState::ShootingRunLeft;
+				else
+				{
+					if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::ShootingLeft;
+					else temp = EPlayerState::ShootingRight;
+				}
+				break;
+			case 1:
+				if (dir.x == 1) temp = EPlayerState::ShootingRunRight;
+				else if (dir.x == -1) temp = EPlayerState::ShootingRunLeft;
+				else
+				{
+					if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::ShootingLeft;
+					else temp = EPlayerState::ShootingRight;
+				}
+				break;
 			}
-			break;
 		}
 	}
 
@@ -672,7 +689,12 @@ void Player::SetIsDown(bool isDown)
 	{
 		if (dir.x == -1)
 			state = EPlayerState::DownStartLeft;
-		else state = EPlayerState::DownStartRight;
+		else if (dir.x == 1) state = EPlayerState::DownStartRight;
+		else
+		{
+			if (lastForward == LAST_FORWARD_IS_LEFT) state = EPlayerState::DownStartLeft;
+			else state = EPlayerState::DownStartRight;
+		}
 	}
 
 	curAnimCnt = 0;
@@ -684,6 +706,18 @@ void Player::SetIsShooting(bool isShooting)
 	if (isJumping) return;
 	if (isDashAndJump) return;
 	if (isDashing) return;
+
+	if (isDown && isShooting == false)
+	{
+		if (dir.x == -1)
+			state = EPlayerState::DownIdleLeft;
+		else if (dir.x == 1) state = EPlayerState::DownIdleRight;
+		else
+		{
+			if (lastForward == LAST_FORWARD_IS_LEFT) state = EPlayerState::DownIdleLeft;
+			else state = EPlayerState::DownIdleRight;
+		}
+	}
 
 	this->isShooting = isShooting;
 

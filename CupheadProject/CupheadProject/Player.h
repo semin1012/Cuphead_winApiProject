@@ -28,6 +28,8 @@ enum class EPlayerState
 	DownIdleRight,
 	DownStartLeft,
 	DownIdleLeft,
+	DownShootingRight,
+	DownShootingLeft,
 	ShootingRunRight,
 	ShootingRunLeft,
 	ShootingRunRightUp,

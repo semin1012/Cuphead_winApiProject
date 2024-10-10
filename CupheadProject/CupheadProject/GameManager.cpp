@@ -65,8 +65,6 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'x':
 				if (!player->GetIsShooting() && !player->GetIsJumping() && !player->GetIsDashing() && !player->GetIsSpecialAttack())
 				{
-					if (player->GetIsDown())
-						player->SetIsDown(false);
 					player->SetIsShooting(true);
 				}
 				break;
