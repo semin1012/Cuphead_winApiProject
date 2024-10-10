@@ -57,8 +57,11 @@ enum class EPlayerState
 	SCAttackUp,
 	SCAttackDown,
 	AirSCAttackRight,
+	AirSCAttackLeft,
 	AirSCAttackRightUp,
+	AirSCAttackLeftUp,
 	AirSCAttackRightDown,
+	AirSCAttackLeftDown,
 	AirSCAttackUp,
 	AirSCAttackDown,
 	Max

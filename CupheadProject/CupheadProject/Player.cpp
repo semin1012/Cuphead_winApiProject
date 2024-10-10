@@ -104,10 +104,16 @@ void Player::CreateImage()
 	// Jump Special Attack
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_straight_air_000");
 	ParsingToImagePath(EPlayerState::AirSCAttackRight, 6, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/R_cuphead_ex_straight_air_000");
+	ParsingToImagePath(EPlayerState::AirSCAttackLeft, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_diagonal_down_air_000");
 	ParsingToImagePath(EPlayerState::AirSCAttackRightDown, 6, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/R_cuphead_ex_diagonal_down_air_000");
+	ParsingToImagePath(EPlayerState::AirSCAttackLeftDown, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_diagonal_up_air_000");
 	ParsingToImagePath(EPlayerState::AirSCAttackRightUp, 6, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/R_cuphead_ex_diagonal_up_air_000");
+	ParsingToImagePath(EPlayerState::AirSCAttackLeftUp, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_down_air_000");
 	ParsingToImagePath(EPlayerState::AirSCAttackDown, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_up_air_000");
@@ -713,21 +719,21 @@ void Player::SetIsSpecialAttack(bool isSpecialAttack)
 			case -1:
 				if (dir.x == 0) state = EPlayerState::AirSCAttackUp;
 				else if (dir.x == 1) state = EPlayerState::AirSCAttackRightUp;
-				else state = EPlayerState::SCAttackLeftUp;
+				else state = EPlayerState::AirSCAttackLeftUp;
 				break;
 			case 0:
 				if (dir.x == 0)
 				{
-					if (lastForward == LAST_FORWARD_IS_LEFT) state = EPlayerState::SCAttackLeft;
+					if (lastForward == LAST_FORWARD_IS_LEFT) state = EPlayerState::AirSCAttackLeft;
 					else state = EPlayerState::AirSCAttackRight;
 				}
 				else if (dir.x == 1) state = EPlayerState::AirSCAttackRight;
-				else state = EPlayerState::SCAttackLeft;
+				else state = EPlayerState::AirSCAttackLeft;
 				break;
 			case 1:
 				if (dir.x == 0) state = EPlayerState::AirSCAttackDown;
 				else if (dir.x == 1) state = EPlayerState::AirSCAttackRightDown;
-				else state = EPlayerState::SCAttackLeftDown;
+				else state = EPlayerState::AirSCAttackLeftDown;
 				break;
 			}
 		}
