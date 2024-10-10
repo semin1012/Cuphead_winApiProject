@@ -10,6 +10,7 @@ void Player::CreateImage()
 	playerImg[(int)EPlayerState::World].resize(1);
 	playerImg[(int)EPlayerState::World][0].Load(L"../Resource/Image/Cuphead/CupHead_Word01.png");
 
+#pragma region Load Image
 	// idle
 	TCHAR path[128] = L"../Resource/Image/Cuphead/cuphead_idle_000";
 	ParsingToImagePath(EPlayerState::Idle, PLAYER_IDEL_SIZE, path, 1);
@@ -70,7 +71,7 @@ void Player::CreateImage()
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_up_000");
 	ParsingToImagePath(EPlayerState::ShootingUp, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_down_000");
-	ParsingToImagePath(EPlayerState::ShootingDown, 6, path, 1);	
+	ParsingToImagePath(EPlayerState::ShootingDown, 6, path, 1);
 	// lockin
 	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/cuphead_aim_straight_000");
 	ParsingToImagePath(EPlayerState::AimRight, 5, path, 1);
@@ -122,6 +123,8 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::AirSCAttackDown, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_up_air_000");
 	ParsingToImagePath(EPlayerState::AirSCAttackUp, 6, path, 1);
+
+#pragma endregion
 
 	curAnimMax = playerImg[(int)EPlayerState::World].size();
 	curAnimCnt = 0;

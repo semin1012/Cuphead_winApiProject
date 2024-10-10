@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "StageMap.h"
 #include "FadeEffect.h"
+#include "Bullet.h"
 #define TILE_SIZE 30
 
 class GameManager
@@ -28,9 +29,12 @@ private:
 	bool					isTitle;
 	bool					isStage;
 	int						stage;
+	std::vector<Bullet*>	bullets;
 
 
 	FadeEffect*				fadeEffect;
+
+	ULONG_PTR				g_GdipPlusToken;
 
 
 public:
@@ -71,5 +75,10 @@ public:
 	// World Map
 	bool		CollidedPlayerWithWorldCollisions(int deltaX, int deltaY);
 	bool		CollidedPlayer(Collider* collider, int deltaX, int deltaY);
+
+	// gdi+
+	void Gdi_Init();
+	void Gdi_Draw(HDC hdc);
+	void Gdi_End();
 };
 

@@ -27,3 +27,9 @@
 
 #define LAST_FORWARD_IS_RIGHT 1
 #define LAST_FORWARD_IS_LEFT 0
+
+// >> : for gid+
+#include <objidl.h>
+#include <gdiplus.h>
+using namespace Gdiplus;
+#pragma comment(lib, "Gdiplus.lib")

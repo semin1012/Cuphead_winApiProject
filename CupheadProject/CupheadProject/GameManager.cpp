@@ -460,6 +460,9 @@ void GameManager::SetStage(int stage)
 	camera_y = 0;
 	SetCameraPos(0, 0);
 
+	Bullet* bullet = new Bullet(150, 100, {0, 0});
+	bullets.push_back(bullet);
+
 	player->SetStage();
 }
 
@@ -510,4 +513,27 @@ bool GameManager::CollidedPlayer(Collider* collider, int deltaX, int deltaY)
 		return true;
 
 	return false;
+}
+
+void GameManager::Gdi_Init()
+{
+	GdiplusStartupInput gpsi;
+
+	GdiplusStartup(&g_GdipPlusToken, &gpsi, NULL);
+}
+
+void GameManager::Gdi_Draw(HDC hdc)
+{
+	Graphics graphics(hdc);
+
+	if (!bullets.empty())
+	{
+		for (auto bullet : bullets)
+			bullet->Draw(hdc, graphics);
+	}
+}
+
+void GameManager::Gdi_End()
+{
+	GdiplusShutdown(g_GdipPlusToken);
 }
