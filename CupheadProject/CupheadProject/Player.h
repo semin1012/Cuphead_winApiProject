@@ -56,6 +56,11 @@ enum class EPlayerState
 	SCAttackLeftDown,
 	SCAttackUp,
 	SCAttackDown,
+	AirSCAttackRight,
+	AirSCAttackRightUp,
+	AirSCAttackRightDown,
+	AirSCAttackUp,
+	AirSCAttackDown,
 	Max
 };
 
@@ -99,16 +104,17 @@ private:
 	bool					isDown;
 	bool					isJumping;
 	bool					isDashing;
+	bool					isDashAndJump;
 	bool					isShooting;
 	bool					isLockin;
 	bool					isSpecialAttack;
+	bool					isSpecialAttackAndJump;
 	bool					lastForward;	// 1Àº right, 0Àº left
 
 	const int				JumpMaxPower = 55;
 	int						curJumpPower;
 
 	float					speed;
-	bool					isDashAndJump;
 	clock_t					startChangeStateTime;
 
 	EPlayerState			state;
