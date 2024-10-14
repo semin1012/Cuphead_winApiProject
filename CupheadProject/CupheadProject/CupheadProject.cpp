@@ -298,7 +298,7 @@ void EndDoubleBuffering(HWND hWnd)
 }
 #pragma endregion
 
-VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
+VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
 {
     InvalidateRect(hWnd, NULL, false);
 
