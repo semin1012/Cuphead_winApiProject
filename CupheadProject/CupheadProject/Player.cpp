@@ -803,7 +803,7 @@ void Player::SetIsShooting(bool isShooting)
 					else
 					{
 						if ( dir.y != 0)
-							bullet->SetBullet(x + dir.x * 80, y + 80 * dir.y, dir);
+							bullet->SetBullet(x + dir.x * 90, y + 100 * dir.y, dir);
 						else bullet->SetBullet(x + dir.x * 80, y - 80, dir);
 					}
 					break;
