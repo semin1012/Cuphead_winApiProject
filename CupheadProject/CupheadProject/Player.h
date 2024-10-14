@@ -19,6 +19,7 @@ enum class EPlayerState
 {
 	World = 0,
 	Idle,
+	IdleLeft,
 	RightRun,
 	LeftRun,
 	RightJump,

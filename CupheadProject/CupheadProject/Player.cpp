@@ -14,6 +14,8 @@ void Player::CreateImage()
 	// idle
 	TCHAR path[128] = L"../Resource/Image/Cuphead/cuphead_idle_000";
 	ParsingToImagePath(EPlayerState::Idle, PLAYER_IDEL_SIZE, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/R_cuphead_idle_000");
+	ParsingToImagePath(EPlayerState::IdleLeft, PLAYER_IDEL_SIZE, path, 1);
 	// run
 	_tcscpy(path, L"../Resource/Image/Cuphead/Run/cuphead_run_00");
 	ParsingToImagePath(EPlayerState::RightRun, 16, path, 1);

@@ -373,7 +373,9 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
         switch (gameMgr->GetPlayer()->dir.x)
         {
         case 0:
-            gameMgr->GetPlayer()->SetState(EPlayerState::Idle);
+            if (gameMgr->GetPlayer()->GetLastForward() == LAST_FORWARD_IS_LEFT)
+                gameMgr->GetPlayer()->SetState(EPlayerState::IdleLeft);
+            else gameMgr->GetPlayer()->SetState(EPlayerState::Idle);
             break;
         case -1:
             gameMgr->GetPlayer()->SetState(EPlayerState::LeftRun);

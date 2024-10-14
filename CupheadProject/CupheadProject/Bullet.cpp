@@ -72,7 +72,7 @@ void Bullet::Draw(HDC& hdc, Graphics& graphics)
 		y = -10000;
 	}
 
-	if (curTime - animLastTime > 1000 / 60)
+	if (curTime - animLastTime > 33)
 	{
 		curAnimCnt++;
 
