@@ -1,15 +1,27 @@
 ﻿  Bullet.cpp
 D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(6,10): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(20,10): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(61,38): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(77,40): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(114,47): warning C4244: '인수': 'int'에서 'Gdiplus::REAL'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(114,44): warning C4244: '인수': 'int'에서 'Gdiplus::REAL'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(114,20): warning C4244: '인수': 'int'에서 'Gdiplus::REAL'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(137,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(139,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(150,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(153,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(154,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(155,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(65,38): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(85,40): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(122,47): warning C4244: '인수': 'int'에서 'Gdiplus::REAL'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(122,44): warning C4244: '인수': 'int'에서 'Gdiplus::REAL'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(122,20): warning C4244: '인수': 'int'에서 'Gdiplus::REAL'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(147,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(149,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(151,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(153,2): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(164,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(167,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(168,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Bullet.cpp(169,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  EffectObject.cpp
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\EffectObject.cpp(42,26): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\EffectObject.cpp(84,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\EffectObject.cpp(88,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\EffectObject.cpp(109,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\EffectObject.cpp(113,4): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\EffectObject.cpp(114,3): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\EffectObject.cpp(115,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\EffectObject.cpp(116,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  코드를 생성하고 있습니다...
   CupheadProject.vcxproj -> D:\Cuphead_winApiProject\CupheadProject\x64\Debug\CupheadProject.exe

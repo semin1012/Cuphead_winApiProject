@@ -26,6 +26,7 @@ Bullet::Bullet(int x, int y, POINT dir) : x(x), y(y), dir(dir)
 	state = EBulletState::Loop;
 	createPos = { 0, 0 };
 	isActive = false;
+	isSpecialAttack = false;
 	CreateImage();
 }
 
@@ -42,7 +43,7 @@ Bullet::~Bullet()
 	images.clear();
 }
 
-void Bullet::SetBullet(int x, int y, POINT dir)
+void Bullet::SetBullet(int x, int y, POINT dir, bool isSpecialAttack)
 {
 	this->x = x;
 	this->y = y;
@@ -53,10 +54,13 @@ void Bullet::SetBullet(int x, int y, POINT dir)
 	curAnimCnt = 0;
 	state = EBulletState::Spawn;
 	isActive = true;
+	this->isSpecialAttack = isSpecialAttack;
 }
 
 void Bullet::Draw(HDC& hdc, Graphics& graphics)
 {
+	graphics.ResetTransform();
+
 	clock_t curTime = clock();
 	curAnimMax = images[(int)state].size();
 
@@ -64,15 +68,19 @@ void Bullet::Draw(HDC& hdc, Graphics& graphics)
 	{
 		curAnimCnt = 0;
 		isActive = false;
+		x = -10000;
+		y = -10000;
 	}
 
-	if (curTime - animLastTime > 33)
+	if (curTime - animLastTime > 1000 / 60)
 	{
 		curAnimCnt++;
 
 		if (curAnimCnt >= images[(int)EBulletState::Spawn].size() && state == EBulletState::Spawn)
 		{
-			state = EBulletState::Loop;
+			if (isSpecialAttack)
+				state = EBulletState::EX_Loop;
+			else state = EBulletState::Loop;
 			curAnimCnt = 0;
 			curAnimMax = images[(int)state].size();
 		}
@@ -118,6 +126,8 @@ void Bullet::Draw(HDC& hdc, Graphics& graphics)
 
 	if (state == EBulletState::Spawn)
 	{
+		if (isSpecialAttack)
+			return;
 		x = x + dir.x * 15;
 		y = y + dir.y * 15;
 	}
@@ -138,6 +148,10 @@ void Bullet::CreateImage()
 	ParsingToImagePath(EBulletState::Loop, 8, path, 1);
 	_tcscpy(path, L"../Resource/Image/Bullet/cuphead_bullet_death0");
 	ParsingToImagePath(EBulletState::Death, 6, path, 1);
+	_tcscpy(path, L"../Resource/Image/Bullet/EX_bullet_loop0");
+	ParsingToImagePath(EBulletState::EX_Loop, 8, path, 1);
+	_tcscpy(path, L"../Resource/Image/Bullet/EX_bullet_death0");
+	ParsingToImagePath(EBulletState::EX_Death, 9, path, 1);
 }
 
 void Bullet::ParsingToImagePath(EBulletState state, int spriteSize, TCHAR* path, int startNum)
@@ -157,4 +171,9 @@ void Bullet::ParsingToImagePath(EBulletState state, int spriteSize, TCHAR* path,
 		Image* pImg = new Image(temp);
 		images[(int)state][i] = pImg;
 	}
+}
+
+Collider* Bullet::GetCollider()
+{
+	return &collider;
 }

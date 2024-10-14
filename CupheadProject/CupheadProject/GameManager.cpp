@@ -47,10 +47,7 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'Z':
 			case 'z':
 				if (!player->GetIsJumping() && !player->GetIsDashing() && !player->GetIsSpecialAttack())
-				{
 					player->SetIsJumping(true);
-					effects.push_back(new EffectObject(EEffectType::JumpUpDust, player->GetXPos(), player->GetYPos()));
-				}
 				break;
 			case VK_SHIFT:
 				if (!player->GetIsDashing() && player->dir.x != 0 && !player->GetIsSpecialAttack())
@@ -153,7 +150,17 @@ void GameManager::Draw(HDC& hdc)
 
 		if (player != nullptr)
 		{
-			Collider* collider = player->GetCollider();
+			Collider* collider;
+			if (!player->GetBullets().empty())
+			{
+				for (auto bullet : player->GetBullets())
+				{
+					if (!bullet->GetisActive()) continue;
+					collider = bullet->GetCollider();
+					Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
+				}
+			}
+			collider = player->GetCollider();
 			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
 		}
 
@@ -161,7 +168,7 @@ void GameManager::Draw(HDC& hdc)
 		{
 			Collider* collider = background->GetTripper()->GetKeyCollider();
 			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
-		}
+		} 
 
 		SelectObject(hdc, oldBrush);
 		SelectObject(hdc, hOldPen);

@@ -834,6 +834,7 @@ void Player::SetIsSpecialAttack(bool isSpecialAttack)
 	this->isSpecialAttack = isSpecialAttack;
 	if (isSpecialAttack)
 	{
+#pragma region Set Anim State
 		startChangeStateTime = clock();
 		prevState = state;
 
@@ -888,6 +889,60 @@ void Player::SetIsSpecialAttack(bool isSpecialAttack)
 				break;
 			}
 		}
+#pragma endregion
+
+#pragma region Set Bullet
+		for (auto bullet : bullets)
+		{
+			if (!bullet->GetisActive())
+			{
+				if (dir.y == 0)
+				{
+					switch (dir.x)
+					{
+					case 0:
+						if ( lastForward == LAST_FORWARD_IS_LEFT )
+							bullet->SetBullet(x - 60, y - 60, { -1, 0 }, true);
+						else bullet->SetBullet(x + 60, y - 60, { 1, 0 }, true);
+						break;
+					case 1:
+					case -1:
+						bullet->SetBullet(x + 60 * dir.x, y - 60, { dir.x, 0 }, true);
+						break;
+					}
+				}
+				else if (dir.y == -1)
+				{
+					switch (dir.x)
+					{
+					case 0:
+						bullet->SetBullet(x, y - 130, { dir.x, dir.y }, true);
+						break;
+					case 1:
+					case -1:
+						bullet->SetBullet(x + 60 * dir.x, y - 90, { dir.x, dir.y }, true);
+						break;
+					}
+				}
+				else
+				{
+					switch (dir.x)
+					{
+					case 0:
+						bullet->SetBullet(x, y, { 0, dir.y }, true);
+						break;
+					case 1:
+					case -1:
+						bullet->SetBullet(x + 60 * dir.x, y, { dir.x, dir.y }, true);
+						break;
+					}
+				}
+				break;
+			}
+		}
+#pragma endregion
+
+
 
 		curAnimCnt = 0;
 		curAnimMax = playerImg[(int)state].size();

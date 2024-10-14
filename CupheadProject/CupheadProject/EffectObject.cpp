@@ -37,10 +37,11 @@ EffectObject::~EffectObject()
 
 void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 {
+	graphics.ResetTransform();
 	clock_t curTime = clock();
 	curAnimMax = images.size();
 
-	if (curTime - animLastTime > 1000 / 60)
+	if (curTime - animLastTime > 20)
 	{
 		curAnimCnt++;
 
