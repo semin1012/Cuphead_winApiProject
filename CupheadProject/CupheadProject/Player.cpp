@@ -265,6 +265,7 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 {
 	int bx, by;
 	clock_t curTime = clock();
+	grapichs.ResetTransform();
 
 	// 월드가 아니라면
 	if (!inWorld)
@@ -399,8 +400,16 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 		collider.top	= y - 113 / 5;
 		collider.right	= x + 103 / 6;
 		collider.bottom = y;
+		Rect rect = {x - unitX / 2 - camera_x, y - camera_y - unitY * 6 / 7, unitX, unitY };
 
-		grapichs.DrawImage(playerImg[(int)EPlayerState::World][0], collider.left - unitX / 3 - camera_x, collider.top - unitY * 5 / 7 - camera_y, animX, animY, unitX, unitY, Gdiplus::Unit::UnitPixel);
+		//Gdiplus::Matrix mat;
+		//mat.Scale(2.5f, 2.5f);
+		//grapichs.SetTransform(&mat);
+
+		//grapichs.DrawImage(playerImg[(int)EPlayerState::World][0], rect, animX, animY, unitX, unitY, UnitPixel);
+		grapichs.DrawImage(playerImg[(int)EPlayerState::World][0], rect, animX, animY, unitX, unitY, Gdiplus::Unit::UnitPixel);
+
+		//Status DrawImage(Image* image, const Rect& destRect, INT srcx, INT srcy, INT srcwidth, INT srcheight, Unit srcUnit, ImageAttributes* imageAttributes, DrawImageAbort callback, VOID* callbackData);
 		//playerImg[(int)EPlayerState::World][0].Draw(hdc, collider.left - unitX / 3 - camera_x, collider.top - unitY * 5 / 7 - camera_y, unitX, unitY, animX, animY, unitX, unitY);
 	}
 }
@@ -443,7 +452,19 @@ void Player::Update()
 				isSpecialAttackAndJump = true;
 			}
 		}
-
+		if (!isSpecialAttack && !isHit)
+		{
+			switch (dir.x)
+			{
+			case -1:
+				state = EPlayerState::LeftJump;
+				break;
+			case 1:
+			case 0:
+				state = EPlayerState::RightJump;
+				break;
+			}
+		}
 		if (y >= GROUND_POSITION_Y)
 		{
 			if (isDashAndJump) isDashAndJump = false;
@@ -487,7 +508,7 @@ void Player::Update()
 			else state = EPlayerState::LeftDash;
 			break;
 		}
-		if (curTime - startChangeStateTime > 400)
+		if (curTime - startChangeStateTime > 350)
 		{
 			isGrace = false;
 			isDashing = false;

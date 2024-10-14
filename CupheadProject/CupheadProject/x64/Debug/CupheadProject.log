@@ -59,14 +59,14 @@ D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(158,3): warnin
 D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(159,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(160,3): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(169,4): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(272,42): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(295,44): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(536,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(791,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(850,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(868,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(890,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(917,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(926,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(1046,42): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(273,42): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(296,44): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(557,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(812,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(871,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(889,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(911,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(938,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(947,41): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Cuphead_winApiProject\CupheadProject\CupheadProject\Player.cpp(1067,42): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CupheadProject.vcxproj -> D:\Cuphead_winApiProject\CupheadProject\x64\Debug\CupheadProject.exe
