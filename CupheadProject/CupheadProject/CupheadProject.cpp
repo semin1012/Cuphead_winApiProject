@@ -246,8 +246,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         CreateDoubbleBuffering(hWnd);
 
         gameMgr->Draw(hdc);
-
-        gameMgr->Gdi_Draw(hdc);
+        gameMgr->Update();
 
         EndDoubleBuffering(hWnd);
         break;

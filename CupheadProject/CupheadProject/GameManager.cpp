@@ -47,7 +47,10 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'Z':
 			case 'z':
 				if (!player->GetIsJumping() && !player->GetIsDashing() && !player->GetIsSpecialAttack())
+				{
 					player->SetIsJumping(true);
+					effects.push_back(new EffectObject(EEffectType::JumpUpDust, player->GetXPos(), player->GetYPos()));
+				}
 				break;
 			case VK_SHIFT:
 				if (!player->GetIsDashing() && player->dir.x != 0 && !player->GetIsSpecialAttack())
@@ -170,6 +173,8 @@ void GameManager::Draw(HDC& hdc)
  	if (player != nullptr)
 		player->Draw(hdc);
 
+	Gdi_Draw(hdc);
+
 #pragma region Fade Effect
 	static bool effectOut = false;
 
@@ -192,7 +197,18 @@ void GameManager::Draw(HDC& hdc)
 		}
 	}
 #pragma endregion
+}
 
+void GameManager::Update()
+{
+	if (player != nullptr)
+	{
+		if (player->GetJumpDust())
+		{
+			player->SetJumpDust(false);
+			effects.push_back(new EffectObject(EEffectType::JumpDownDust, player->GetXPos(), player->GetYPos()));
+		}
+	}
 }
 
 void GameManager::SetCameraView()
@@ -528,6 +544,22 @@ void GameManager::Gdi_Draw(HDC hdc)
 		{
 			if (bullet->GetisActive())
 				bullet->Draw(hdc, graphics);
+		}
+	}
+
+	if (!effects.empty())
+	{
+		for (auto it = effects.begin(); it != effects.end(); )
+		{
+			EffectObject *effect = (*it);
+
+			if (!effect->GetisActive())
+				it = effects.erase(it);
+			else
+			{
+				effect->Draw(hdc, graphics);
+				it++;
+			}
 		}
 	}
 }

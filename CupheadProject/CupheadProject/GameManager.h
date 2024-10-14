@@ -11,11 +11,13 @@
 #include "StageMap.h"
 #include "FadeEffect.h"
 #include "Bullet.h"
+#include "EffectObject.h"
 #define TILE_SIZE 30
 
 class GameManager
 {
 private:
+	std::vector<EffectObject*> effects;
 	Background*				background;
 	Player*					player;
 	bool					debugMode;
@@ -43,6 +45,7 @@ public:
 	void		WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	void		Draw(HDC& hdc);
+	void		Update();
 	void		SetCameraView();
 	void		SetCameraPos(int x, int y);
 	void		AddTile(HWND& hWnd, LPPOINT& mousePos);

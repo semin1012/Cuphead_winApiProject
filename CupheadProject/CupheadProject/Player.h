@@ -120,6 +120,7 @@ private:
 	bool					isSpecialAttack;
 	bool					isSpecialAttackAndJump;
 	bool					lastForward;
+	bool					setJumpDust;
 
 	const int				JumpMaxPower = 55;
 	int						curJumpPower;
@@ -183,6 +184,8 @@ public:
 	void		SetIsSpecialAttack(bool isSpecialAttack);
 	bool		GetLastForward()							{ return lastForward; }
 	void		SetLastForward(bool lastForward);
+	bool		GetJumpDust()								{ return setJumpDust; }
+	void		SetJumpDust(bool jumpDust)					{ setJumpDust = jumpDust; }
 
 	bool		ReadyToSetState();
 

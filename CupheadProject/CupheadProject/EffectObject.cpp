@@ -40,21 +40,21 @@ void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 	clock_t curTime = clock();
 	curAnimMax = images.size();
 
-	if (curTime - createTime > 1000)
-	{
-		curAnimCnt = 0;
-		isActive = false;
-	}
-
-	if (curTime - animLastTime > 33)
+	if (curTime - animLastTime > 1000 / 60)
 	{
 		curAnimCnt++;
 
 		if (curAnimCnt >= curAnimMax)
+		{
 			curAnimCnt = 0;
+			isActive = false;
+		}
 
 		animLastTime = clock();
 	}
+
+	if (!isActive)
+		return;
 
 	int width = images[curAnimCnt]->GetWidth();
 	int height = images[curAnimCnt]->GetHeight();

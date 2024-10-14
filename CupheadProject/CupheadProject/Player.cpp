@@ -177,6 +177,7 @@ Player::Player()
 	isLockin = false;
 	isSpecialAttack = false;
 	isSpecialAttackAndJump = false;
+	setJumpDust = false;
 	lastForward = LAST_FORWARD_IS_RIGHT;
 	speed = 1;
 
@@ -212,6 +213,7 @@ Player::Player(int x, int y)
 	isSpecialAttack = false;
 	isSpecialAttackAndJump = false;
 	lastForward = LAST_FORWARD_IS_RIGHT;
+	setJumpDust = false;
 	speed = 1;
 
 	for (int i = 0; i < BULLET_MAX_COUNT; i++)
@@ -284,7 +286,7 @@ void Player::Draw(HDC& hdc)
 		// idleÀÎ °æ¿ì
 		if (worldState == EPlayerWorldState::Idle)
 		{
-			if (curTime - lastTime > 50)
+			if (curTime - lastTime > 33)
 			{
 				curAnimMax = (int)EPlayerWorldState::Idle;
 				curAnimCnt++;
@@ -398,6 +400,7 @@ void Player::Update()
 			if (isSpecialAttackAndJump) isSpecialAttackAndJump = false;
 			isJumping = false;
 			y = GROUND_POSITION_Y;
+			setJumpDust = true;
 			switch (dir.y)
 			{
 			case 0:
