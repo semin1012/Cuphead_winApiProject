@@ -705,7 +705,7 @@ void Player::SetState(EPlayerWorldState state, EWorldSpriteY spriteY)
 void Player::SetState(EPlayerState state)
 {
 	EPlayerState temp = this->state;
-	if (!isJumping && !isDashing && !isDown && !isShooting && !isSpecialAttack)
+	if (!isJumping && !isDashing && !isDown && !isShooting && !isSpecialAttack && !isHit)
 	{
 		temp = state;
 	}

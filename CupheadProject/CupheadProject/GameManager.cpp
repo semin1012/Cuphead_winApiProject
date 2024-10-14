@@ -92,7 +92,7 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (wParam == VK_DOWN && player->GetIsDown())
 				player->SetIsDown(false);
 		}
-		if (!player->GetCanInput() || player->GetIsHit())
+		if (!player->GetCanInput())
 			break;
 		switch (wParam)
 		{
@@ -306,13 +306,13 @@ void GameManager::SetCameraPos(int x, int y)
 			isMoveCameraX = false;
 			camera_x = mapSizeWidth - WINDOWS_WIDTH;
 		}
-		if (!isMoveCameraX && player->GetXPos() > WINDOWS_WIDTH / 2 + MOVE_DISTANCE && camera_x <= 100)
+		if (!isMoveCameraX && player->GetXPos() >= WINDOWS_WIDTH / 2 + MOVE_DISTANCE && camera_x <= 100)
 		{
 			camera_x = 0;
 			isMoveCameraX = true;
 			player->SetXPos(WINDOWS_WIDTH / 2 + MOVE_DISTANCE);
 		}
-		if (!isMoveCameraX && player->GetXPos() < mapSizeWidth - WINDOWS_WIDTH / 2 && camera_x >= 1000)
+		if (!isMoveCameraX && player->GetXPos() <= mapSizeWidth - WINDOWS_WIDTH / 2 && camera_x >= 1000)
 		{
 			camera_x = mapSizeWidth - WINDOWS_WIDTH / 2;
 			isMoveCameraX = true;
@@ -329,13 +329,13 @@ void GameManager::SetCameraPos(int x, int y)
 			isMoveCameraY = false;
 			camera_y = mapSizeHeight - WINDOWS_HEIGHT;
 		}
-		if (!isMoveCameraY && player->GetYPos() > 405 && camera_y <= 50)
+		if (!isMoveCameraY && player->GetYPos() >= 405 && camera_y <= 50)
 		{
 			camera_y = 0;
 			isMoveCameraY = true;
 			player->SetYPos(405);
 		}
-		if (!isMoveCameraY && player->GetYPos() < mapSizeHeight - WINDOWS_HEIGHT / 2 && camera_y >= 800)
+		if (!isMoveCameraY && player->GetYPos() <= mapSizeHeight - WINDOWS_HEIGHT / 2 && camera_y >= 800)
 		{
 			camera_y = 1275;
 			isMoveCameraY = true;

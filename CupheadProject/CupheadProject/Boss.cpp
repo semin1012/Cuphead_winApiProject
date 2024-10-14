@@ -87,7 +87,7 @@ void Boss::Update()
 	if (isHit)
 	{
 		clock_t curTime = clock();
-		if (curTime - isHitTime > 100)
+		if (curTime - isHitTime > 150)
 			isHit = false;
 	}
 }
