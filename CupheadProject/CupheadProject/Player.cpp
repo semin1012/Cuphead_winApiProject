@@ -734,8 +734,6 @@ void Player::SetIsShooting(bool isShooting)
 		}
 	}
 
-
-
 	this->isShooting = isShooting;
 
 	if (isShooting)

@@ -96,13 +96,19 @@ void Bullet::Draw(HDC& hdc, Graphics& graphics)
 	switch (dir.y)
 	{
 	case -1:
-		rot = -90;
+		if (dir.x == 1) rot = -45;
+		else if (dir.x == 0) rot = -90;
+		else rot = 225;
 		break;
 	case 0:
-		rot = 0;
+		if (dir.x == 1) rot = 0;
+		else if (dir.x == -1) rot = 180;
 		break;
 	case 1:
-		rot = 90;
+		if (dir.x == 1) rot = 45;
+		else if (dir.x == 0) rot = 90;
+		else rot = 135;
+		
 		break;
 	}
 	mat.RotateAt((rot % 360), Gdiplus::PointF(x, y));
