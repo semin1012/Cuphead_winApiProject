@@ -11,6 +11,7 @@
 #include "StageMap.h"
 #include "FadeEffect.h"
 #include "Bullet.h"
+#include "Boss.h"
 #include "EffectObject.h"
 #define TILE_SIZE 30
 
@@ -20,6 +21,7 @@ private:
 	std::vector<EffectObject*> effects;
 	Background*				background;
 	Player*					player;
+	Boss*					boss;
 	bool					debugMode;
 	RECT					cameraView;
 	int						camera_x;

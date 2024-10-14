@@ -12,6 +12,7 @@ Bullet::Bullet()
 	state = EBulletState::Loop;
 	createPos = { 0, 0 };
 	isActive = false;
+	isCollided = false;
 	CreateImage();
 }
 
@@ -27,6 +28,7 @@ Bullet::Bullet(int x, int y, POINT dir) : x(x), y(y), dir(dir)
 	createPos = { 0, 0 };
 	isActive = false;
 	isSpecialAttack = false;
+	isCollided = false;
 	CreateImage();
 }
 
@@ -70,11 +72,24 @@ void Bullet::Draw(HDC& hdc, Graphics& graphics)
 		isActive = false;
 		x = -10000;
 		y = -10000;
+		isCollided = false;
 	}
 
 	if (curTime - animLastTime > 33)
 	{
 		curAnimCnt++;
+
+		if (state == EBulletState::Death || state == EBulletState::EX_Death)
+		{
+			if (curAnimCnt >= curAnimMax)
+			{
+				curAnimCnt = 0;
+				isActive = false;
+				x = -10000;
+				y = -10000;
+				isCollided = false;
+			}
+		}
 
 		if (curAnimCnt >= images[(int)EBulletState::Spawn].size() && state == EBulletState::Spawn)
 		{
@@ -136,6 +151,22 @@ void Bullet::Draw(HDC& hdc, Graphics& graphics)
 		x = x + dir.x * speed;
 		y = y + dir.y * speed;
 	}
+}
+
+bool Bullet::Collided(Collider* collider)
+{
+	if (this->collider.IsOverlaps(*collider))
+	{
+		if (isSpecialAttack)
+			state = EBulletState::EX_Death;
+		else state = EBulletState::Death;
+		curAnimCnt = 0;
+		dir.x = 0;
+		dir.y = 0;
+		isCollided = true;
+		return true;
+	}
+	return false;
 }
 
 void Bullet::CreateImage()

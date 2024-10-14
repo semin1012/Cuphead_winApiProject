@@ -7,8 +7,12 @@ void Player::CreateImage()
 	playerImg.resize((int)EPlayerState::Max);
 
 	// Image Load
+	//playerImg[(int)EPlayerState::World].resize(1);
+	//playerImg[(int)EPlayerState::World][0].Load(L"../Resource/Image/Cuphead/CupHead_Word01.png");
+
 	playerImg[(int)EPlayerState::World].resize(1);
-	playerImg[(int)EPlayerState::World][0].Load(L"../Resource/Image/Cuphead/CupHead_Word01.png");
+	Image* pImg = new Image(L"../Resource/Image/Cuphead/CupHead_Word01.png");
+	playerImg[(int)EPlayerState::World][0] = pImg;
 
 #pragma region Load Image
 	// idle
@@ -147,7 +151,9 @@ void Player::ParsingToImagePath(EPlayerState state, int spriteSize, TCHAR* path,
 		_tcscat(temp, num);
 		_tcscat(temp, L".png");
 
-		playerImg[(int)state][i].Load(temp);
+		//playerImg[(int)state][i].Load(temp);
+		Image* pImg = new Image(temp);
+		playerImg[(int)state][i] = pImg;
 
 		if (playerImg[(int)state][i] == NULL)
 		{
@@ -182,7 +188,8 @@ Player::Player()
 	setJumpDust = false;
 	lastForward = LAST_FORWARD_IS_RIGHT;
 	speed = 1;
-
+	beAttacked = false;
+	beAttackedTime = clock();
 	for (int i = 0; i < BULLET_MAX_COUNT; i++)
 	{
 		Bullet* bullet = new Bullet();
@@ -217,7 +224,8 @@ Player::Player(int x, int y)
 	lastForward = LAST_FORWARD_IS_RIGHT;
 	setJumpDust = false;
 	speed = 1;
-
+	beAttacked = false;
+	beAttackedTime = clock();
 	for (int i = 0; i < BULLET_MAX_COUNT; i++)
 	{
 		Bullet* bullet = new Bullet();
@@ -239,7 +247,7 @@ Player::~Player()
 	playerImg.clear();
 }
 
-void Player::Draw(HDC& hdc)
+void Player::Draw(HDC& hdc, Graphics& grapichs)
 {
 	int bx, by;
 	clock_t curTime = clock();
@@ -268,19 +276,39 @@ void Player::Draw(HDC& hdc)
 		if (curAnimCnt >= playerImg[(int)state].size())
 			curAnimCnt = 0;
 
-		collider.left = x - playerImg[(int)state][curAnimCnt].GetWidth() / 2;
-		collider.top = y - playerImg[(int)state][curAnimCnt].GetHeight();
-		collider.right = x + playerImg[(int)state][curAnimCnt].GetWidth() / 2;
+		int width = playerImg[(int)state][curAnimCnt]->GetWidth();
+		int height = playerImg[(int)state][curAnimCnt]->GetHeight();
+
+		collider.left = x - width / 2;
+		collider.top = y - height;
+		collider.right = x + width / 2;
 		collider.bottom = y;
 
-		playerImg[(int)state][curAnimCnt].Draw(hdc, collider.left, collider.top);
+		if (beAttacked)
+		{
+			ImageAttributes imgAttr;
+			ColorMatrix colorMatrix =
+			{
+				0.7f, 0.0f, 0.0f, 0.0f, 0.0f,
+				0.0f, 0.7f, 0.0f, 0.0f, 0.0f,
+				0.0f, 0.0f, 0.7f, 0.0f, 0.0f,
+				0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+				0.3f, 0.3f, 0.3f, 0.0f, 1.0f
+			};
+			imgAttr.SetColorMatrix(&colorMatrix);
+
+			grapichs.DrawImage(playerImg[(int)state][curAnimCnt], Rect(collider.left, collider.top, width, height), 0, 0, width, height, UnitPixel, &imgAttr);
+		}
+		else grapichs.DrawImage(playerImg[(int)state][curAnimCnt], collider.left, collider.top, width, height);
+		//playerImg[(int)state][curAnimCnt].AlphaBlend(hdc, POINT{ collider.left, collider.top }, 177);
+		//playerImg[(int)state][curAnimCnt].Draw(hdc, collider.left, collider.top);
 	}
 
 	// 월드라면
 	else 
 	{
-		bx = playerImg[(int)EPlayerState::World][0].GetWidth();
-		by = playerImg[(int)EPlayerState::World][0].GetHeight();
+		bx = playerImg[(int)EPlayerState::World][0]->GetWidth();
+		by = playerImg[(int)EPlayerState::World][0]->GetHeight();
 
 		const int unitX = bx / (WORLD_SPRITE_SIZE_X);
 		const int unitY = by / (WORLD_SPRITE_SIZE_Y * 2);
@@ -351,10 +379,9 @@ void Player::Draw(HDC& hdc)
 		collider.right	= x + 103 / 6;
 		collider.bottom = y;
 
-		playerImg[(int)EPlayerState::World][0].Draw(hdc, collider.left - unitX / 3 - camera_x, collider.top - unitY * 5 / 7 - camera_y, unitX, unitY, animX, animY, unitX, unitY);
+		grapichs.DrawImage(playerImg[(int)EPlayerState::World][0], collider.left - unitX / 3 - camera_x, collider.top - unitY * 5 / 7 - camera_y, animX, animY, unitX, unitY, Gdiplus::Unit::UnitPixel);
+		//playerImg[(int)EPlayerState::World][0].Draw(hdc, collider.left - unitX / 3 - camera_x, collider.top - unitY * 5 / 7 - camera_y, unitX, unitY, animX, animY, unitX, unitY);
 	}
-
-	Update();
 }
 
 void Player::Update()
@@ -481,6 +508,109 @@ void Player::Update()
 		}
 	}
 	curAnimMax = playerImg[(int)state].size();
+
+	if (isShooting)
+	{
+		clock_t curTime = clock();
+
+		if (curTime - lastShootingTime > 400)
+		{
+			Shooting();
+			lastShootingTime = clock();
+		}
+	}
+
+	if (beAttacked)
+	{
+		clock_t curTime = clock();
+		if (curTime - beAttackedTime > GRACE_PERIOD)
+			beAttacked = false;
+	}
+}
+
+bool Player::Collided(Collider* collider)
+{
+	if (this->collider.IsOverlaps(*collider))
+	{
+		beAttackedTime = clock();
+		beAttacked = true;
+		return true;
+	}
+	return false;
+}
+
+void Player::Shooting()
+{
+	if (isDown)
+	{
+		for (auto bullet : bullets)
+		{
+			if (!bullet->GetisActive())
+			{
+				if (dir.x != 0) bullet->SetBullet(x + dir.x * 80, y - 40, { dir.x, 0 });
+				else
+				{
+					if (lastForward == LAST_FORWARD_IS_LEFT) bullet->SetBullet(x - 80, y - 40, { -1, 0 });
+					else bullet->SetBullet(x + 80, y - 40, { 1, 0 });
+				}
+				break;
+			}
+		}
+	}
+
+	else if (isLockin)
+	{
+		for (auto bullet : bullets)
+		{
+			if (!bullet->GetisActive())
+			{
+				if (dir.x == 0)
+				{
+					if (dir.y == -1) bullet->SetBullet(x + 35, y + 120 * dir.y, { dir.x, dir.y });
+					else if (dir.y == 1) bullet->SetBullet(x + 35, y + 10 * dir.y, { dir.x, dir.y });
+					else
+					{
+						if (lastForward == LAST_FORWARD_IS_LEFT) bullet->SetBullet(x - 80, y - 80, { -1, dir.y });
+						else bullet->SetBullet(x + 80, y - 80, { 1, dir.y });
+					}
+				}
+				else
+				{
+					if (dir.y == 0) bullet->SetBullet(x + dir.x * 80, y - 80, dir);
+					else if (dir.y == -1) bullet->SetBullet(x + dir.x * 60, y - 110, dir);
+					else bullet->SetBullet(x + dir.x * 60, y - 20, dir);
+				}
+				break;
+			}
+		}
+	}
+
+	else
+	{
+		for (auto bullet : bullets)
+		{
+			if (!bullet->GetisActive())
+			{
+				if (dir.x == 0)
+				{
+					if (dir.y == -1) bullet->SetBullet(x + 35, y + 120 * dir.y, { dir.x, dir.y });
+					else
+					{
+						if (lastForward == LAST_FORWARD_IS_LEFT) bullet->SetBullet(x - 80, y - 80, { -1, dir.y });
+						else bullet->SetBullet(x + 80, y - 80, { 1, dir.y });
+					}
+				}
+				else
+				{
+					if (dir.y != 0)
+						bullet->SetBullet(x + dir.x * 90, y + 100 * dir.y, dir);
+					else bullet->SetBullet(x + dir.x * 80, y - 80, dir);
+				}
+				break;
+			}
+		}
+	}
+	lastShootingTime = clock();
 }
 
 void Player::SetCameraPos(int x, int y)
@@ -742,78 +872,7 @@ void Player::SetIsShooting(bool isShooting)
 	this->isShooting = isShooting;
 
 	if (isShooting)
-	{
-		if (isDown)
-		{
-			for (auto bullet : bullets)
-			{
-				if (!bullet->GetisActive())
-				{
-					if (dir.x != 0) bullet->SetBullet(x + dir.x * 80, y - 40, { dir.x, 0 });
-					else
-					{
-						if (lastForward == LAST_FORWARD_IS_LEFT) bullet->SetBullet(x - 80, y - 40, { -1, 0 });
-						else bullet->SetBullet(x + 80, y - 40, { 1, 0 });
-					}
-					break;
-				}
-			}
-		}
-
-		else if (isLockin)
-		{
-			for (auto bullet : bullets)
-			{
-				if (!bullet->GetisActive())
-				{
-					if (dir.x == 0)
-					{
-						if (dir.y == -1) bullet->SetBullet(x + 35, y + 120 * dir.y, { dir.x, dir.y });
-						else if (dir.y == 1) bullet->SetBullet(x + 35, y + 10 * dir.y, { dir.x, dir.y });
-						else
-						{
-							if (lastForward == LAST_FORWARD_IS_LEFT) bullet->SetBullet(x - 80, y - 80, { -1, dir.y });
-							else bullet->SetBullet(x + 80, y - 80, { 1, dir.y });
-						}
-					}
-					else
-					{
-						if (dir.y == 0) bullet->SetBullet(x + dir.x * 80, y - 80, dir);
-						else if (dir.y == -1) bullet->SetBullet(x + dir.x * 60, y - 110, dir);
-						else bullet->SetBullet(x + dir.x * 60, y - 20, dir);
-					}
-					break;
-				}
-			}
-		}
-
-		else
-		{
-			for (auto bullet : bullets)
-			{
-				if (!bullet->GetisActive())
-				{
-					if (dir.x == 0)
-					{
-						if (dir.y == -1) bullet->SetBullet(x + 35, y + 120 * dir.y, { dir.x, dir.y });
-						else
-						{
-							if (lastForward == LAST_FORWARD_IS_LEFT) bullet->SetBullet(x - 80, y - 80, { -1, dir.y });
-							else bullet->SetBullet(x + 80, y - 80, { 1, dir.y });
-						}
-					}
-					else
-					{
-						if ( dir.y != 0)
-							bullet->SetBullet(x + dir.x * 90, y + 100 * dir.y, dir);
-						else bullet->SetBullet(x + dir.x * 80, y - 80, dir);
-					}
-					break;
-				}
-			}
-		}
-
-	}
+		Shooting();
 
 	curAnimCnt = 0;
 	curAnimMax = playerImg[(int)state].size();

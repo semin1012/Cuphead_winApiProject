@@ -14,6 +14,7 @@ using namespace std;
 #define DASH_SPEED (3.0)
 
 #define BULLET_MAX_COUNT 50
+#define GRACE_PERIOD 1000
 
 enum class EPlayerState
 {
@@ -128,14 +129,17 @@ private:
 
 	float					speed;
 	clock_t					startChangeStateTime;
+	clock_t					lastShootingTime;
 
 	EPlayerState			state;
 	EPlayerState			prevState;
 	EPlayerWorldState		worldState;
 	EWorldSpriteY			worldSpriteY;
-	vector<vector<CImage>>	playerImg;
+	vector<vector<Image*>>	playerImg;
 
 	Collider				collider;
+	bool					beAttacked;
+	clock_t					beAttackedTime;
 
 public:
 	POINT					dir = { 0, 0 };
@@ -150,10 +154,12 @@ public:
 	Player(int x, int y);
 	~Player();
 
-	void		Draw(HDC& hdc);
+	void		Draw(HDC& hdc, Graphics& grapichs);
 	void		Update();
 	Collider*	GetCollider()								{ return &collider; }	
+	bool		Collided(Collider* collider);
 
+	void		Shooting();
 	void		SetCameraPos(int x, int y);
 	void		SetCameraPosX(int x);
 	void		SetCameraPosY(int y);

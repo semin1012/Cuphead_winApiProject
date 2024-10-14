@@ -12,6 +12,7 @@ GameManager::GameManager(RECT* rectView)
 	bMouseDrag = false;
 
 	player = nullptr;
+	boss = nullptr;
 
 	background = new TitleMap();
 	background->SetRectView(*rectView);
@@ -170,6 +171,12 @@ void GameManager::Draw(HDC& hdc)
 			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
 		} 
 
+		if (boss != nullptr)
+		{
+			Collider* collider = boss->GetCollider();
+			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
+		}
+
 		SelectObject(hdc, oldBrush);
 		SelectObject(hdc, hOldPen);
 		DeleteObject(myBrush);
@@ -177,10 +184,8 @@ void GameManager::Draw(HDC& hdc)
 	}
 #pragma endregion
 
- 	if (player != nullptr)
-		player->Draw(hdc);
-
 	Gdi_Draw(hdc);
+
 
 #pragma region Fade Effect
 	static bool effectOut = false;
@@ -210,10 +215,27 @@ void GameManager::Update()
 {
 	if (player != nullptr)
 	{
+		player->Update();
 		if (player->GetJumpDust())
 		{
 			player->SetJumpDust(false);
 			effects.push_back(new EffectObject(EEffectType::JumpDownDust, player->GetXPos(), player->GetYPos()));
+		}
+
+		if (boss != nullptr)
+		{
+			boss->Update();
+
+			for (auto bullet : player->GetBullets())
+			{
+				if (bullet->GetisActive() && !bullet->GetIsCollided())
+				{
+					if (bullet->Collided(boss->GetCollider()))
+						boss->BeAttacked();
+				}
+			}
+
+			player->Collided(boss->GetCollider());
 		}
 	}
 }
@@ -484,6 +506,7 @@ void GameManager::SetStage(int stage)
 	SetCameraPos(0, 0);
 
 	player->SetStage();
+	boss = new Boss();
 }
 
 void GameManager::SetMouseDeltaPos(HWND& hWnd)
@@ -545,8 +568,16 @@ void GameManager::Gdi_Draw(HDC hdc)
 {
 	Graphics graphics(hdc);
 
-	if (player != nullptr && !player->GetBullets().empty())
+	if (boss != nullptr)
 	{
+		boss->Draw(hdc, graphics);
+	}
+
+
+	if (player != nullptr)
+	{
+		player->Draw(hdc, graphics);
+
 		for (auto bullet : player->GetBullets())
 		{
 			if (bullet->GetisActive())

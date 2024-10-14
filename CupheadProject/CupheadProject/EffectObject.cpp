@@ -81,11 +81,11 @@ void EffectObject::CreateImage(EEffectType type)
 	switch (type)
 	{
 	case EEffectType::JumpUpDust:
-		_tcscpy(temp, L"../Resource/Image/Cuphead/Jump/Dust/cuphead_jump_dust_a_000");
+		_tcscpy(temp, L"../Resource/Image/Cuphead/Jump/Dust/cuphead_jump_dust_a_00");
 		ParsingToImagePath(type, 14, temp, 1);
 		break;
 	case EEffectType::JumpDownDust:
-		_tcscpy(temp, L"../Resource/Image/Cuphead/Jump/Dust/cuphead_jump_dust_b_000");
+		_tcscpy(temp, L"../Resource/Image/Cuphead/Jump/Dust/cuphead_jump_dust_b_00");
 		ParsingToImagePath(type, 14, temp, 1);
 		break;
 	}
@@ -110,8 +110,11 @@ void EffectObject::ParsingToImagePath(EEffectType state, int spriteSize, TCHAR* 
 
 		wchar_t num[3];
 		if (j < 10)
+		{
 			_tcscpy(num, std::to_wstring(0).c_str());
-		_tcscpy(num, std::to_wstring(j).c_str());
+			_tcscat(num, std::to_wstring(j).c_str());
+		}
+		else _tcscpy(num, std::to_wstring(j).c_str());
 		_tcscat(temp, num);
 		_tcscat(temp, L".png");
 

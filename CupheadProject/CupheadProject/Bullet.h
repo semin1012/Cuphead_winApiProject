@@ -26,6 +26,7 @@ class Bullet
 	int						spawnAnimCnt;
 	bool					isActive;
 	bool					isSpecialAttack;
+	bool					isCollided;
 	POINT					dir;
 	clock_t					createTime;
 	clock_t					animLastTime;
@@ -39,10 +40,12 @@ public:
 
 	void		SetBullet(int x, int y, POINT dir, bool isSpecialAttack = false);
 	void		Draw(HDC& hdc, Graphics& graphics);
+	bool		Collided(Collider* collider);
 	void		CreateImage();
 	void		ParsingToImagePath(EBulletState fireBall, int spriteSize, TCHAR* path, int startNum);
 
 	Collider*	GetCollider();
 	bool		GetisActive()		{ return isActive; }
+	bool		GetIsCollided()		{ return isCollided; }
 };
 
