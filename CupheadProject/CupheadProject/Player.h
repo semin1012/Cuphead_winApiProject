@@ -119,7 +119,7 @@ private:
 	bool					isLockin;
 	bool					isSpecialAttack;
 	bool					isSpecialAttackAndJump;
-	bool					lastForward;	// 1Àº right, 0Àº left
+	bool					lastForward;
 
 	const int				JumpMaxPower = 55;
 	int						curJumpPower;
