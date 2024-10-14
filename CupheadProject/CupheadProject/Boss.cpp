@@ -12,7 +12,7 @@ Boss::Boss()
 	state = EBossState::Intro;
 	dirX = 0;
 	drawCollider = { 0, 0,0, 0 };
-	beAttacked = false;
+	isHit = false;
 	CreateImage();	
 }
 
@@ -64,7 +64,7 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 	collider.top	= y - 200;
 	collider.bottom = y;
 
-	if (beAttacked)
+	if (isHit)
 	{
 		ImageAttributes imgAttr;
 		ColorMatrix colorMatrix =
@@ -84,11 +84,11 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 
 void Boss::Update()
 {
-	if (beAttacked)
+	if (isHit)
 	{
 		clock_t curTime = clock();
-		if (curTime - beAttackedTime > 100)
-			beAttacked = false;
+		if (curTime - isHitTime > 100)
+			isHit = false;
 	}
 }
 
@@ -126,8 +126,8 @@ void Boss::ParsingToImagePath(EBossState state, int spriteSize, TCHAR* path, int
 
 }
 
-void Boss::BeAttacked()
+void Boss::Hit()
 {
-	beAttacked = true;
-	beAttackedTime = clock();
+	isHit = true;
+	isHitTime = clock();
 }

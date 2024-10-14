@@ -22,8 +22,8 @@ class Boss
 	EBossState				state;
 	Collider				drawCollider;
 	Collider				collider;
-	bool					beAttacked;
-	clock_t					beAttackedTime;
+	bool					isHit;
+	clock_t					isHitTime;
 	
 public:
 	Boss();
@@ -33,7 +33,7 @@ public:
 	void		Update();
 	void		CreateImage();
 	void		ParsingToImagePath(EBossState state, int spriteSize, TCHAR* path, int startNum);
-	void		BeAttacked();
+	void		Hit();
 
 	Collider*	GetCollider()		{ return &collider; }
 };

@@ -20,6 +20,9 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::Idle, PLAYER_IDEL_SIZE, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/R_cuphead_idle_000");
 	ParsingToImagePath(EPlayerState::IdleLeft, PLAYER_IDEL_SIZE, path, 1);
+	// intro
+	_tcscpy(path, L"../Resource/Image/Cuphead/Intro/cuphead_intro_a_00");
+	ParsingToImagePath(EPlayerState::Intro, 28, path, 1);
 	// run
 	_tcscpy(path, L"../Resource/Image/Cuphead/Run/cuphead_run_00");
 	ParsingToImagePath(EPlayerState::RightRun, 16, path, 1);
@@ -129,6 +132,11 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::AirSCAttackDown, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_up_air_000");
 	ParsingToImagePath(EPlayerState::AirSCAttackUp, 6, path, 1);
+	// Hit
+	_tcscpy(path, L"../Resource/Image/Cuphead/Hit/cuphead_hit_000");
+	ParsingToImagePath(EPlayerState::HitRight, 6, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Hit/R_cuphead_hit_000");
+	ParsingToImagePath(EPlayerState::HitLeft, 6, path, 1);
 
 #pragma endregion
 
@@ -188,8 +196,11 @@ Player::Player()
 	setJumpDust = false;
 	lastForward = LAST_FORWARD_IS_RIGHT;
 	speed = 1;
-	beAttacked = false;
-	beAttackedTime = clock();
+	isHit = false;
+	isHitTime = clock();
+	bInput = true;
+	startStage = false;
+	isGrace = false;
 	for (int i = 0; i < BULLET_MAX_COUNT; i++)
 	{
 		Bullet* bullet = new Bullet();
@@ -224,8 +235,11 @@ Player::Player(int x, int y)
 	lastForward = LAST_FORWARD_IS_RIGHT;
 	setJumpDust = false;
 	speed = 1;
-	beAttacked = false;
-	beAttackedTime = clock();
+	isHit = false;
+	isHitTime = clock();
+	bInput = true;
+	startStage = false;
+	isGrace = false;
 	for (int i = 0; i < BULLET_MAX_COUNT; i++)
 	{
 		Bullet* bullet = new Bullet();
@@ -262,6 +276,15 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 			curAnimCnt++;
 			lastTime = clock();
 
+			if (state == EPlayerState::HitLeft || state == EPlayerState::HitRight)
+			{
+				if (curAnimCnt >= curAnimMax)
+				{
+					curAnimCnt = 0;
+					isHit = false;
+				}
+			}
+
 			if (curAnimMax <= curAnimCnt)
 			{
 				curAnimCnt = 0;
@@ -284,7 +307,7 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 		collider.right = x + width / 2;
 		collider.bottom = y;
 
-		if (beAttacked)
+		if (isGrace && !isDashing)
 		{
 			ImageAttributes imgAttr;
 			ColorMatrix colorMatrix =
@@ -293,15 +316,13 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 				0.0f, 0.7f, 0.0f, 0.0f, 0.0f,
 				0.0f, 0.0f, 0.7f, 0.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-				0.3f, 0.3f, 0.3f, 0.0f, 1.0f
+				0.0f, 0.0f, 0.0f, 0.0f, 1.0f
 			};
 			imgAttr.SetColorMatrix(&colorMatrix);
 
 			grapichs.DrawImage(playerImg[(int)state][curAnimCnt], Rect(collider.left, collider.top, width, height), 0, 0, width, height, UnitPixel, &imgAttr);
 		}
 		else grapichs.DrawImage(playerImg[(int)state][curAnimCnt], collider.left, collider.top, width, height);
-		//playerImg[(int)state][curAnimCnt].AlphaBlend(hdc, POINT{ collider.left, collider.top }, 177);
-		//playerImg[(int)state][curAnimCnt].Draw(hdc, collider.left, collider.top);
 	}
 
 	// 월드라면
@@ -386,6 +407,19 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 
 void Player::Update()
 {
+	if (startStage)
+	{
+		clock_t curTime = clock();
+
+		if (curTime - startChangeStateTime > STAGE_READY_TIME)
+		{
+			startStage = false;
+			bInput = true;
+			state = EPlayerState::Idle;
+		}
+		return;
+	}
+
 	if (!isShooting && isJumping)
 	{
 		if (!isDashing && !isSpecialAttack)
@@ -409,19 +443,6 @@ void Player::Update()
 				isSpecialAttackAndJump = true;
 			}
 		}
-		if (!isSpecialAttack)
-		{
-			switch (dir.x)
-			{
-			case -1:
-				state = EPlayerState::LeftJump;
-				break;
-			case 1:
-			case 0:
-				state = EPlayerState::RightJump;
-				break;
-			}
-		}
 
 		if (y >= GROUND_POSITION_Y)
 		{
@@ -430,17 +451,20 @@ void Player::Update()
 			isJumping = false;
 			y = GROUND_POSITION_Y;
 			setJumpDust = true;
-			switch (dir.y)
+			if (!isHit)
 			{
-			case 0:
-				state = EPlayerState::Idle;
-				break;
-			case -1:
-				state = EPlayerState::LeftRun;
-				break;
-			case 1:
-				state = EPlayerState::RightRun;
-				break;
+				switch (dir.y)
+				{
+				case 0:
+					state = EPlayerState::Idle;
+					break;
+				case -1:
+					state = EPlayerState::LeftRun;
+					break;
+				case 1:
+					state = EPlayerState::RightRun;
+					break;
+				}
 			}
 		}
 	}
@@ -449,6 +473,7 @@ void Player::Update()
 	{
 		clock_t curTime = clock();
 		curJumpPower = 0;
+		isGrace = true;
 		switch (dir.x)
 		{
 		case 1:
@@ -462,8 +487,9 @@ void Player::Update()
 			else state = EPlayerState::LeftDash;
 			break;
 		}
-		if (curTime - startChangeStateTime > 350)
+		if (curTime - startChangeStateTime > 400)
 		{
+			isGrace = false;
 			isDashing = false;
 			speed = 1.0f;
 			switch (dir.x)
@@ -520,11 +546,13 @@ void Player::Update()
 		}
 	}
 
-	if (beAttacked)
+	if (isGrace && !isDashing)
 	{
 		clock_t curTime = clock();
-		if (curTime - beAttackedTime > GRACE_PERIOD)
-			beAttacked = false;
+		if (curTime - isHitTime > GRACE_PERIOD)
+		{
+			isGrace = false;
+		}
 	}
 }
 
@@ -532,8 +560,18 @@ bool Player::Collided(Collider* collider)
 {
 	if (this->collider.IsOverlaps(*collider))
 	{
-		beAttackedTime = clock();
-		beAttacked = true;
+		isHitTime = clock();
+		isGrace = true;
+		isHit = true;
+		if (dir.x == -1)
+			state = EPlayerState::HitLeft;
+		else if (dir.x == 0)
+		{
+			if (lastForward == LAST_FORWARD_IS_LEFT) state = EPlayerState::HitLeft;
+			else state = EPlayerState::HitRight;
+		}
+		else state = EPlayerState::HitRight;
+		curAnimCnt = 0;
 		return true;
 	}
 	return false;
@@ -819,6 +857,7 @@ void Player::SetIsDashing(bool isDashing)
 	ReadyToSetState();
 
 	this->isDashing = isDashing;
+	isGrace = true;
 	if (dir.x == -1)
 		state = EPlayerState::LeftDash;
 	else state = EPlayerState::RightDash;
@@ -1003,8 +1042,6 @@ void Player::SetIsSpecialAttack(bool isSpecialAttack)
 		}
 #pragma endregion
 
-
-
 		curAnimCnt = 0;
 		curAnimMax = playerImg[(int)state].size();
 	}
@@ -1032,6 +1069,10 @@ void Player::SetStage()
 	x = WINDOWS_WIDTH / 2 - 300;
 	y = GROUND_POSITION_Y;
 	SetInWorld(false);
+	bInput = false;
+	startStage = true;
+	startChangeStateTime = clock();
+	state = EPlayerState::Intro;
 }
 
 bool Player::CanMoveDirX()

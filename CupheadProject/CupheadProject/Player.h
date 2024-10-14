@@ -11,14 +11,15 @@ using namespace std;
 #define WORLD_SPRITE_SIZE_Y 8
 
 #define GROUND_POSITION_Y 700
-#define DASH_SPEED (3.0)
+#define DASH_SPEED (4.0)
 
 #define BULLET_MAX_COUNT 50
-#define GRACE_PERIOD 1000
+#define GRACE_PERIOD 2000
 
 enum class EPlayerState
 {
 	World = 0,
+	Intro,
 	Idle,
 	IdleLeft,
 	RightRun,
@@ -71,6 +72,8 @@ enum class EPlayerState
 	AirSCAttackLeftDown,
 	AirSCAttackUp,
 	AirSCAttackDown,
+	HitRight,
+	HitLeft,
 	Max
 };
 
@@ -123,6 +126,8 @@ private:
 	bool					isSpecialAttackAndJump;
 	bool					lastForward;
 	bool					setJumpDust;
+	bool					bInput;
+	bool					startStage;
 
 	const int				JumpMaxPower = 55;
 	int						curJumpPower;
@@ -138,8 +143,9 @@ private:
 	vector<vector<Image*>>	playerImg;
 
 	Collider				collider;
-	bool					beAttacked;
-	clock_t					beAttackedTime;
+	bool					isHit;
+	bool					isGrace;
+	clock_t					isHitTime;
 
 public:
 	POINT					dir = { 0, 0 };
@@ -193,6 +199,10 @@ public:
 	void		SetLastForward(bool lastForward);
 	bool		GetJumpDust()								{ return setJumpDust; }
 	void		SetJumpDust(bool jumpDust)					{ setJumpDust = jumpDust; }
+	bool		GetCanInput()								{ return bInput; }
+	void		SetCanInput(bool bInput)					{ this->bInput = bInput; }
+	bool		GetIsHit()									{ return isHit; }
+	bool		GetIsGraceTime()							{ return isGrace; }
 
 	bool		ReadyToSetState();
 

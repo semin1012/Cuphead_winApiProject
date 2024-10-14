@@ -41,6 +41,8 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				fadeEffect = new FadeEffect();
 			break;
 		}
+		if (!player->GetCanInput() || player->GetIsHit())
+			break;
 		if (!GetIsWorld() && !GetIsTitle())
 		{
 			switch (wParam)
@@ -90,6 +92,8 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (wParam == VK_DOWN && player->GetIsDown())
 				player->SetIsDown(false);
 		}
+		if (!player->GetCanInput() || player->GetIsHit())
+			break;
 		switch (wParam)
 		{
 		case VK_LEFT:
@@ -231,11 +235,12 @@ void GameManager::Update()
 				if (bullet->GetisActive() && !bullet->GetIsCollided())
 				{
 					if (bullet->Collided(boss->GetCollider()))
-						boss->BeAttacked();
+						boss->Hit();
 				}
 			}
 
-			player->Collided(boss->GetCollider());
+			if (!player->GetIsGraceTime() && player->GetCanInput())
+				player->Collided(boss->GetCollider());
 		}
 	}
 }

@@ -305,6 +305,12 @@ VOID KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
     if (gameMgr->GetPlayer() == nullptr)
         return;
 
+    if (!gameMgr->GetPlayer()->GetCanInput())
+        return;
+
+    if (gameMgr->GetPlayer()->GetIsHit()) 
+        return;
+
     if (gameMgr->GetMouseDragState())
         gameMgr->DragAndMoveWorldMap(hWnd);
 
