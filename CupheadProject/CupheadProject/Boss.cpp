@@ -96,7 +96,7 @@ void Boss::CreateImage()
 {
 	images.resize((int)EBossState::Max);
 	
-	TCHAR temp[128] = L"../Resource/Image/Boss/Goopy/slime_intro_00";
+	TCHAR temp[128] = L"../Resource/Image/Boss/Goopy/Intro/slime_intro_00";
 	ParsingToImagePath(EBossState::Intro, 27, temp, 1);
 	curAnimMax = images[(int)state].size();
 }

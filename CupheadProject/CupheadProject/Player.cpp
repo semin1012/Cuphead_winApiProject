@@ -7,9 +7,6 @@ void Player::CreateImage()
 	playerImg.resize((int)EPlayerState::Max);
 
 	// Image Load
-	//playerImg[(int)EPlayerState::World].resize(1);
-	//playerImg[(int)EPlayerState::World][0].Load(L"../Resource/Image/Cuphead/CupHead_Word01.png");
-
 	playerImg[(int)EPlayerState::World].resize(1);
 	Image* pImg = new Image(L"../Resource/Image/Cuphead/CupHead_Word01.png");
 	playerImg[(int)EPlayerState::World][0] = pImg;
@@ -159,7 +156,6 @@ void Player::ParsingToImagePath(EPlayerState state, int spriteSize, TCHAR* path,
 		_tcscat(temp, num);
 		_tcscat(temp, L".png");
 
-		//playerImg[(int)state][i].Load(temp);
 		Image* pImg = new Image(temp);
 		playerImg[(int)state][i] = pImg;
 
@@ -402,15 +398,7 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 		collider.bottom = y;
 		Rect rect = {x - unitX / 2 - camera_x, y - camera_y - unitY * 6 / 7, unitX, unitY };
 
-		//Gdiplus::Matrix mat;
-		//mat.Scale(2.5f, 2.5f);
-		//grapichs.SetTransform(&mat);
-
-		//grapichs.DrawImage(playerImg[(int)EPlayerState::World][0], rect, animX, animY, unitX, unitY, UnitPixel);
 		grapichs.DrawImage(playerImg[(int)EPlayerState::World][0], rect, animX, animY, unitX, unitY, Gdiplus::Unit::UnitPixel);
-
-		//Status DrawImage(Image* image, const Rect& destRect, INT srcx, INT srcy, INT srcwidth, INT srcheight, Unit srcUnit, ImageAttributes* imageAttributes, DrawImageAbort callback, VOID* callbackData);
-		//playerImg[(int)EPlayerState::World][0].Draw(hdc, collider.left - unitX / 3 - camera_x, collider.top - unitY * 5 / 7 - camera_y, unitX, unitY, animX, animY, unitX, unitY);
 	}
 }
 

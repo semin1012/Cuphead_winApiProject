@@ -13,6 +13,7 @@
 #include "Bullet.h"
 #include "Boss.h"
 #include "EffectObject.h"
+#include "FrontImage.h"
 #define TILE_SIZE 30
 
 class GameManager
@@ -22,6 +23,7 @@ private:
 	Background*				background;
 	Player*					player;
 	Boss*					boss;
+	FrontImage*				frontImage;
 	bool					debugMode;
 	RECT					cameraView;
 	int						camera_x;

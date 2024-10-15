@@ -20,6 +20,7 @@ GameManager::GameManager(RECT* rectView)
 	isWorld = false;
 	isStage = false;
 	fadeEffect = nullptr;
+	frontImage = nullptr;
 
 	SetCameraPos(camera_x, camera_y);
 }
@@ -217,6 +218,15 @@ void GameManager::Draw(HDC& hdc)
 
 void GameManager::Update()
 {
+	if (frontImage != nullptr)
+	{
+		if (frontImage->GetIsActive() == false)
+		{
+			delete frontImage;
+			frontImage = nullptr;
+		}
+	}
+
 	if (player != nullptr)
 	{
 		player->Update();
@@ -473,14 +483,12 @@ void GameManager::SetIsTitle(bool isTitle)
 		isWorld = true;
 		delete background;
 
-		// TODO:
-		//background = new WorldMap();
 		background = new WorldMap();
 		background->SetRectView(*rectView);
 		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
 
 		// TODO:
-		//SetStage(1);
+		SetStage(1);
 	}
 }
 
@@ -496,8 +504,6 @@ void GameManager::SetIsStage(bool isStage)
 
 void GameManager::SetStage(int stage)
 {
-	std::cout << "Set Stage()\n";
-
 	isWorld = false;
 	isStage = true;
 	stage = 1;
@@ -512,6 +518,8 @@ void GameManager::SetStage(int stage)
 
 	player->SetStage();
 	boss = new Boss();
+
+	frontImage = new FrontImage();
 }
 
 void GameManager::SetMouseDeltaPos(HWND& hWnd)
@@ -604,6 +612,11 @@ void GameManager::Gdi_Draw(HDC hdc)
 				it++;
 			}
 		}
+	}
+
+	if (frontImage != nullptr)
+	{
+		frontImage->Draw(hdc, graphics);
 	}
 }
 
