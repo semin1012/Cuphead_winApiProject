@@ -4,7 +4,7 @@
 #include "Player.h"
 #include <vector>
 
-#define PATTERN_1_TIME 3000
+#define PATTERN_1_TIME 4000
 
 enum class EBossState
 {

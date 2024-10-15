@@ -160,10 +160,13 @@ void Boss::CheckAnimCount()
 			else if (state == EBossState::AirUpTurn)
 			{
 				ChangeState(EBossState::Jump);
+				SetJumpState();
 			}
 			else if (state == EBossState::Punch)
 			{
+				startChangeStateTime = clock();
 				bAttackCollider = false;
+				curAnimCnt = 0;
 				SetJumpDirection();
 			}
 			curAnimCnt = 0;
@@ -186,11 +189,14 @@ void Boss::Jump()
 	if (y >= 700)
 	{
 		targetX = player->GetXPos();
-		SetJumpDirection();
-		SetJumpState();
-
 		if (curTime - startChangeStateTime >= PATTERN_1_TIME)
 			SetPunchState();
+		else
+		{
+			SetJumpDirection();
+			SetJumpState();
+		}
+
 		isJumping = false;
 		y = 700;
 	}
@@ -223,8 +229,11 @@ void Boss::SetJumpDirection()
 				images[i][j]->RotateFlip(RotateFlipType::RotateNoneFlipX);
 		}
 	}
-	else if (state != EBossState::Jump && state != EBossState::AirUp)
+	else if (state != EBossState::Jump && state != EBossState::AirUp && state != EBossState::AirDown)
+	{
+		SetJumpState();
 		ChangeState(EBossState::Jump);
+	}
 }
 
 void Boss::SetPlayer(Player* player)
@@ -259,7 +268,6 @@ void Boss::SetPunchState()
 {
 	curAnimCnt = 0;
 	state = EBossState::Punch;
-	startChangeStateTime = clock();
 	bAttackCollider = true;
 }
 
