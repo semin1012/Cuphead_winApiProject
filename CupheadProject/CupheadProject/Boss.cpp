@@ -147,7 +147,24 @@ void Boss::CheckAnimCount()
 
 	if (curTime - animLastTime > 33)
 	{
-		curAnimCnt++;
+		if (state == EBossState::Punch)
+		{
+			if (curAnimCnt == 6 && curTime - animLastTime > 800)
+			{
+				curAnimCnt++;
+				animLastTime = clock();
+			}
+			else if ( curAnimCnt != 6)
+			{
+				curAnimCnt++;
+				animLastTime = clock();
+			}
+		}
+		else 
+		{
+			curAnimCnt++;
+			animLastTime = clock();
+		}
 
 		if (curAnimCnt >= curAnimMax)
 		{
@@ -171,8 +188,6 @@ void Boss::CheckAnimCount()
 			}
 			curAnimCnt = 0;
 		}
-
-		animLastTime = clock();
 	}
 }
 
@@ -189,11 +204,12 @@ void Boss::Jump()
 	if (y >= 700)
 	{
 		targetX = player->GetXPos();
+		state = EBossState::Jump;
+		SetJumpDirection();
 		if (curTime - startChangeStateTime >= PATTERN_1_TIME)
 			SetPunchState();
 		else
 		{
-			SetJumpDirection();
 			SetJumpState();
 		}
 
@@ -217,6 +233,11 @@ void Boss::SetJumpDirection()
 		dirX = 1;
 	else dirX = -1;
 
+	if (state != EBossState::Jump && state != EBossState::AirUp && state != EBossState::AirDown)
+	{
+		SetJumpState();
+		ChangeState(EBossState::Jump);
+	}
 	if (dirX != prevDirX)
 	{
 		curAnimCnt = 0;
@@ -228,11 +249,6 @@ void Boss::SetJumpDirection()
 			for (int j = 0; j < images[i].size(); j++)
 				images[i][j]->RotateFlip(RotateFlipType::RotateNoneFlipX);
 		}
-	}
-	else if (state != EBossState::Jump && state != EBossState::AirUp && state != EBossState::AirDown)
-	{
-		SetJumpState();
-		ChangeState(EBossState::Jump);
 	}
 }
 
