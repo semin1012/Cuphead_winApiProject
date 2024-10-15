@@ -518,6 +518,7 @@ void GameManager::SetStage(int stage)
 
 	player->SetStage();
 	boss = new Boss();
+	boss->SetPlayer(player);
 
 	frontImage = new FrontImage();
 }
