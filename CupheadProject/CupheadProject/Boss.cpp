@@ -16,6 +16,7 @@ Boss::Boss()
 	isJumping = false;
 	startChangeStateTime = clock();
 	targetX = 0;
+	bAttackCollider = false;
 	CreateImage();	
 }
 
@@ -31,6 +32,10 @@ void Boss::CreateImage()
 	ParsingToImagePath(EBossState::AirUp, 3, temp, 1);
 	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase1/Air Down/slime_air_down_00");
 	ParsingToImagePath(EBossState::AirDown, 3, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase1/Air Up Turn/slime_air_up_turn_00");
+	ParsingToImagePath(EBossState::AirUpTurn, 3, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase1/Punch/slime_punch_00");
+	ParsingToImagePath(EBossState::Punch, 16, temp, 1);
 
 	curAnimMax = images[(int)state].size();
 }
@@ -62,10 +67,27 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 	}
 	else 
 	{
-		drawCollider.left = x - width / 2;
-		drawCollider.right = x + width / 2;
 		drawCollider.top = y - height;
 		drawCollider.bottom = y;
+		if (state == EBossState::Punch)
+		{
+			if (dirX == -1)
+			{
+				drawCollider.left = x - 100;
+				drawCollider.right = x + width - 100;
+			}
+			else
+			{
+				drawCollider.left = x - width + 100;
+				drawCollider.right = x + 100;
+			}
+			collider = drawCollider;
+		}
+		else
+		{
+			drawCollider.left = x - width / 2;
+			drawCollider.right = x + width / 2;
+		}
 	}
 
 	if (isHit)
@@ -89,6 +111,7 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 void Boss::Update()
 {
 	CheckAnimCount();
+	clock_t curTime = clock();
 
 	if (isHit)
 	{
@@ -98,12 +121,17 @@ void Boss::Update()
 	}
 
 	if (isJumping)
-		Jump();
+	{
+		SetJumpDirection();
+		if (state != EBossState::AirUpTurn)
+			Jump();
+	}
 
 	if (state == EBossState::Intro)
 		ChangeFromStartState();
 
-	SetCollider();
+	if (!bAttackCollider)
+		SetCollider();
 }
 
 void Boss::Hit()
@@ -117,7 +145,7 @@ void Boss::CheckAnimCount()
 	clock_t curTime = clock();
 	curAnimMax = images[(int)state].size();
 
-	if (curTime - animLastTime > 50)
+	if (curTime - animLastTime > 33)
 	{
 		curAnimCnt++;
 
@@ -125,9 +153,18 @@ void Boss::CheckAnimCount()
 		{
 			if (state == EBossState::Jump)
 			{
-				state = EBossState::AirUp;
 				targetX = player->GetXPos();
 				isJumping = true;
+				ChangeState(EBossState::AirUp);
+			}
+			else if (state == EBossState::AirUpTurn)
+			{
+				ChangeState(EBossState::Jump);
+			}
+			else if (state == EBossState::Punch)
+			{
+				bAttackCollider = false;
+				SetJumpDirection();
 			}
 			curAnimCnt = 0;
 		}
@@ -138,36 +175,56 @@ void Boss::CheckAnimCount()
 
 void Boss::Jump()
 {
-	int prevXPos = x;
-	int prevDirX = dirX;
+	clock_t curTime = clock();
+	x = Lerp(x, targetX, 0.07f);
 	y -= curJumpPower;
 	curJumpPower -= 5;
-	x = Lerp(x, targetX, 0.07f);
 
-	if (prevXPos - x >= 0)
+	if (curJumpPower <= 0)
+		ChangeState(EBossState::AirDown);
+
+	if (y >= 700)
+	{
+		targetX = player->GetXPos();
+		SetJumpDirection();
+		SetJumpState();
+
+		if (curTime - startChangeStateTime >= PATTERN_1_TIME)
+			SetPunchState();
+		isJumping = false;
+		y = 700;
+	}
+}
+
+void Boss::Turn()
+{
+
+}
+
+void Boss::SetJumpDirection()
+{
+	prevXPos = x;
+	prevDirX = dirX;
+	int tempX = Lerp(x, targetX, 0.07f);
+
+	if (prevXPos - tempX >= 0)
 		dirX = 1;
 	else dirX = -1;
 
 	if (dirX != prevDirX)
 	{
+		curAnimCnt = 0;
+
+		ChangeState(EBossState::AirUpTurn);
+
 		for (int i = 0; i < images.size(); i++)
 		{
 			for (int j = 0; j < images[i].size(); j++)
-			{
 				images[i][j]->RotateFlip(RotateFlipType::RotateNoneFlipX);
-			}
 		}
 	}
-
-	if (curJumpPower <= 0)
-		state = EBossState::AirDown;
-
-	if (y >= 700)
-	{
-		SetJumpState();
-		isJumping = false;
-		y = 700;
-	}
+	else if (state != EBossState::Jump && state != EBossState::AirUp)
+		ChangeState(EBossState::Jump);
 }
 
 void Boss::SetPlayer(Player* player)
@@ -180,14 +237,30 @@ void Boss::ChangeFromStartState()
 	clock_t curTime = clock();
 
 	if (curTime - startChangeStateTime > STAGE_READY_TIME)
+	{
+		ChangeState(EBossState::Jump);
 		SetJumpState();
+	}
+}
+
+void Boss::ChangeState(EBossState state)
+{
+	this->state = state;
+	curAnimCnt = 0;
 }
 
 void Boss::SetJumpState()
 {
-	state = EBossState::Jump;
 	curAnimCnt = 0;
 	curJumpPower = JumpMaxPower;
+}
+
+void Boss::SetPunchState()
+{
+	curAnimCnt = 0;
+	state = EBossState::Punch;
+	startChangeStateTime = clock();
+	bAttackCollider = true;
 }
 
 void Boss::SetCollider()
