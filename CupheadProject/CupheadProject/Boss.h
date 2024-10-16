@@ -2,9 +2,11 @@
 #include "framework.h"
 #include "Collider.h"
 #include "Player.h"
+#include "Bullet.h"
 #include <vector>
 
 #define PATTERN_1_TIME 4000
+#define HEALTH 10
 
 enum class EBossState
 {
@@ -14,12 +16,29 @@ enum class EBossState
 	AirDown,
 	Punch,
 	AirUpTurn,
+	TransitionToPh,
+	Max
+};
+
+enum class EBossStateSprite
+{
+	Intro,
+	Jump,
+	AirUp,
+	AirDown,
+	Punch,
+	AirUpTurn,
+	TransitionToPh2,
+	Ph2Jump,
 	Max
 };
 
 class Boss
 {
 	std::vector<std::vector<Image*>> images;
+
+	float					hp;
+
 	Player*					player;
 	int						x;
 	int						targetX;
@@ -32,6 +51,7 @@ class Boss
 	int						prevDirX;
 	clock_t					animLastTime;
 	EBossState				state;
+	EBossStateSprite		animState;
 	Collider				drawCollider;
 	Collider				collider;
 	bool					isHit;
@@ -50,14 +70,16 @@ public:
 
 	void		SetPlayer(Player* player);
 	void		CreateImage();
-	void		ParsingToImagePath(EBossState state, int spriteSize, TCHAR* path, int startNum);
+	void		ParsingToImagePath(EBossStateSprite state, int spriteSize, TCHAR* path, int startNum);
 	void		ChangeFromStartState();
 	void		ChangeState(EBossState state);
+	void		CheckAnimState();
 	void		CheckAnimCount();
+	void		CheckHp();
 
 	void		Draw(HDC& hdc, Graphics& graphics);
 	void		Update();
-	void		Hit();
+	void		Hit(Bullet* bullet);
 	void		Jump();
 	void		Turn();
 	void		SetJumpDirection();

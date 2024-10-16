@@ -45,7 +45,8 @@ public:
 	void		ParsingToImagePath(EBulletState fireBall, int spriteSize, TCHAR* path, int startNum);
 
 	Collider*	GetCollider();
-	bool		GetisActive()		{ return isActive; }
-	bool		GetIsCollided()		{ return isCollided; }
+	bool		GetisActive()			{ return isActive; }
+	bool		GetIsCollided()			{ return isCollided; }
+	bool		GetIsSpecialAttack()	{ return isSpecialAttack; }
 };
 

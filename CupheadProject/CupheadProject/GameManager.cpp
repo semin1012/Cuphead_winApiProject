@@ -245,7 +245,7 @@ void GameManager::Update()
 				if (bullet->GetisActive() && !bullet->GetIsCollided())
 				{
 					if (bullet->Collided(boss->GetCollider()))
-						boss->Hit();
+						boss->Hit(bullet);
 				}
 			}
 
