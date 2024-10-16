@@ -14,12 +14,14 @@
 #include "Boss.h"
 #include "EffectObject.h"
 #include "FrontImage.h"
+#include "ParryObject.h"
 #define TILE_SIZE 30
 
 class GameManager
 {
 private:
-	std::vector<EffectObject*> effects;
+	std::vector<EffectObject*>	effects;
+	std::vector<ParryObject*>	parryObjects;
 	Background*				background;
 	Player*					player;
 	Boss*					boss;

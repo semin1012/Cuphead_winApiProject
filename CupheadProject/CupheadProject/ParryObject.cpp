@@ -3,7 +3,6 @@
 
 ParryObject::ParryObject()
 {
-	player = nullptr;
 	x = 0;
 	y = 0;
 	curAnimMax = 0;
@@ -15,11 +14,10 @@ ParryObject::ParryObject()
 	CreateImage();
 }
 
-ParryObject::ParryObject(int x, int y, Player* player) : ParryObject()
+ParryObject::ParryObject(int x, int y) : ParryObject()
 {
 	this->x = x;
 	this->y = y;
-	this->player = player;
 }
 
 ParryObject::~ParryObject()
@@ -37,9 +35,9 @@ void ParryObject::Draw(HDC& hdc, Graphics& graphics)
 {
 	graphics.ResetTransform();
 	clock_t curTime = clock();
-	curAnimMax = images.size();
+	curAnimMax = images[(int)state].size();
 
-	if (curTime - animLastTime > 20)
+	if (curTime - animLastTime > 50)
 	{
 		curAnimCnt++;
 
@@ -58,16 +56,25 @@ void ParryObject::Draw(HDC& hdc, Graphics& graphics)
 	int width = images[(int)state][curAnimCnt]->GetWidth();
 	int height = images[(int)state][curAnimCnt]->GetHeight();
 
-	collider.left = x - width / 2;
-	collider.top = y - height / 2;
-	collider.right = x + width / 2;
-	collider.bottom = y + height / 2;
+	collider.left = x - width / 2 + 10;
+	collider.top = y - height / 2 + 30;
+	collider.right = x + width / 2 - 10;
+	collider.bottom = y + height / 2 - 30;
 
-	graphics.DrawImage(images[(int)state][curAnimCnt], collider.left, collider.top, width, height);
+	graphics.DrawImage(images[(int)state][curAnimCnt], collider.left - 10, collider.top - 30, width, height);
+}
+
+bool ParryObject::Collided(Player* player)
+{
+	if (collider.IsOverlaps(*player->GetCollider()))
+		return true;
+	return false;
 }
 
 void ParryObject::CreateImage()
 {
+	images.resize(2);
+
 	TCHAR path[128] = L"../Resource/Image/Parry/c_slime_question_mark_00";
 	ParsingToImagePath(EParryType::QuestionMark, 7, path, 1);
 	_tcscpy(path, L"../Resource/Image/Parry/cuphead_slap_spark_00");
@@ -98,4 +105,12 @@ void ParryObject::ParsingToImagePath(EParryType state, int spriteSize, TCHAR* pa
 		Image* pImg = new Image(temp);
 		images[(int)state][i] = pImg;
 	}
+}
+
+bool ParryObject::StartAnimation()
+{
+	clock_t curTime = clock();
+	if (curTime - createTime > 700)
+		return true;
+	return false;
 }

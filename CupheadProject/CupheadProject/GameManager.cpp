@@ -51,7 +51,22 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 'Z':
 			case 'z':
 				if (!player->GetIsJumping() && !player->GetIsDashing() && !player->GetIsSpecialAttack())
+				{
 					player->SetIsJumping(true);
+				}
+				if (!parryObjects.empty())
+				{
+					for (auto it = parryObjects.begin(); it < parryObjects.end(); )
+					{
+						ParryObject* obj = *it;
+						if (obj->Collided(player))
+						{
+							player->Parry();
+							it = parryObjects.erase(it);
+						}
+						else it++;
+					}
+				}
 				break;
 			case VK_SHIFT:
 				if (!player->GetIsDashing() && player->dir.x != 0 && !player->GetIsSpecialAttack())
@@ -182,6 +197,15 @@ void GameManager::Draw(HDC& hdc)
 			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
 		}
 
+		if (!parryObjects.empty())
+		{
+			for (auto obj : parryObjects)
+			{
+				Collider* collider = obj->GetCollider();
+				Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
+			}
+		}
+
 		SelectObject(hdc, oldBrush);
 		SelectObject(hdc, hOldPen);
 		DeleteObject(myBrush);
@@ -190,7 +214,6 @@ void GameManager::Draw(HDC& hdc)
 #pragma endregion
 
 	Gdi_Draw(hdc);
-
 
 #pragma region Fade Effect
 	static bool effectOut = false;
@@ -239,6 +262,17 @@ void GameManager::Update()
 		if (boss != nullptr)
 		{
 			boss->Update();
+
+			if (boss->GetIsTransitionToPhase())
+			{
+				int dir = 0;
+				if (boss->GetXDirection() == -1)
+					dir = 100;
+				parryObjects.push_back(new ParryObject(boss->GetXPosition() - 150 + dir, 400));
+				parryObjects.push_back(new ParryObject(boss->GetXPosition() + dir, 300));
+				parryObjects.push_back(new ParryObject(boss->GetXPosition() + 150 + dir, 400));
+				boss->SetIsShowParry(true);
+			}
 
 			for (auto bullet : player->GetBullets())
 			{
@@ -610,6 +644,22 @@ void GameManager::Gdi_Draw(HDC hdc)
 			else
 			{
 				effect->Draw(hdc, graphics);
+				it++;
+			}
+		}
+	}
+
+	if (!parryObjects.empty())
+	{
+		for (auto it = parryObjects.begin(); it != parryObjects.end(); )
+		{
+			ParryObject* parry = (*it);
+			if (!parry->GetIsActive())
+				it = parryObjects.erase(it);
+			else
+			{
+				if (parry->StartAnimation())
+					parry->Draw(hdc, graphics);
 				it++;
 			}
 		}

@@ -19,6 +19,7 @@ Boss::Boss()
 	startChangeStateTime = clock();
 	targetX = 0;
 	bAttackCollider = false;
+	isShowParry = false;
 	hp = HEALTH;
 	CreateImage();	
 }
@@ -165,7 +166,6 @@ void Boss::Hit(Bullet* bullet)
 	if (bullet->GetIsSpecialAttack())
 		hp -= 5;
 	else hp -= 1;
-	printf("phase: %d, hp: %f\n", phase, hp);
 }
 
 void Boss::CheckAnimCount()
@@ -192,7 +192,7 @@ void Boss::CheckAnimCount()
 		{
 			if (curAnimCnt == 36)
 			{
-				if (curTime - startChangeStateTime > 3000)
+				if (curTime - startChangeStateTime > 4000)
 				{
 					curAnimCnt++;
 				}
@@ -237,6 +237,8 @@ void Boss::CheckAnimCount()
 			}
 			else if (state == EBossState::TransitionToPh)
 			{
+				bAttackCollider = true;
+				phase = 2;
 				ChangeState(EBossState::Jump);
 			}
 			curAnimCnt = 0;
@@ -252,11 +254,11 @@ void Boss::CheckHp()
 		phase = 3;
 	else if (hp * 3 < HEALTH * 2 && phase == 1 && !isJumping)
 	{
-		if (phase != 2)
+		if (phase != 2 && state != EBossState::TransitionToPh)
 		{
-			phase = 2;
 			state = EBossState::TransitionToPh;
 			startChangeStateTime = clock();
+			bAttackCollider = false;
 		}
 	}
 }
@@ -402,6 +404,11 @@ void Boss::SetPunchState()
 	curAnimCnt = 0;
 	state = EBossState::Punch;
 	bAttackCollider = true;
+}
+
+bool Boss::GetIsTransitionToPhase()
+{
+	return (state == EBossState::TransitionToPh && !isShowParry);
 }
 
 void Boss::SetCollider()

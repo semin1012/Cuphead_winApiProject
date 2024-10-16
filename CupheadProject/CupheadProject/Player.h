@@ -76,6 +76,10 @@ enum class EPlayerState
 	AirSCAttackDown,
 	HitRight,
 	HitLeft,
+	ParryRight,
+	ParryLeft,
+	ParryPinkRight,
+	ParryPinkLeft,
 	Max
 };
 
@@ -115,6 +119,7 @@ private:
 	int						camera_y;
 	int						curAnimMax;
 	int						curAnimCnt;
+	int						specialAttackCount;
 	clock_t					lastTime;
 	bool					inWorld;
 
@@ -126,6 +131,8 @@ private:
 	bool					isLockin;
 	bool					isSpecialAttack;
 	bool					isSpecialAttackAndJump;
+	bool					isParry;
+	bool					isDoubleParry;
 	bool					lastForward;
 	bool					setJumpDust;
 	bool					bInput;
@@ -184,6 +191,7 @@ public:
 	int			GetYPos()									{ return y; }
 	void		SetXPos(int x);
 	void		SetYPos(int y);
+	void		Parry();
 
 	bool		GetIsJumping()								{ return isJumping; }
 	void		SetIsJumping(bool isJumping);

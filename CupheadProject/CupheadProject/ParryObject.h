@@ -14,7 +14,6 @@ enum class EParryType
 class ParryObject
 {
 	std::vector<std::vector<Image*>> images;
-	Player*				player;
 	Collider			collider;
 	int					x;
 	int					y;
@@ -27,12 +26,15 @@ class ParryObject
 
 public:
 	ParryObject();
-	ParryObject(int x, int y, Player* player);
+	ParryObject(int x, int y);
 	~ParryObject();
 
 	void		Draw(HDC& hdc, Graphics& graphics);
+	bool		Collided(Player* player);
 
 	void		CreateImage();
 	void		ParsingToImagePath(EParryType state, int spriteSize, TCHAR* path, int startNum);
+	bool		StartAnimation();
 	bool		GetIsActive()		{ return isActive; }
+	Collider*	GetCollider()		{ return &collider; }
 };

@@ -62,6 +62,7 @@ class Boss
 	bool					bAttackCollider;
 	clock_t					isHitTime;
 	clock_t					startChangeStateTime;
+	bool					isShowParry;
 	
 	bool					isJumping;
 	const int				JumpMaxPower = 65;
@@ -87,12 +88,16 @@ public:
 	void		Jump();
 	void		Turn();
 	void		SetJumpDirection();
-	bool		GetIsPunch()		{ return state == EBossState::Punch; }
+	bool		GetIsPunch()				{ return state == EBossState::Punch; }
 
 	void		SetCollider();
 	void		SetJumpState();
 	void		SetPunchState();
-	bool		GetIsJumping()		{ return isJumping; }
-	Collider*	GetCollider()		{ return &collider; }
+	void		SetIsShowParry(bool parry)		{ this->isShowParry = parry; }
+	bool		GetIsJumping()				{ return isJumping; }
+	Collider*	GetCollider()				{ return &collider; }
+	int			GetXPosition()				{ return x; };
+	bool		GetIsTransitionToPhase();
+	int			GetXDirection()				{ return dirX; }
 };
 

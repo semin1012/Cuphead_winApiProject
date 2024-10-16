@@ -135,6 +135,16 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::HitRight, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Hit/R_cuphead_hit_000");
 	ParsingToImagePath(EPlayerState::HitLeft, 6, path, 1);
+	// Parry
+	_tcscpy(path, L"../Resource/Image/Cuphead/Parry/cuphead_parry_000");
+	ParsingToImagePath(EPlayerState::ParryRight, 8, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Parry/R_cuphead_parry_000");
+	ParsingToImagePath(EPlayerState::ParryLeft, 8, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Parry/cuphead_parry_pink_000");
+	ParsingToImagePath(EPlayerState::ParryPinkRight, 8, path, 1);
+	_tcscpy(path, L"../Resource/Image/Cuphead/Parry/R_cuphead_parry_pink_000");
+	ParsingToImagePath(EPlayerState::ParryPinkLeft, 8, path, 1);
+
 
 #pragma endregion
 
@@ -198,6 +208,9 @@ Player::Player()
 	bInput = true;
 	startStage = false;
 	isGrace = false;
+	isParry = false;
+	isDoubleParry = false;
+	specialAttackCount = 0;
 	for (int i = 0; i < BULLET_MAX_COUNT; i++)
 	{
 		Bullet* bullet = new Bullet();
@@ -206,43 +219,10 @@ Player::Player()
 	CreateImage();
 }
 
-Player::Player(int x, int y)
+Player::Player(int x, int y) : Player()
 {
-	worldState = EPlayerWorldState::Idle;
-	state = EPlayerState::World;
-	collider.left = 0;
-	collider.top = 0;
-	collider.right = 0;
-	collider.bottom = 0;
-	curAnimCnt = 0;
 	this->x = x; 
 	this->y = y;
-	inWorld = true;
-	camera_x = WORLD_START_POINT_X;
-	camera_y = WORLD_START_POINT_Y;
-	lastTime = clock();
-	isJumping = false;
-	isDashing = false;
-	isDashAndJump = false;
-	isDown = false;
-	isShooting = false;
-	isLockin = false;
-	isSpecialAttack = false;
-	isSpecialAttackAndJump = false;
-	lastForward = LAST_FORWARD_IS_RIGHT;
-	setJumpDust = false;
-	speed = 1;
-	isHit = false;
-	isHitTime = clock();
-	bInput = true;
-	startStage = false;
-	isGrace = false;
-	for (int i = 0; i < BULLET_MAX_COUNT; i++)
-	{
-		Bullet* bullet = new Bullet();
-		bullets.push_back(bullet);
-	}
-	CreateImage();
 }
 
 Player::~Player()
@@ -254,7 +234,6 @@ Player::~Player()
 			delete (img);
 		}
 	}
-
 	playerImg.clear();
 }
 
@@ -282,7 +261,6 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 					isHit = false;
 				}
 			}
-
 			if (curAnimMax <= curAnimCnt)
 			{
 				curAnimCnt = 0;
@@ -317,7 +295,6 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 				0.0f, 0.0f, 0.0f, 0.0f, 1.0f
 			};
 			imgAttr.SetColorMatrix(&colorMatrix);
-
 			grapichs.DrawImage(playerImg[(int)state][curAnimCnt], Rect(collider.left, collider.top, width, height), 0, 0, width, height, UnitPixel, &imgAttr);
 		}
 		else grapichs.DrawImage(playerImg[(int)state][curAnimCnt], collider.left, collider.top, width, height);
@@ -346,7 +323,6 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 				lastTime = clock();
 			}
 		}
-
 		else
 		{
 			if (curTime - lastTime > 33)
@@ -386,7 +362,6 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 			}
 			
 		}
-
 
 		int animX = unitX * curAnimCnt;
 		int animY = unitY * (int)worldSpriteY;
@@ -441,21 +416,38 @@ void Player::Update()
 				isSpecialAttackAndJump = true;
 			}
 		}
-		if (!isSpecialAttack && !isHit)
+		if (!isSpecialAttack && !isHit )
 		{
-			switch (dir.x)
+			if (isParry)
 			{
-			case -1:
-				state = EPlayerState::LeftJump;
-				break;
-			case 1:
-			case 0:
-				state = EPlayerState::RightJump;
-				break;
+				switch (dir.x)
+				{
+				case -1:
+					break;
+				case 1:
+					break;
+				case 0:
+					break;
+				}
+			}
+			else
+			{
+				switch (dir.x)
+				{
+				case -1:
+					state = EPlayerState::LeftJump;
+					break;
+				case 1:
+				case 0:
+					state = EPlayerState::RightJump;
+					break;
+				}
 			}
 		}
 		if (y >= GROUND_POSITION_Y)
 		{
+			isParry = false;
+			isDoubleParry = false;
 			if (isDashAndJump) isDashAndJump = false;
 			if (isSpecialAttackAndJump) isSpecialAttackAndJump = false;
 			isJumping = false;
@@ -849,6 +841,47 @@ void Player::SetXPos(int x)
 void Player::SetYPos(int y)
 {
 	this->y = y;
+}
+
+void Player::Parry()
+{
+	SetIsJumping(true);
+	if (isParry)
+	{
+		isDoubleParry = true;
+		switch (dir.x)
+		{
+		case 0:
+			if (lastForward == LAST_FORWARD_IS_LEFT)
+				state = EPlayerState::ParryPinkLeft;
+			else state = EPlayerState::ParryPinkRight;
+			break;
+		case 1:
+			state = EPlayerState::ParryPinkRight;
+			break;
+		case -1:
+			state = EPlayerState::ParryPinkLeft;
+			break;
+		}
+	}
+	else
+	{
+		switch (dir.x)
+		{
+		case 0:
+			if (lastForward == LAST_FORWARD_IS_LEFT)
+				state = EPlayerState::ParryLeft;
+			else state = EPlayerState::ParryRight;
+			break;
+		case 1:
+			state = EPlayerState::ParryRight;
+			break;
+		case -1:
+			state = EPlayerState::ParryLeft;
+			break;
+		}
+	}
+	isParry = true;
 }
 
 void Player::SetIsJumping(bool isJumping)
