@@ -18,6 +18,7 @@ enum class EBossState
 	Punch,
 	AirUpTurn,
 	TransitionToPh,
+	Slime,
 	Max
 };
 
@@ -36,6 +37,7 @@ enum class EBossStateSprite
 	Ph2Punch,
 	Ph2AirUpTurn,
 	TransitionToPh3,
+	Slime,
 	Max
 };
 

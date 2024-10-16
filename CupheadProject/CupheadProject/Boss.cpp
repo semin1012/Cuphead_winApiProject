@@ -55,6 +55,8 @@ void Boss::CreateImage()
 	ParsingToImagePath(EBossStateSprite::Ph2AirUpTurn, 3, temp, 1);
 	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Death/lg_slime_death_00");
 	ParsingToImagePath(EBossStateSprite::TransitionToPh3, 20, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Death/Slime/lg_slime_explode_00");
+	ParsingToImagePath(EBossStateSprite::Slime, 16, temp, 1);
 
 	curAnimMax = images[(int)animState].size();
 }
@@ -215,10 +217,17 @@ void Boss::CheckAnimCount()
 		}
 		else 
 		{
+			if (state == EBossState::TransitionToPh)
+			{
+				if (curTime - startChangeStateTime >= 3000)
+				{
+					ChangeState(EBossState::Slime);
+					isPossibleCollision = true;
+				}
+			}
 			curAnimCnt++;
 			animLastTime = clock();
 		}
-
 
 		if (curAnimCnt >= curAnimMax)
 		{
@@ -242,9 +251,9 @@ void Boss::CheckAnimCount()
 			}
 			else if (state == EBossState::TransitionToPh)
 			{
-				isPossibleCollision = true;
 				if (phase == 1)
 				{
+					isPossibleCollision = true;
 					phase = 2;
 					ChangeState(EBossState::Jump);
 				}
@@ -262,6 +271,7 @@ void Boss::CheckHp()
 	{
 		isPossibleCollision = false;
 		state = EBossState::TransitionToPh;
+		startChangeStateTime = clock();
 		bAttackCollider = false;
 		phase = 3;
 	}
@@ -399,6 +409,9 @@ void Boss::CheckAnimState()
 		if (phase == 1)
 			animState = EBossStateSprite::TransitionToPh2;
 		else animState = EBossStateSprite::TransitionToPh3;
+		break;
+	case EBossState::Slime:
+		animState = EBossStateSprite::Slime;
 		break;
 	}
 }
