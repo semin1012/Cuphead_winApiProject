@@ -19,6 +19,7 @@ Boss::Boss()
 	startChangeStateTime = clock();
 	targetX = 0;
 	bAttackCollider = false;
+	isPossibleCollision = true;
 	isShowParry = false;
 	hp = HEALTH;
 	CreateImage();	
@@ -52,6 +53,8 @@ void Boss::CreateImage()
 	ParsingToImagePath(EBossStateSprite::Ph2Punch, 19, temp, 1);
 	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Air Up Turn/lg_slime_air_up_turn_00");
 	ParsingToImagePath(EBossStateSprite::Ph2AirUpTurn, 3, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Death/lg_slime_death_00");
+	ParsingToImagePath(EBossStateSprite::TransitionToPh3, 20, temp, 1);
 
 	curAnimMax = images[(int)animState].size();
 }
@@ -73,7 +76,7 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 	int width = images[(int)animState][curAnimCnt]->GetWidth();
 	int height = images[(int)animState][curAnimCnt]->GetHeight();
 
-	if (state == EBossState::Intro || state == EBossState::TransitionToPh)
+	if (state == EBossState::Intro )
 	{
 		drawCollider.top = y - height;
 		drawCollider.bottom = y;
@@ -161,6 +164,8 @@ void Boss::Update()
 
 void Boss::Hit(Bullet* bullet)
 {
+	if (!isPossibleCollision) 
+		return;
 	isHit = true;
 	isHitTime = clock();
 	if (bullet->GetIsSpecialAttack())
@@ -188,11 +193,11 @@ void Boss::CheckAnimCount()
 				animLastTime = clock();
 			}
 		}
-		else if (state == EBossState::TransitionToPh)
+		else if (phase == 1 && state == EBossState::TransitionToPh)
 		{
 			if (curAnimCnt == 36)
 			{
-				if (curTime - startChangeStateTime > 4000)
+				if (curTime - startChangeStateTime > TRANSITION_TIME)
 				{
 					curAnimCnt++;
 				}
@@ -237,9 +242,12 @@ void Boss::CheckAnimCount()
 			}
 			else if (state == EBossState::TransitionToPh)
 			{
-				bAttackCollider = true;
-				phase = 2;
-				ChangeState(EBossState::Jump);
+				isPossibleCollision = true;
+				if (phase == 1)
+				{
+					phase = 2;
+					ChangeState(EBossState::Jump);
+				}
 			}
 			curAnimCnt = 0;
 		}
@@ -251,14 +259,20 @@ void Boss::CheckHp()
 	if (hp <= 0)
 		hp = 0;
 	else if (hp * 3 < HEALTH && phase == 2)
+	{
+		isPossibleCollision = false;
+		state = EBossState::TransitionToPh;
+		bAttackCollider = false;
 		phase = 3;
+	}
 	else if (hp * 3 < HEALTH * 2 && phase == 1 && !isJumping)
 	{
 		if (phase != 2 && state != EBossState::TransitionToPh)
 		{
+			isPossibleCollision = false;
 			state = EBossState::TransitionToPh;
-			startChangeStateTime = clock();
 			bAttackCollider = false;
+			startChangeStateTime = clock();
 		}
 	}
 }
@@ -278,7 +292,7 @@ void Boss::Jump()
 		targetX = player->GetXPos();
 		state = EBossState::Jump;
 		SetJumpDirection();
-		if (curTime - startChangeStateTime >= PATTERN_1_TIME)
+		if (state != EBossState::TransitionToPh &&  curTime - startChangeStateTime >= PATTERN_1_TIME)
 			SetPunchState();
 		else
 		{
@@ -382,7 +396,9 @@ void Boss::CheckAnimState()
 			animState = EBossStateSprite::Ph2Punch;
 		break;
 	case EBossState::TransitionToPh:
-		animState = EBossStateSprite::TransitionToPh2;
+		if (phase == 1)
+			animState = EBossStateSprite::TransitionToPh2;
+		else animState = EBossStateSprite::TransitionToPh3;
 		break;
 	}
 }
@@ -406,9 +422,22 @@ void Boss::SetPunchState()
 	bAttackCollider = true;
 }
 
+Collider* Boss::GetCollider()
+{
+	static Collider temp = { 0, 0, 0, 0 };
+	if (isPossibleCollision)
+		return &collider;
+	return &temp;
+}
+
 bool Boss::GetIsTransitionToPhase()
 {
-	return (state == EBossState::TransitionToPh && !isShowParry);
+	if (state == EBossState::TransitionToPh && !isShowParry)
+	{
+		isShowParry = true;
+		return true;
+	}
+	return false;
 }
 
 void Boss::SetCollider()

@@ -7,6 +7,7 @@
 
 #define PATTERN_1_TIME 4000
 #define HEALTH 10
+#define TRANSITION_TIME 4000
 
 enum class EBossState
 {
@@ -34,6 +35,7 @@ enum class EBossStateSprite
 	Ph2AirDown,
 	Ph2Punch,
 	Ph2AirUpTurn,
+	TransitionToPh3,
 	Max
 };
 
@@ -60,6 +62,7 @@ class Boss
 	Collider				collider;
 	bool					isHit;
 	bool					bAttackCollider;
+	bool					isPossibleCollision;
 	clock_t					isHitTime;
 	clock_t					startChangeStateTime;
 	bool					isShowParry;
@@ -95,7 +98,7 @@ public:
 	void		SetPunchState();
 	void		SetIsShowParry(bool parry)		{ this->isShowParry = parry; }
 	bool		GetIsJumping()				{ return isJumping; }
-	Collider*	GetCollider()				{ return &collider; }
+	Collider*	GetCollider();
 	int			GetXPosition()				{ return x; };
 	bool		GetIsTransitionToPhase();
 	int			GetXDirection()				{ return dirX; }

@@ -63,6 +63,7 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						{
 							player->Parry();
 							it = parryObjects.erase(it);
+							break;
 						}
 						else it++;
 					}
@@ -267,10 +268,10 @@ void GameManager::Update()
 			{
 				int dir = 0;
 				if (boss->GetXDirection() == -1)
-					dir = 100;
-				parryObjects.push_back(new ParryObject(boss->GetXPosition() - 150 + dir, 400));
+					dir = -100;
+				parryObjects.push_back(new ParryObject(boss->GetXPosition() - 170 + dir, 400));
 				parryObjects.push_back(new ParryObject(boss->GetXPosition() + dir, 300));
-				parryObjects.push_back(new ParryObject(boss->GetXPosition() + 150 + dir, 400));
+				parryObjects.push_back(new ParryObject(boss->GetXPosition() + 170 + dir, 400));
 				boss->SetIsShowParry(true);
 			}
 

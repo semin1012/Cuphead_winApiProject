@@ -37,6 +37,9 @@ void ParryObject::Draw(HDC& hdc, Graphics& graphics)
 	clock_t curTime = clock();
 	curAnimMax = images[(int)state].size();
 
+	if (curTime - createTime > 4000)
+		isActive = false;
+
 	if (curTime - animLastTime > 50)
 	{
 		curAnimCnt++;
@@ -55,12 +58,10 @@ void ParryObject::Draw(HDC& hdc, Graphics& graphics)
 
 	int width = images[(int)state][curAnimCnt]->GetWidth();
 	int height = images[(int)state][curAnimCnt]->GetHeight();
-
 	collider.left = x - width / 2 + 10;
 	collider.top = y - height / 2 + 30;
 	collider.right = x + width / 2 - 10;
 	collider.bottom = y + height / 2 - 30;
-
 	graphics.DrawImage(images[(int)state][curAnimCnt], collider.left - 10, collider.top - 30, width, height);
 }
 
