@@ -3,7 +3,9 @@
 #include "framework.h"
 #include "Bullet.h"
 #include "Collider.h"
-using namespace std;
+
+class Boss;
+
 #define PLAYER_IDEL_SIZE 5
 #define PLAYER_IDEL_SIZE 5
 
@@ -140,7 +142,7 @@ private:
 	EPlayerState			prevState;
 	EPlayerWorldState		worldState;
 	EWorldSpriteY			worldSpriteY;
-	vector<vector<Image*>>	playerImg;
+	std::vector<std::vector<Image*>>	playerImg;
 
 	Collider				collider;
 	bool					isHit;
@@ -163,7 +165,7 @@ public:
 	void		Draw(HDC& hdc, Graphics& grapichs);
 	void		Update();
 	Collider*	GetCollider()								{ return &collider; }	
-	bool		Collided(Collider* collider);
+	bool		Collided(Boss* boss);
 
 	void		Shooting();
 	void		SetCameraPos(int x, int y);
@@ -212,6 +214,6 @@ public:
 	EPlayerWorldState	GetWorldState()						{ return worldState; }
 	EPlayerState		GetPlayerState()					{ return state; }
 
-	vector<Bullet*>		GetBullets()						{ return bullets; }
+	std::vector<Bullet*>		GetBullets()						{ return bullets; }
 };
 

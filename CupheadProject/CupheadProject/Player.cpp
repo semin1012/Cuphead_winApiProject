@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Boss.h"
 #include <string>
 using namespace std;
 
@@ -565,10 +566,16 @@ void Player::Update()
 	}
 }
 
-bool Player::Collided(Collider* collider)
+bool Player::Collided(Boss* boss)
 {
-	if (this->collider.IsOverlaps(*collider))
+	if (this->collider.IsOverlaps(*boss->GetCollider()))
 	{
+		if (boss->GetIsPunch())
+		{
+			if (isDown)
+				return false;
+		}
+
 		isHitTime = clock();
 		isGrace = true;
 		isHit = true;

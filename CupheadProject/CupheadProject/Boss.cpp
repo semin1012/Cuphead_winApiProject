@@ -13,7 +13,7 @@ Boss::Boss()
 	state = EBossState::Intro;
 	animState = EBossStateSprite::Intro;
 	dirX = 1;
-	drawCollider = { 0, 0,0, 0 };
+	drawCollider = { 0, 0, 0, 0 };
 	isHit = false;
 	isJumping = false;
 	startChangeStateTime = clock();
@@ -43,6 +43,14 @@ void Boss::CreateImage()
 	ParsingToImagePath(EBossStateSprite::TransitionToPh2, 48, temp, 1);
 	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Jump/lg_slime_jump_00");
 	ParsingToImagePath(EBossStateSprite::Ph2Jump, 8, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Air Up/lg_slime_air_up_00");
+	ParsingToImagePath(EBossStateSprite::Ph2AirUp, 4, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Air Down/lg_slime_air_down_00");
+	ParsingToImagePath(EBossStateSprite::Ph2AirDown, 5, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Punch/lg_slime_punch_00");
+	ParsingToImagePath(EBossStateSprite::Ph2Punch, 19, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Air Up Turn/lg_slime_air_up_turn_00");
+	ParsingToImagePath(EBossStateSprite::Ph2AirUpTurn, 3, temp, 1);
 
 	curAnimMax = images[(int)animState].size();
 }
@@ -87,13 +95,13 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 		{
 			if (dirX == -1)
 			{
-				drawCollider.left = x - 100;
-				drawCollider.right = x + width - 100;
+				drawCollider.left = x - 100 * phase;
+				drawCollider.right = x + width - 100 * phase;
 			}
 			else
 			{
-				drawCollider.left = x - width + 100;
-				drawCollider.right = x + 100;
+				drawCollider.left = x - width + 100 * phase;
+				drawCollider.right = x + 100 * phase;
 			}
 			collider = drawCollider;
 		}
@@ -229,7 +237,7 @@ void Boss::CheckAnimCount()
 			}
 			else if (state == EBossState::TransitionToPh)
 			{
-				//ChangeState(EBossState::)
+				ChangeState(EBossState::Jump);
 			}
 			curAnimCnt = 0;
 		}
@@ -274,7 +282,6 @@ void Boss::Jump()
 		{
 			SetJumpState();
 		}
-
 		isJumping = false;
 		y = 700;
 	}
@@ -282,8 +289,7 @@ void Boss::Jump()
 
 void Boss::Turn()
 {
-
-	ChangeState(EBossState::AirUpTurn);
+	//ChangeState(EBossState::AirUpTurn);
 
 	for (int i = 0; i < images.size(); i++)
 	{
@@ -302,15 +308,15 @@ void Boss::SetJumpDirection()
 		dirX = 1;
 	else dirX = -1;
 
-	if (state != EBossState::Jump && state != EBossState::AirUp && state != EBossState::AirDown)
-	{
-		SetJumpState();
-		ChangeState(EBossState::Jump);
-	}
 	if (dirX != prevDirX)
 	{
 		curAnimCnt = 0;
 		Turn();
+	}
+	else if (state != EBossState::Jump && state != EBossState::AirUp && state != EBossState::AirDown)
+	{
+		SetJumpState();
+		ChangeState(EBossState::Jump);
 	}
 }
 
@@ -344,22 +350,34 @@ void Boss::CheckAnimState()
 		animState = EBossStateSprite::Intro;
 		break;
 	case EBossState::AirDown:
-		if ( phase == 1)
+		if (phase == 1)
+			animState = EBossStateSprite::AirDown;
+		else if (phase == 2)
+			animState = EBossStateSprite::Ph2AirDown;
+		break;
+	case EBossState::AirUp:
+		if (phase == 1)
+			animState = EBossStateSprite::AirUp;
+		else if (phase == 2)
+			animState = EBossStateSprite::Ph2AirUp;
+		break;
+	case EBossState::AirUpTurn:
+		if (phase == 1)
+			animState = EBossStateSprite::AirUpTurn;
+		else if (phase == 2)
+			animState == EBossStateSprite::Ph2AirUpTurn;
+		break;
+	case EBossState::Jump:
+		if (phase == 1)
 			animState = EBossStateSprite::Jump;
 		else if (phase == 2)
 			animState = EBossStateSprite::Ph2Jump;
 		break;
-	case EBossState::AirUp:
-		animState = EBossStateSprite::AirUp;
-		break;
-	case EBossState::AirUpTurn:
-		animState = EBossStateSprite::AirUpTurn;
-		break;
-	case EBossState::Jump:
-		animState = EBossStateSprite::Jump;
-		break;
 	case EBossState::Punch:
-		animState = EBossStateSprite::Punch;
+		if (phase == 1)
+			animState = EBossStateSprite::Punch;
+		else if (phase == 2)
+			animState = EBossStateSprite::Ph2Punch;
 		break;
 	case EBossState::TransitionToPh:
 		animState = EBossStateSprite::TransitionToPh2;
@@ -388,9 +406,10 @@ void Boss::SetPunchState()
 
 void Boss::SetCollider()
 {
-	collider.left = x - 100;
-	collider.right = x + 100;
-	collider.top = y - 200;
+	int temp = phase * 100;
+	collider.left = x - temp;
+	collider.right = x + temp;
+	collider.top = y - temp * 2;
 	collider.bottom = y;
 }
 

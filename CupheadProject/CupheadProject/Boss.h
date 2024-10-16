@@ -1,9 +1,9 @@
 #pragma once
-#include "framework.h"
+#include <vector>
 #include "Collider.h"
 #include "Player.h"
 #include "Bullet.h"
-#include <vector>
+#include "framework.h"
 
 #define PATTERN_1_TIME 4000
 #define HEALTH 10
@@ -30,6 +30,10 @@ enum class EBossStateSprite
 	AirUpTurn,
 	TransitionToPh2,
 	Ph2Jump,
+	Ph2AirUp,
+	Ph2AirDown,
+	Ph2Punch,
+	Ph2AirUpTurn,
 	Max
 };
 
@@ -83,6 +87,7 @@ public:
 	void		Jump();
 	void		Turn();
 	void		SetJumpDirection();
+	bool		GetIsPunch()		{ return state == EBossState::Punch; }
 
 	void		SetCollider();
 	void		SetJumpState();

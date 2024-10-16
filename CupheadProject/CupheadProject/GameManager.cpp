@@ -250,7 +250,7 @@ void GameManager::Update()
 			}
 
 			if (!player->GetIsGraceTime() && player->GetCanInput())
-				player->Collided(boss->GetCollider());
+				player->Collided(boss);
 		}
 	}
 }
