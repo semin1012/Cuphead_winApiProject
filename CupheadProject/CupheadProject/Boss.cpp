@@ -435,7 +435,6 @@ void Boss::ParsingToImagePath(EBossStateSprite state, int spriteSize, TCHAR* pat
 		Image* pImg = new Image(temp);
 		images[(int)state][i] = pImg;
 	}
-
 }
 
 float Boss::Lerp(float a, float b, float alpha)
