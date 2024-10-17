@@ -59,8 +59,10 @@ enum class EBossStateSprite
 enum class EBossEffect
 {
 	MoveDust,
+	MoveDirt,
 	IntroDust,
 	IntroDustBack,
+	SmashDust,
 	Max
 };
 

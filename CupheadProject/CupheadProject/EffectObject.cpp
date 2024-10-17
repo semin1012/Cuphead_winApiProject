@@ -74,6 +74,7 @@ void EffectObject::SetEffect(EEffectType type)
 	if ( type != this->type)
 		CreateImage(type);
 	isActive = true;
+	curAnimCnt = 0;
 }
 
 void EffectObject::CreateImage(EEffectType type)
@@ -97,6 +98,10 @@ void EffectObject::CreateImage(EEffectType type)
 	case EEffectType::BossPh3Intro:
 		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Dust(Intro)/slime_tomb_dust_00");
 		ParsingToImagePath(type, 19, temp, 1);
+		break;
+	case EEffectType::BossPh3MoveDirt:
+		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Move/GroundFX/Dirt/slime_tomb_groundfx_dirt_00");
+		ParsingToImagePath(type, 12, temp, 1);
 		break;
 	case EEffectType::BossPh3MoveDust:
 		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Move/GroundFX/Dust/slime_tomb_groundfx_00");

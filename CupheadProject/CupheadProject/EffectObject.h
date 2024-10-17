@@ -9,6 +9,7 @@ enum class EEffectType
 	JumpDownDust,
 	BossPh3Intro,
 	BossPh3IntroBack,
+	BossPh3MoveDirt,
 	BossPh3MoveDust,
 	BossPh3SmashDust,
 	Max

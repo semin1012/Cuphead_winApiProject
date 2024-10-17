@@ -86,8 +86,10 @@ void Boss::CreateImage()
 	// effect
 	effects.resize((int)EBossEffect::Max);
 	effects[(int)EBossEffect::MoveDust] = new EffectObject(EEffectType::BossPh3MoveDust, x, y, true, false, false);
+	effects[(int)EBossEffect::MoveDirt] = new EffectObject(EEffectType::BossPh3MoveDirt, x, y, true, false, false);
 	effects[(int)EBossEffect::IntroDust] = new EffectObject(EEffectType::BossPh3Intro, x, y, false, false, false);
 	effects[(int)EBossEffect::IntroDustBack] = new EffectObject(EEffectType::BossPh3IntroBack, x, y, false, true, false);
+	effects[(int)EBossEffect::SmashDust] = new EffectObject(EEffectType::BossPh3SmashDust, x, y, false, false, false);
 	//effects.push_back(new EffectObject(EEffectType::BossPh3SmashDust, x, y, false, false, false));
 #pragma endregion
 
@@ -241,8 +243,11 @@ void Boss::Update()
 			ChangeState(EBossState::Move);
 			moveLastTime = clock();
 			startChangeStateTime = clock();
-			if (dirX == 1) 
+			if (dirX == 1)
+			{
 				effects[(int)EBossEffect::MoveDust]->InverseImage();
+				effects[(int)EBossEffect::MoveDirt]->InverseImage();
+			}
 		}
 	}
 
@@ -255,9 +260,10 @@ void Boss::Update()
 
 	if (!effects.empty())
 	{
-		if (effects[(int)EBossEffect::MoveDust] != nullptr && effects[(int)EBossEffect::MoveDust]->GetIsStart())
+		if (effects[(int)EBossEffect::MoveDust]->GetisActive())
 		{
 			effects[(int)EBossEffect::MoveDust]->SetPosition(x, y - 35);
+			effects[(int)EBossEffect::MoveDirt]->SetPosition(x, y - 35);
 		}
 	}
 	CheckHp();
@@ -313,6 +319,13 @@ void Boss::CheckAnimCount()
 				curAnimCnt++;
 				animLastTime = clock();
 			}
+		}
+		else if (state == EBossState::Smash && curAnimCnt == 9)
+		{
+			effects[(int)EBossEffect::SmashDust]->SetIsActive(true);
+			effects[(int)EBossEffect::SmashDust]->SetPosition(x, y - 35);
+			curAnimCnt++;
+			animLastTime = clock();
 		}
 		else 
 		{
@@ -407,7 +420,7 @@ void Boss::SetEffectImagesIn3Phase()
 {
 	for (auto effect : effects)
 	{
-		effect->SetPosition(x, y);
+		effect->SetPosition(x, y - 35);
 		effect->SetIsStart(true);
 	}
 }
@@ -478,7 +491,9 @@ void Boss::Move()
 void Boss::Smash()
 {
 	if (state != EBossState::Smash)
+	{
 		ChangeState(EBossState::Smash);
+	}
 }
 
 void Boss::SetJumpDirection()
@@ -526,17 +541,24 @@ void Boss::ChangeState(EBossState state)
 		if (!effects.empty())
 		{
 			effects[(int)EBossEffect::MoveDust]->SetIsActive(true);
+			effects[(int)EBossEffect::MoveDirt]->SetIsActive(true);
 			moveLastTime = clock();
 		}
 	}
 	else
 	{
 		if (!effects.empty())
+		{
 			effects[(int)EBossEffect::MoveDust]->SetIsActive(false);
+			effects[(int)EBossEffect::MoveDirt]->SetIsActive(false);
+		}
 	}
 
 	if (state == EBossState::Trans)
+	{
 		effects[(int)EBossEffect::MoveDust]->InverseImage();
+		effects[(int)EBossEffect::MoveDirt]->InverseImage();
+	}
 	this->state = state;
 	curAnimCnt = 0;
 }
