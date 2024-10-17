@@ -90,9 +90,9 @@ void Boss::CreateImage()
 	effects[(int)EBossEffect::IntroDust] = new EffectObject(EEffectType::BossPh3Intro, x, y, false, false, false);
 	effects[(int)EBossEffect::IntroDustBack] = new EffectObject(EEffectType::BossPh3IntroBack, x, y, false, true, false);
 	effects[(int)EBossEffect::SmashDust] = new EffectObject(EEffectType::BossPh3SmashDust, x, y, false, false, false);
-	//effects.push_back(new EffectObject(EEffectType::BossPh3SmashDust, x, y, false, false, false));
+	effects[(int)EBossEffect::Ph2JumpDust] = new EffectObject(EEffectType::BossPh2JumpDust, x, y, false, false, false);
 #pragma endregion
-
+	 
 	curAnimMax = images[(int)animState].size();
 }
 
@@ -357,8 +357,9 @@ void Boss::CheckAnimCount()
 			else if (state == EBossState::Punch)
 			{
 				startChangeStateTime = clock();
-				bAttackCollider = false;
 				curAnimCnt = 0;
+				bAttackCollider = false;
+				SetCollider();
 				SetJumpDirection();
 			}
 			else if (state == EBossState::TransitionToPh)
@@ -421,7 +422,7 @@ void Boss::SetEffectImagesIn3Phase()
 	for (auto effect : effects)
 	{
 		effect->SetPosition(x, y - 35);
-		effect->SetIsStart(true);
+		effect->SetIsActive(true);
 	}
 }
 
@@ -443,8 +444,11 @@ void Boss::Jump()
 		if (state != EBossState::TransitionToPh &&  curTime - startChangeStateTime >= PATTERN_1_TIME)
 			SetPunchState();
 		else
-		{
 			SetJumpState();
+		if (phase == 2)
+		{
+			effects[(int)EBossEffect::Ph2JumpDust]->SetIsActive(true);
+			effects[(int)EBossEffect::Ph2JumpDust]->SetPosition(x, y);
 		}
 		isJumping = false;
 		y = 700;
@@ -466,7 +470,7 @@ void Boss::Move()
 {
 	clock_t curTime = clock();
 
-	float distance = (curTime - moveLastTime) * 0.7f;
+	float distance = (curTime - moveLastTime);
 
 	if (dirX == 1)
 		x += (int)distance;

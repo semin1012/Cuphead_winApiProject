@@ -63,6 +63,7 @@ enum class EBossEffect
 	IntroDust,
 	IntroDustBack,
 	SmashDust,
+	Ph2JumpDust,
 	Max
 };
 

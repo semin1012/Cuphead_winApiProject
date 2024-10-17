@@ -8,7 +8,6 @@ EffectObject::EffectObject()
 	isActive = true;
 	isLoop = false;
 	isBack = false;
-	isStart = true;
 	collider = { 0, 0, 0, 0 };
 	type = EEffectType::Max;
 	animLastTime = clock();
@@ -17,14 +16,14 @@ EffectObject::EffectObject()
 	y = 0;
 }
 
-EffectObject::EffectObject(EEffectType type, int x, int y, bool isLoop, bool isBack, bool isStart) : EffectObject()
+EffectObject::EffectObject(EEffectType type, int x, int y, bool isLoop, bool isBack, bool isActive) : EffectObject()
 {
 	this->x = x;
 	this->y = y;
 	this->isLoop = isLoop;
 	this->isBack = isBack;
-	this->isStart = isStart;
 	SetEffect(type);
+	this->isActive = isActive;
 }
 
 EffectObject::~EffectObject()
@@ -36,14 +35,14 @@ EffectObject::~EffectObject()
 
 void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 {
-	if (!isStart || !isActive)
+	if (!isActive)
 		return;
 
 	graphics.ResetTransform();
 	clock_t curTime = clock();
 	curAnimMax = images.size();
 
-	if (curTime - animLastTime > 20)
+	if (curTime - animLastTime > 33)
 	{
 		curAnimCnt++;
 		if (curAnimCnt >= curAnimMax)
@@ -111,6 +110,10 @@ void EffectObject::CreateImage(EEffectType type)
 		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Dust(Intro)/slime_tomb_dust_bk_00");
 		ParsingToImagePath(type, 18, temp, 1);
 		break;
+	case EEffectType::BossPh2JumpDust:
+		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Dust/A/lg_slime_dust_a_00");
+		ParsingToImagePath(type, 16, temp, 1);
+		break;
 	}
 }
 
@@ -161,6 +164,7 @@ void EffectObject::SetPosition(int x, int y)
 void EffectObject::SetIsActive(bool isActive)
 {
 	this->isActive = isActive;
+	curAnimCnt = 0;
 }
 
 bool EffectObject::GetisActive()

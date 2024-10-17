@@ -12,6 +12,7 @@ enum class EEffectType
 	BossPh3MoveDirt,
 	BossPh3MoveDust,
 	BossPh3SmashDust,
+	BossPh2JumpDust,
 	Max
 };
 
@@ -25,7 +26,6 @@ class EffectObject
 	bool				isActive;
 	bool				isLoop;
 	bool				isBack;
-	bool				isStart;
 	Collider			collider;
 	EEffectType			type;
 	clock_t				createTime;
@@ -33,7 +33,7 @@ class EffectObject
 
 public:
 	EffectObject();
-	EffectObject(EEffectType type, int x, int y, bool isLoop = false, bool isBack = false, bool isStart = true);
+	EffectObject(EEffectType type, int x, int y, bool isLoop = false, bool isBack = false, bool isActive = false);
 	~EffectObject();
 	
 	void	Draw(HDC& hdc, Graphics& graphics);
@@ -43,8 +43,6 @@ public:
 	void	InverseImage();
 	void	SetPosition(int x, int y);
 	void	SetIsActive(bool isActive);
-	void	SetIsStart(bool isStart) { this->isStart = isStart; }
-	bool	GetIsStart()			 { return isStart; }
 	bool	GetisActive();
 	bool	GetIsLoop()				 { return isLoop; }
 	bool	GetIsBack()				 { return isBack; }
