@@ -91,6 +91,10 @@ void Boss::CreateImage()
 	effects[(int)EBossEffect::IntroDustBack] = new EffectObject(EEffectType::BossPh3IntroBack, x, y, false, true, false);
 	effects[(int)EBossEffect::SmashDust] = new EffectObject(EEffectType::BossPh3SmashDust, x, y, false, false, false);
 	effects[(int)EBossEffect::Ph2JumpDust] = new EffectObject(EEffectType::BossPh2JumpDust, x, y, false, false, false);
+	effects[(int)EBossEffect::DeathLightning] = new EffectObject(EEffectType::BossDeathLightning, x, y, true, false, false);
+	effects[(int)EBossEffect::DeathStarA] = new EffectObject(EEffectType::BossDeathStarA, x, y, true, false, false);
+	effects[(int)EBossEffect::DeathStarB] = new EffectObject(EEffectType::BossDeathStarB, x, y, true, false, false);
+	effects[(int)EBossEffect::DeathCloud] = new EffectObject(EEffectType::AttackSFX, x, y, true, false, false);
 #pragma endregion
 	 
 	curAnimMax = images[(int)animState].size();
@@ -392,7 +396,16 @@ void Boss::CheckHp()
 	if (hp <= 0 && state != EBossState::Death)
 	{
 		ChangeState(EBossState::Death);
+		isPossibleCollision = false;
 		hp = 0;
+		effects[(int)EBossEffect::DeathLightning]->SetIsActive(true);
+		effects[(int)EBossEffect::DeathStarA]->SetIsActive(true);
+		effects[(int)EBossEffect::DeathStarB]->SetIsActive(true);
+		effects[(int)EBossEffect::DeathCloud]->SetIsActive(true);
+		effects[(int)EBossEffect::DeathLightning]->SetPosition(x + 10, y - 200);
+		effects[(int)EBossEffect::DeathStarA]->SetPosition(x - 40, y - 240);
+		effects[(int)EBossEffect::DeathStarB]->SetPosition(x + 30, y - 180);
+		effects[(int)EBossEffect::DeathCloud]->SetPosition(x + 20, y - 210);
 	}
 	else if (hp * 3 < HEALTH && phase == 2 && !isJumping)
 	{
@@ -421,6 +434,8 @@ void Boss::SetEffectImagesIn3Phase()
 {
 	for (auto effect : effects)
 	{
+		if (effect->GetIsLoop())
+			continue;
 		effect->SetPosition(x, y - 35);
 		effect->SetIsActive(true);
 	}

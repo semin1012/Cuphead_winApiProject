@@ -59,12 +59,10 @@ void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 
 	int width = images[curAnimCnt]->GetWidth();
 	int height = images[curAnimCnt]->GetHeight();
-
 	collider.left = x - width / 2;
 	collider.top = y - height / 2;
 	collider.right = x + width / 2;
 	collider.bottom = y + height / 2;
-
 	graphics.DrawImage(images[curAnimCnt], collider.left, collider.top, width, height);
 }
 
@@ -112,6 +110,22 @@ void EffectObject::CreateImage(EEffectType type)
 		break;
 	case EEffectType::BossPh2JumpDust:
 		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Dust/A/lg_slime_dust_a_00");
+		ParsingToImagePath(type, 16, temp, 1);
+		break;
+	case EEffectType::BossDeathLightning:
+		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Generic/Lightning/lg_generic_lightning_00");
+		ParsingToImagePath(type, 10, temp, 1);
+		break;
+	case EEffectType::BossDeathStarA:
+		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Generic/Star/A/lg_generic_star_a_00");
+		ParsingToImagePath(type, 15, temp, 1);
+		break;
+	case EEffectType::BossDeathStarB:
+		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Generic/Star/B/lg_generic_star_b_00");
+		ParsingToImagePath(type, 14, temp, 1);
+		break;
+	case EEffectType::AttackSFX:
+		_tcscpy(temp, L"../Resource/Image/SFX/cuphead_explode_fx_00");
 		ParsingToImagePath(type, 16, temp, 1);
 		break;
 	}

@@ -258,7 +258,7 @@ void GameManager::Update()
 		if (player->GetJumpDust())
 		{
 			player->SetJumpDust(false);
-			effects.push_back(new EffectObject(EEffectType::JumpDownDust, player->GetXPos(), player->GetYPos()));
+			effects.push_back(new EffectObject(EEffectType::JumpDownDust, player->GetXPos(), player->GetYPos(), false, false, true));
 		}
 
 		if (boss != nullptr)
@@ -524,7 +524,7 @@ void GameManager::SetIsTitle(bool isTitle)
 		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
 
 		// TODO:
-		SetStage(1);
+		//SetStage(1);
 	}
 }
 

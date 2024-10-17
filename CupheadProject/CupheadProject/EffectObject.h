@@ -13,6 +13,10 @@ enum class EEffectType
 	BossPh3MoveDust,
 	BossPh3SmashDust,
 	BossPh2JumpDust,
+	BossDeathLightning,
+	BossDeathStarA,
+	BossDeathStarB,
+	AttackSFX,
 	Max
 };
 
@@ -33,7 +37,7 @@ class EffectObject
 
 public:
 	EffectObject();
-	EffectObject(EEffectType type, int x, int y, bool isLoop = false, bool isBack = false, bool isActive = false);
+	EffectObject(EEffectType type, int x, int y, bool isLoop = false, bool isBack = false, bool isActive = true);
 	~EffectObject();
 	
 	void	Draw(HDC& hdc, Graphics& graphics);
