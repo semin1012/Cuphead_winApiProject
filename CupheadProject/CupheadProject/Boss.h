@@ -9,6 +9,7 @@
 #define HEALTH 10
 #define TRANSITION_TIME 4000
 #define CHANGE_STATE_MOVE 2000
+#define PATTERN_2_TIME 4000
 
 enum class EBossState
 {
@@ -21,6 +22,8 @@ enum class EBossState
 	TransitionToPh,
 	Slime,
 	Move,
+	Death,
+	Smash,
 	Max
 };
 
@@ -44,6 +47,8 @@ enum class EBossStateSprite
 	Ph3Transition,
 	Ph3MoveRight,
 	Ph3MoveLeft,
+	Ph3Death,
+	Ph3Smash,
 	Max
 };
 
@@ -101,6 +106,7 @@ public:
 	void		Jump();
 	void		Turn();
 	void		Move();
+	void		Smash();
 	void		SetJumpDirection();
 	bool		GetIsPunch()				{ return state == EBossState::Punch; }
 

@@ -6,7 +6,7 @@ Boss::Boss()
 {
 	x = 1000;
 	y = 700;
-	phase = 1;
+	phase = 3;
 	curAnimMax = 0;
 	curAnimCnt = 0;
 	animLastTime = clock();
@@ -68,6 +68,10 @@ void Boss::CreateImage()
 	ParsingToImagePath(EBossStateSprite::Ph3MoveLeft, 4, temp, 1);
 	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Move/Right/slime_tomb_rt_move_00");
 	ParsingToImagePath(EBossStateSprite::Ph3MoveRight, 4, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Death/slime_tomb_death_00");
+	ParsingToImagePath(EBossStateSprite::Ph3Death, 6, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Smash/slime_tomb_smash_00");
+	ParsingToImagePath(EBossStateSprite::Ph3Smash, 14, temp, 1);
 
 
 	// transitionImage
@@ -111,6 +115,13 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 			drawCollider.right = x;
 		}
 	}
+	else if (state == EBossState::Smash)
+	{
+		drawCollider.left = x - width / 2;
+		drawCollider.right = x + width / 2;
+		drawCollider.top = y - height + 200;
+		drawCollider.bottom = y + 200;
+	}
 	else 
 	{
 		drawCollider.top = y - height;
@@ -138,13 +149,15 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 
 	if (state == EBossState::Slime && phase == 2)
 	{
-		deltaPosY += 40;
+		deltaPosY += 50;
 		if (deltaPosY >= 700)
 		{
 			deltaPosY = 700;
 			phase = 3;
 			ChangeState(EBossState::Intro);
 			startChangeStateTime = clock();
+			if (dirX == -1)
+				Turn();
 		}
 		int tWidth = transitionImages[0]->GetWidth();
 		int tHeight = transitionImages[0]->GetHeight();
@@ -193,11 +206,18 @@ void Boss::Update()
 	if (state == EBossState::TransitionToPh && phase == 3)
 	{
 		if (curTime - startChangeStateTime >= CHANGE_STATE_MOVE)
+		{
 			ChangeState(EBossState::Move);
+			startChangeStateTime = clock();
+		}
 	}
 
 	if (state == EBossState::Move)
+	{
 		Move();
+		if (curTime - startChangeStateTime >= PATTERN_2_TIME)
+			Smash();
+	}
 
 	if (!bAttackCollider)
 		SetCollider();
@@ -303,6 +323,10 @@ void Boss::CheckAnimCount()
 			{
 				ChangeState(EBossState::TransitionToPh);
 			}
+			else if (state == EBossState::Smash)
+			{
+				startChangeStateTime = clock();
+			}
 			curAnimCnt = 0;
 		}
 	}
@@ -310,8 +334,11 @@ void Boss::CheckAnimCount()
 
 void Boss::CheckHp()
 {
-	if (hp <= 0)
+	if (hp <= 0 && state != EBossState::Death)
+	{
+		ChangeState(EBossState::Death);
 		hp = 0;
+	}
 	else if (hp * 3 < HEALTH && phase == 2 && !isJumping)
 	{
 		if (state != EBossState::Slime && state != EBossState::TransitionToPh && state != EBossState::Intro)
@@ -389,6 +416,12 @@ void Boss::Move()
 		dirX = -1;
 
 	lastTime = clock();
+}
+
+void Boss::Smash()
+{
+	if (state != EBossState::Smash)
+		ChangeState(EBossState::Smash);
 }
 
 void Boss::SetJumpDirection()
@@ -487,6 +520,12 @@ void Boss::CheckAnimState()
 		if (dirX == 1)
 			animState = EBossStateSprite::Ph3MoveRight;
 		else animState = EBossStateSprite::Ph3MoveLeft;
+		break;
+	case EBossState::Death:
+		animState = EBossStateSprite::Ph3Death;
+		break;
+	case EBossState::Smash:
+		animState = EBossStateSprite::Ph3Smash;
 		break;
 	}
 }
