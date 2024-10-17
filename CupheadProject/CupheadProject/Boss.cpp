@@ -22,6 +22,7 @@ Boss::Boss()
 	isPossibleCollision = true;
 	isShowParry = false;
 	hp = HEALTH;
+	deltaPosY = 0;
 	CreateImage();	
 }
 
@@ -57,6 +58,15 @@ void Boss::CreateImage()
 	ParsingToImagePath(EBossStateSprite::TransitionToPh3, 20, temp, 1);
 	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase2/Death/Slime/lg_slime_explode_00");
 	ParsingToImagePath(EBossStateSprite::Slime, 16, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Intro/slime_tomb_slam_00");
+	ParsingToImagePath(EBossStateSprite::Ph3Intro, 4, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Intro/Transition/slime_tomb_trans_00");
+	ParsingToImagePath(EBossStateSprite::Ph3Transition, 3, temp, 1);
+	
+
+	// transitionImage
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Intro/Transition/slime_tomb_trans_00");
+	ParsingToImagePath(1, temp, 1);
 
 	curAnimMax = images[(int)animState].size();
 }
@@ -78,7 +88,7 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 	int width = images[(int)animState][curAnimCnt]->GetWidth();
 	int height = images[(int)animState][curAnimCnt]->GetHeight();
 
-	if (state == EBossState::Intro )
+	if (state == EBossState::Intro && phase != 3)
 	{
 		drawCollider.top = y - height;
 		drawCollider.bottom = y;
@@ -118,6 +128,21 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 		}
 	}
 
+	if (state == EBossState::Slime && phase == 2)
+	{
+		deltaPosY += 30;
+		if (deltaPosY >= 700)
+		{
+			deltaPosY = 700;
+			phase = 3;
+			ChangeState(EBossState::Intro);
+			startChangeStateTime = clock();
+		}
+		int tWidth = transitionImages[0]->GetWidth();
+		int tHeight = transitionImages[0]->GetHeight();
+		graphics.DrawImage(transitionImages[0], x - tWidth / 2, -tHeight + deltaPosY, tWidth, tHeight);
+	}
+
 	if (isHit)
 	{
 		ImageAttributes imgAttr;
@@ -148,15 +173,19 @@ void Boss::Update()
 			isHit = false;
 	}
 
-	if (isJumping)
+	if (isJumping && phase != 3)
 	{
 		SetJumpDirection();
 		if (state != EBossState::AirUpTurn)
 			Jump();
 	}
 
-	if (state == EBossState::Intro)
+	if (state == EBossState::Intro && phase != 3)
 		ChangeFromStartState();
+
+	if (state == EBossState::TransitionToPh && phase == 3)
+	{
+	}
 
 	if (!bAttackCollider)
 		SetCollider();
@@ -217,7 +246,7 @@ void Boss::CheckAnimCount()
 		}
 		else 
 		{
-			if (state == EBossState::TransitionToPh)
+			if (state == EBossState::TransitionToPh && phase != 3)
 			{
 				if (curTime - startChangeStateTime >= 3000)
 				{
@@ -258,6 +287,10 @@ void Boss::CheckAnimCount()
 					ChangeState(EBossState::Jump);
 				}
 			}
+			else if (state == EBossState::Intro && phase == 3)
+			{
+				ChangeState(EBossState::TransitionToPh);
+			}
 			curAnimCnt = 0;
 		}
 	}
@@ -267,13 +300,16 @@ void Boss::CheckHp()
 {
 	if (hp <= 0)
 		hp = 0;
-	else if (hp * 3 < HEALTH && phase == 2)
+	else if (hp * 3 < HEALTH && phase == 2 && !isJumping)
 	{
-		isPossibleCollision = false;
-		state = EBossState::TransitionToPh;
-		startChangeStateTime = clock();
-		bAttackCollider = false;
-		phase = 3;
+		if (state != EBossState::Slime && state != EBossState::TransitionToPh && state != EBossState::Intro)
+		{
+			isPossibleCollision = false;
+			ChangeState(EBossState::TransitionToPh);
+			bAttackCollider = false;
+			startChangeStateTime = clock();
+
+		}
 	}
 	else if (hp * 3 < HEALTH * 2 && phase == 1 && !isJumping)
 	{
@@ -373,7 +409,8 @@ void Boss::CheckAnimState()
 	switch (state)
 	{
 	case EBossState::Intro:
-		animState = EBossStateSprite::Intro;
+		if (phase == 3) animState = EBossStateSprite::Ph3Intro;
+		else animState = EBossStateSprite::Intro;
 		break;
 	case EBossState::AirDown:
 		if (phase == 1)
@@ -408,7 +445,9 @@ void Boss::CheckAnimState()
 	case EBossState::TransitionToPh:
 		if (phase == 1)
 			animState = EBossStateSprite::TransitionToPh2;
-		else animState = EBossStateSprite::TransitionToPh3;
+		else if (phase == 2)
+			animState = EBossStateSprite::TransitionToPh3;
+		else animState = EBossStateSprite::Ph3Transition;
 		break;
 	case EBossState::Slime:
 		animState = EBossStateSprite::Slime;
@@ -483,6 +522,30 @@ void Boss::ParsingToImagePath(EBossStateSprite state, int spriteSize, TCHAR* pat
 
 		Image* pImg = new Image(temp);
 		images[(int)state][i] = pImg;
+	}
+}
+
+void Boss::ParsingToImagePath(int spriteSize, TCHAR* path, int startNum)
+{
+	transitionImages.resize(spriteSize);
+
+	for (int i = 0, j = startNum; i <= spriteSize - startNum; i++, j++)
+	{
+		TCHAR temp[128];
+		_tcscpy(temp, path);
+
+		wchar_t num[3];
+		if (j < 10)
+		{
+			_tcscpy(num, std::to_wstring(0).c_str());
+			_tcscat(num, std::to_wstring(j).c_str());
+		}
+		else _tcscpy(num, std::to_wstring(j).c_str());
+		_tcscat(temp, num);
+		_tcscat(temp, L".png");
+
+		Image* pImg = new Image(temp);
+		transitionImages[i] = pImg;
 	}
 }
 

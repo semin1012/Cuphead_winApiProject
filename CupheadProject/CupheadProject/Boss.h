@@ -38,15 +38,18 @@ enum class EBossStateSprite
 	Ph2AirUpTurn,
 	TransitionToPh3,
 	Slime,
+	Ph3Intro,
+	Ph3Transition,
+
 	Max
 };
 
 class Boss
 {
 	std::vector<std::vector<Image*>> images;
+	std::vector<Image*>				 transitionImages;
 
 	float					hp;
-
 	Player*					player;
 	int						x;
 	int						targetX;
@@ -55,6 +58,7 @@ class Boss
 	int						curAnimMax;
 	int						curAnimCnt;
 	int						dirX;
+	int						deltaPosY;
 	int						prevXPos;
 	int						prevDirX;
 	clock_t					animLastTime;
@@ -81,6 +85,7 @@ public:
 	void		SetPlayer(Player* player);
 	void		CreateImage();
 	void		ParsingToImagePath(EBossStateSprite state, int spriteSize, TCHAR* path, int startNum);
+	void		ParsingToImagePath(int spriteSize, TCHAR* path, int startNum);
 	void		ChangeFromStartState();
 	void		ChangeState(EBossState state);
 	void		CheckAnimState();
@@ -98,7 +103,7 @@ public:
 	void		SetCollider();
 	void		SetJumpState();
 	void		SetPunchState();
-	void		SetIsShowParry(bool parry)		{ this->isShowParry = parry; }
+	void		SetIsShowParry(bool parry)	{ this->isShowParry = parry; }
 	bool		GetIsJumping()				{ return isJumping; }
 	Collider*	GetCollider();
 	int			GetXPosition()				{ return x; };
