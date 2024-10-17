@@ -3,13 +3,14 @@
 #include "Collider.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "EffectObject.h"
 #include "framework.h"
 
 #define PATTERN_1_TIME 4000
 #define HEALTH 10
 #define TRANSITION_TIME 4000
 #define CHANGE_STATE_MOVE 2000
-#define PATTERN_2_TIME 4000
+#define PATTERN_2_TIME 3000
 
 enum class EBossState
 {
@@ -24,6 +25,7 @@ enum class EBossState
 	Move,
 	Death,
 	Smash,
+	Trans,
 	Max
 };
 
@@ -49,6 +51,16 @@ enum class EBossStateSprite
 	Ph3MoveLeft,
 	Ph3Death,
 	Ph3Smash,
+	TransLeft,
+	TransRight,
+	Max
+};
+
+enum class EBossEffect
+{
+	MoveDust,
+	IntroDust,
+	IntroDustBack,
 	Max
 };
 
@@ -56,6 +68,7 @@ class Boss
 {
 	std::vector<std::vector<Image*>> images;
 	std::vector<Image*>				 transitionImages;
+	std::vector<EffectObject*> 		 effects;
 
 	float					hp;
 	Player*					player;
@@ -80,6 +93,7 @@ class Boss
 	clock_t					isHitTime;
 	clock_t					startChangeStateTime;
 	bool					isShowParry;
+	clock_t					moveLastTime;
 	
 	bool					isJumping;
 	const int				JumpMaxPower = 65;
@@ -99,6 +113,7 @@ public:
 	void		CheckAnimState();
 	void		CheckAnimCount();
 	void		CheckHp();
+	void		SetEffectImagesIn3Phase();
 
 	void		Draw(HDC& hdc, Graphics& graphics);
 	void		Update();

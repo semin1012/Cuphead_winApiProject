@@ -26,6 +26,9 @@ void FrontImage::CreateImage()
 
 void FrontImage::Draw(HDC& hdc, Graphics& graphics)
 {
+	if (!isActive)
+		return;
+
 	graphics.ResetTransform();
 	clock_t curTime = clock();
 	curAnimMax = images.size();

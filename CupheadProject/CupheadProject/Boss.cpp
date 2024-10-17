@@ -6,7 +6,7 @@ Boss::Boss()
 {
 	x = 1000;
 	y = 700;
-	phase = 3;
+	phase = 1;
 	curAnimMax = 0;
 	curAnimCnt = 0;
 	animLastTime = clock();
@@ -22,8 +22,9 @@ Boss::Boss()
 	isPossibleCollision = true;
 	isShowParry = false;
 	hp = HEALTH;
+	moveLastTime = clock();
 	deltaPosY = 0;
-	CreateImage();	
+	CreateImage();
 }
 
 void Boss::CreateImage()
@@ -72,12 +73,22 @@ void Boss::CreateImage()
 	ParsingToImagePath(EBossStateSprite::Ph3Death, 6, temp, 1);
 	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Smash/slime_tomb_smash_00");
 	ParsingToImagePath(EBossStateSprite::Ph3Smash, 14, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Move/Left/Trans/slime_tomb_lt_trans_00");
+	ParsingToImagePath(EBossStateSprite::TransLeft, 3, temp, 1);
+	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Move/Right/Trans/slime_tomb_rt_trans_00");
+	ParsingToImagePath(EBossStateSprite::TransRight, 3, temp, 1);
 
 
 	// transitionImage
 	_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Intro/Transition/slime_tomb_trans_00");
 	ParsingToImagePath(1, temp, 1);
 
+	// effect
+	effects.resize((int)EBossEffect::Max);
+	effects[(int)EBossEffect::MoveDust] = new EffectObject(EEffectType::BossPh3MoveDust, x, y, true, false, false);
+	effects[(int)EBossEffect::IntroDust] = new EffectObject(EEffectType::BossPh3Intro, x, y, false, false, false);
+	effects[(int)EBossEffect::IntroDustBack] = new EffectObject(EEffectType::BossPh3IntroBack, x, y, false, true, false);
+	//effects.push_back(new EffectObject(EEffectType::BossPh3SmashDust, x, y, false, false, false));
 #pragma endregion
 
 	curAnimMax = images[(int)animState].size();
@@ -119,8 +130,8 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 	{
 		drawCollider.left = x - width / 2;
 		drawCollider.right = x + width / 2;
-		drawCollider.top = y - height + 200;
-		drawCollider.bottom = y + 200;
+		drawCollider.top = y - height + 230;
+		drawCollider.bottom = y + 230;
 	}
 	else 
 	{
@@ -156,6 +167,7 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 			phase = 3;
 			ChangeState(EBossState::Intro);
 			startChangeStateTime = clock();
+			SetEffectImagesIn3Phase();
 			if (dirX == -1)
 				Turn();
 		}
@@ -164,6 +176,14 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 		graphics.DrawImage(transitionImages[0], x - tWidth / 2, -tHeight + deltaPosY, tWidth, tHeight);
 	}
 
+	if (!effects.empty())
+	{
+		for (auto effect : effects)
+		{
+			if (effect->GetIsBack() && effect->GetisActive())
+				effect->Draw(hdc, graphics);
+		}
+	}
 	if (isHit)
 	{
 		ImageAttributes imgAttr;
@@ -179,10 +199,21 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 		graphics.DrawImage(images[(int)animState][curAnimCnt], Rect(drawCollider.left, drawCollider.top, width, height), 0, 0, width, height, UnitPixel, &imgAttr);
 	}
 	else graphics.DrawImage(images[(int)animState][curAnimCnt], drawCollider.left, drawCollider.top, width, height);
+	if (!effects.empty())
+	{
+		for (auto effect : effects)
+		{
+			if (!effect->GetIsBack() && effect->GetisActive())
+				effect->Draw(hdc, graphics);
+		}
+	}
 }
 
 void Boss::Update()
 {
+	if (!bAttackCollider)
+		SetCollider();
+
 	CheckAnimState();
 	CheckAnimCount();
 	clock_t curTime = clock();
@@ -208,7 +239,10 @@ void Boss::Update()
 		if (curTime - startChangeStateTime >= CHANGE_STATE_MOVE)
 		{
 			ChangeState(EBossState::Move);
+			moveLastTime = clock();
 			startChangeStateTime = clock();
+			if (dirX == 1) 
+				effects[(int)EBossEffect::MoveDust]->InverseImage();
 		}
 	}
 
@@ -219,9 +253,13 @@ void Boss::Update()
 			Smash();
 	}
 
-	if (!bAttackCollider)
-		SetCollider();
-
+	if (!effects.empty())
+	{
+		if (effects[(int)EBossEffect::MoveDust] != nullptr && effects[(int)EBossEffect::MoveDust]->GetIsStart())
+		{
+			effects[(int)EBossEffect::MoveDust]->SetPosition(x, y - 35);
+		}
+	}
 	CheckHp();
 }
 
@@ -326,7 +364,10 @@ void Boss::CheckAnimCount()
 			else if (state == EBossState::Smash)
 			{
 				startChangeStateTime = clock();
+				ChangeState(EBossState::Move);
 			}
+			else if (state == EBossState::Trans)
+				ChangeState(EBossState::Move);
 			curAnimCnt = 0;
 		}
 	}
@@ -359,6 +400,15 @@ void Boss::CheckHp()
 			bAttackCollider = false;
 			startChangeStateTime = clock();
 		}
+	}
+}
+
+void Boss::SetEffectImagesIn3Phase()
+{
+	for (auto effect : effects)
+	{
+		effect->SetPosition(x, y);
+		effect->SetIsStart(true);
 	}
 }
 
@@ -401,21 +451,28 @@ void Boss::Turn()
 
 void Boss::Move()
 {
-	static clock_t lastTime = clock();
 	clock_t curTime = clock();
 
-	float distance = (curTime - lastTime) * 0.7f;
+	float distance = (curTime - moveLastTime) * 0.7f;
 
 	if (dirX == 1)
 		x += (int)distance;
 	else x -= (int)distance;
 
 	if (x <= 0 + images[(int)EBossStateSprite::Ph3MoveLeft][0]->GetWidth() / 2)
+	{
+		x = images[(int)EBossStateSprite::Ph3MoveLeft][0]->GetWidth() / 2 + 10;
+		ChangeState(EBossState::Trans);
 		dirX = 1;
+	}
 	else if (x >= WINDOWS_WIDTH - images[(int)EBossStateSprite::Ph3MoveLeft][0]->GetWidth() / 2)
+	{
+		x = WINDOWS_WIDTH - images[(int)EBossStateSprite::Ph3MoveLeft][0]->GetWidth() / 2 - 10;
+		ChangeState(EBossState::Trans);
 		dirX = -1;
+	}
 
-	lastTime = clock();
+	moveLastTime = clock();
 }
 
 void Boss::Smash()
@@ -464,6 +521,22 @@ void Boss::ChangeFromStartState()
 
 void Boss::ChangeState(EBossState state)
 {
+	if (state == EBossState::Move)
+	{
+		if (!effects.empty())
+		{
+			effects[(int)EBossEffect::MoveDust]->SetIsActive(true);
+			moveLastTime = clock();
+		}
+	}
+	else
+	{
+		if (!effects.empty())
+			effects[(int)EBossEffect::MoveDust]->SetIsActive(false);
+	}
+
+	if (state == EBossState::Trans)
+		effects[(int)EBossEffect::MoveDust]->InverseImage();
 	this->state = state;
 	curAnimCnt = 0;
 }
@@ -527,6 +600,11 @@ void Boss::CheckAnimState()
 	case EBossState::Smash:
 		animState = EBossStateSprite::Ph3Smash;
 		break;
+	case EBossState::Trans:
+		if (dirX == 1)
+			animState = EBossStateSprite::TransRight;
+		else animState = EBossStateSprite::TransLeft;
+		break;
 	}
 }
 
@@ -571,10 +649,20 @@ void Boss::SetCollider()
 {
 	if (phase == 3)
 	{
-		collider.left = x - 100;
-		collider.right = x + 100;
-		collider.top = y - images[(int)EBossStateSprite::Ph3MoveLeft][0]->GetHeight() + 100; 
-		collider.bottom = collider.top + 200;
+		if (state == EBossState::Smash)
+		{
+			collider.left = x - images[(int)EBossStateSprite::Ph3Smash][0]->GetWidth() / 2;
+			collider.right = x + images[(int)EBossStateSprite::Ph3Smash][0]->GetWidth() / 2;
+			collider.top = y - images[(int)EBossStateSprite::Ph3MoveLeft][0]->GetHeight() + 230;
+			collider.bottom = y;
+		}
+		else
+		{
+			collider.left = x - 100;
+			collider.right = x + 100;
+			collider.top = y - images[(int)EBossStateSprite::Ph3MoveLeft][0]->GetHeight() + 100;
+			collider.bottom = collider.top + 200;
+		}
 	}
 	else
 	{

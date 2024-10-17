@@ -5,7 +5,10 @@ EffectObject::EffectObject()
 {
 	curAnimCnt = 0;
 	curAnimMax = 0;
-	isActive = false;
+	isActive = true;
+	isLoop = false;
+	isBack = false;
+	isStart = true;
 	collider = { 0, 0, 0, 0 };
 	type = EEffectType::Max;
 	animLastTime = clock();
@@ -14,17 +17,13 @@ EffectObject::EffectObject()
 	y = 0;
 }
 
-EffectObject::EffectObject(EEffectType type, int x, int y)
+EffectObject::EffectObject(EEffectType type, int x, int y, bool isLoop, bool isBack, bool isStart) : EffectObject()
 {
-	curAnimCnt = 0;
-	curAnimMax = 0;
-	isActive = true;
-	collider = { 0, 0, 0, 0 };
-	this->type = EEffectType::Max;
 	this->x = x;
 	this->y = y;
-	animLastTime = clock();
-	createTime = clock();
+	this->isLoop = isLoop;
+	this->isBack = isBack;
+	this->isStart = isStart;
 	SetEffect(type);
 }
 
@@ -37,6 +36,9 @@ EffectObject::~EffectObject()
 
 void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 {
+	if (!isStart || !isActive)
+		return;
+
 	graphics.ResetTransform();
 	clock_t curTime = clock();
 	curAnimMax = images.size();
@@ -44,13 +46,12 @@ void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 	if (curTime - animLastTime > 20)
 	{
 		curAnimCnt++;
-
 		if (curAnimCnt >= curAnimMax)
 		{
 			curAnimCnt = 0;
-			isActive = false;
+			if (!isLoop)
+				isActive = false;
 		}
-
 		animLastTime = clock();
 	}
 
@@ -78,6 +79,7 @@ void EffectObject::SetEffect(EEffectType type)
 void EffectObject::CreateImage(EEffectType type)
 {
 	TCHAR temp[128];
+	this->type = type;
 	switch (type)
 	{
 	case EEffectType::JumpUpDust:
@@ -87,6 +89,22 @@ void EffectObject::CreateImage(EEffectType type)
 	case EEffectType::JumpDownDust:
 		_tcscpy(temp, L"../Resource/Image/Cuphead/Jump/Dust/cuphead_jump_dust_b_00");
 		ParsingToImagePath(type, 14, temp, 1);
+		break;
+	case EEffectType::BossPh3SmashDust:
+		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Smash/Dust/slime_tomb_smash_dust_00");
+		ParsingToImagePath(type, 17, temp, 1);
+		break;
+	case EEffectType::BossPh3Intro:
+		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Dust(Intro)/slime_tomb_dust_00");
+		ParsingToImagePath(type, 19, temp, 1);
+		break;
+	case EEffectType::BossPh3MoveDust:
+		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Move/GroundFX/Dust/slime_tomb_groundfx_00");
+		ParsingToImagePath(type, 4, temp, 1);
+		break;
+	case EEffectType::BossPh3IntroBack:
+		_tcscpy(temp, L"../Resource/Image/Boss/Goopy/Phase3/Dust(Intro)/slime_tomb_dust_bk_00");
+		ParsingToImagePath(type, 18, temp, 1);
 		break;
 	}
 }
@@ -121,4 +139,26 @@ void EffectObject::ParsingToImagePath(EEffectType state, int spriteSize, TCHAR* 
 		Image* pImg = new Image(temp);
 		images[i] = pImg;
 	}
+}
+
+void EffectObject::InverseImage()
+{
+	for (int j = 0; j < images.size(); j++)
+		images[j]->RotateFlip(RotateFlipType::RotateNoneFlipX);
+}
+
+void EffectObject::SetPosition(int x, int y)
+{
+	this->x = x;
+	this->y = y;
+}
+
+void EffectObject::SetIsActive(bool isActive)
+{
+	this->isActive = isActive;
+}
+
+bool EffectObject::GetisActive()
+{
+	return isActive;
 }

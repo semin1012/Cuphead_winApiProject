@@ -8,7 +8,7 @@ class FadeEffect
 	int			alpha;
 	bool		isOut;
 	bool		bEnd;
-
+	
 public:
 	FadeEffect();
 	~FadeEffect();
