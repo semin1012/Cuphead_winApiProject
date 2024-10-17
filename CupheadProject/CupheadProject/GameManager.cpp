@@ -155,6 +155,31 @@ void GameManager::Draw(HDC& hdc)
 	if (background != nullptr)
 		background->Draw(hdc);
 
+	Gdi_Draw(hdc);
+
+#pragma region Fade Effect
+	static bool effectOut = false;
+
+	if (fadeEffect != nullptr)
+	{
+		fadeEffect->Draw(hdc);
+		if (fadeEffect->GetIsFadeIn() && !effectOut)
+		{
+			if (GetIsTitle())
+				SetIsTitle(false);
+			else if (!GetIsTitle() && GetIsWorld() && !GetIsStage())
+				SetStage(background->GetTripper()->GetStage());
+			effectOut = true;
+		}
+		if (fadeEffect->GetIsEnd())
+		{
+			delete fadeEffect;
+			fadeEffect = nullptr;
+			effectOut = false;
+		}
+	}
+#pragma endregion
+
 #pragma region Debug Mode
 	if (debugMode == true)
 	{
@@ -214,30 +239,6 @@ void GameManager::Draw(HDC& hdc)
 	}
 #pragma endregion
 
-	Gdi_Draw(hdc);
-
-#pragma region Fade Effect
-	static bool effectOut = false;
-
-	if (fadeEffect != nullptr)
-	{
-		fadeEffect->Draw(hdc);
-		if (fadeEffect->GetIsFadeIn() && !effectOut)
-		{
-			if (GetIsTitle())
-				SetIsTitle(false);
-			else if (!GetIsTitle() && GetIsWorld() && !GetIsStage())
-				SetStage(background->GetTripper()->GetStage());
-			effectOut = true;
-		}
-		if (fadeEffect->GetIsEnd())
-		{
-			delete fadeEffect;
-			fadeEffect = nullptr;
-			effectOut = false;
-		}
-	}
-#pragma endregion
 }
 
 void GameManager::Update()
