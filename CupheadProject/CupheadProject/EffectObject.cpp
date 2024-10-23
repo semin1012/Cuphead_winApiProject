@@ -22,9 +22,16 @@ EffectObject::EffectObject(EEffectType type, int x, int y, bool isLoop, bool isB
 {
 	this->x = x;
 	this->y = y;
+	SetEffect(type);
+	if (x == 0 && y == 0)
+	{
+		int unitX = images[0]->GetWidth() / 3;
+		int unitY = images[0]->GetHeight() / 7;
+		this->x = WINDOWS_WIDTH / 2 - unitX / 2;
+		this->y = WINDOWS_HEIGHT / 2 - unitY / 2;
+	}
 	this->isLoop = isLoop;
 	this->isBack = isBack;
-	SetEffect(type);
 	this->isActive = isActive;
 }
 
@@ -52,7 +59,8 @@ void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 
 	graphics.ResetTransform();
 	clock_t curTime = clock();
-	curAnimMax = images.size();
+	if (type != EEffectType::Died)
+		curAnimMax = images.size();
 
 	if (curTime - animLastTime > 33)
 	{
@@ -69,13 +77,25 @@ void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 	if (!isActive)
 		return;
 
-	int width = images[curAnimCnt]->GetWidth();
-	int height = images[curAnimCnt]->GetHeight();
-	collider.left = x - width / 2;
-	collider.top = y - height / 2;
-	collider.right = x + width / 2;
-	collider.bottom = y + height / 2;
-	graphics.DrawImage(images[curAnimCnt], collider.left, collider.top, width, height);
+	if (type != EEffectType::Died)
+	{
+		int width = images[curAnimCnt]->GetWidth();
+		int height = images[curAnimCnt]->GetHeight();
+		collider.left = x - width / 2;
+		collider.top = y - height / 2;
+		collider.right = x + width / 2;
+		collider.bottom = y + height / 2;
+		graphics.DrawImage(images[curAnimCnt], collider.left, collider.top, width, height);
+	}
+	else
+	{
+		int unitX = images[0]->GetWidth() / 3;
+		int unitY = images[0]->GetHeight() / 7;
+		Rect rect = { x, y, unitX, unitY };
+		int animX = unitX * curAnimCnt % 3;
+		int animY = unitY * (int)(curAnimCnt / 3);
+		graphics.DrawImage(images[0], rect, animX, animY, unitX, unitY, Gdiplus::Unit::UnitPixel);
+	}
 }
 
 void EffectObject::SetEffect(EEffectType type)
@@ -139,6 +159,13 @@ void EffectObject::CreateImage(EEffectType type)
 	case EEffectType::AttackSFX:
 		_tcscpy(temp, L"../Resource/Image/SFX/cuphead_explode_fx_00");
 		ParsingToImagePath(type, 16, temp, 1);
+		break;
+	case EEffectType::Died:
+		images.resize(1);
+		_tcscpy(temp, L"../Resource/Image/UI/Died/died.png");
+		Image* pImg = new Image(temp);
+		images[0] = pImg;
+		curAnimMax = 20;
 		break;
 	}
 }

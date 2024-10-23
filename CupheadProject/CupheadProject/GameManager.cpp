@@ -369,10 +369,14 @@ void GameManager::Update()
 				}
 			}
 
-			if (!player->GetIsGraceTime() && player->GetCanInput())
+			if (!player->GetIsGraceTime() && player->GetCanInput() && player->GetHealth() > 0)
 			{
 				if (player->Collided(boss))
+				{
 					health->SetHealth(player->GetHealth());
+					if (player->GetHealth() <= 0)
+						effects.push_back(new EffectObject(EEffectType::Died, 0, 0, true));
+				}
 			}
 		}
 	}

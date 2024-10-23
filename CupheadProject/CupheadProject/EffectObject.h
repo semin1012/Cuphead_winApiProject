@@ -17,7 +17,8 @@ enum class EEffectType
 	BossDeathStarA,
 	BossDeathStarB,
 	AttackSFX,
-	Max
+	Died, 
+	Max 
 };
 
 class EffectObject
