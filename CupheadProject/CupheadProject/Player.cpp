@@ -96,6 +96,9 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::ParryRight, 8, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Parry/cuphead_parry_pink_000");
 	ParsingToImagePath(EPlayerState::ParryPinkRight, 8, path, 1);
+	// Ghost
+	_tcscpy(path, L"../Resource/Image/Cuphead/Ghost/cuphead_ghost_00");
+	ParsingToImagePath(EPlayerState::Ghost, 24, path, 1);
 
 
 #pragma endregion
@@ -211,6 +214,8 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 			{
 				if (curAnimCnt >= curAnimMax)
 				{
+					if (health <= 0)
+						state = EPlayerState::Ghost;
 					curAnimCnt = 0;
 					isHit = false;
 				}
@@ -332,6 +337,11 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 
 void Player::Update()
 {
+	if (state == EPlayerState::Ghost)
+	{
+		y -= 1;
+	}
+
 	if (startStage)
 	{
 		clock_t curTime = clock();
@@ -997,6 +1007,7 @@ void Player::DecreaseHealth()
 	{
 		health = 0;
 		isDeath = true;
+		bInput = false;
 	}
 }
 

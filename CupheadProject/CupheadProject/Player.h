@@ -55,6 +55,7 @@ enum class EPlayerState
 	HitRight,
 	ParryRight,
 	ParryPinkRight,
+	Ghost,
 	Max
 };
 
