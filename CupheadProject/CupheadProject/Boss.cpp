@@ -606,7 +606,7 @@ void Boss::CheckAnimState()
 		if (phase == 1)
 			animState = EBossStateSprite::AirUpTurn;
 		else if (phase == 2)
-			animState == EBossStateSprite::Ph2AirUpTurn;
+			animState = EBossStateSprite::Ph2AirUpTurn;
 		break;
 	case EBossState::Jump:
 		if (phase == 1)

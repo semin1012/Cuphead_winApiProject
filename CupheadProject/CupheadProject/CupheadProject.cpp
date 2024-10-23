@@ -314,19 +314,6 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
     if (gameMgr->GetMouseDragState())
         gameMgr->DragAndMoveWorldMap(hWnd);
 
-    if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-    {
-        if (gameMgr->GetPlayer()->GetIsDown())
-            gameMgr->GetPlayer()->forwardDir.x = -1;
-        gameMgr->GetPlayer()->dir.x = -1;
-    }
-    if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-    {
-        if (gameMgr->GetPlayer()->GetIsDown())
-            gameMgr->GetPlayer()->forwardDir.x = 1;
-        gameMgr->GetPlayer()->dir.x = 1;
-    }
-
     if (GetAsyncKeyState(VK_UP) & 0x8000)
     {
         if (gameMgr->GetPlayer()->GetIsDown())
@@ -379,13 +366,9 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
         switch (gameMgr->GetPlayer()->dir.x)
         {
         case 0:
-            if (gameMgr->GetPlayer()->GetLastForward() == LAST_FORWARD_IS_LEFT)
-                gameMgr->GetPlayer()->SetState(EPlayerState::IdleLeft);
-            else gameMgr->GetPlayer()->SetState(EPlayerState::Idle);
+            gameMgr->GetPlayer()->SetState(EPlayerState::Idle);
             break;
         case -1:
-            gameMgr->GetPlayer()->SetState(EPlayerState::LeftRun);
-            break;
         case 1:
             gameMgr->GetPlayer()->SetState(EPlayerState::RightRun);
             break;

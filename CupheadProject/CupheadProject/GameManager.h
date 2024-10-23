@@ -22,6 +22,7 @@ class GameManager
 private:
 	std::vector<EffectObject*>	effects;
 	std::vector<ParryObject*>	parryObjects;
+	std::vector<int>		xInputs;
 	Background*				background;
 	Player*					player;
 	Boss*					boss;

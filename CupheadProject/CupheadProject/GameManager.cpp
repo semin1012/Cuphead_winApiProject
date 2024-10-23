@@ -1,5 +1,6 @@
 #include "GameManager.h"
 #include <iostream>
+#include <algorithm>
 
 GameManager::GameManager(RECT* rectView)
 {
@@ -70,14 +71,23 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				break;
 			case VK_LEFT:
+				if (xInputs.empty())
+					xInputs.push_back(-1);
+				else if (find(xInputs.begin(), xInputs.end(), -1) == xInputs.end())
+					xInputs.push_back(-1);
 				if (GetPlayer()->GetIsDown())
-					GetPlayer()->SetDirection(-1);
-				GetPlayer()->SetDirection(-1, 99);
+					GetPlayer()->SetDirection(xInputs.back());
+				GetPlayer()->SetDirection(xInputs.back(), 99);
 				break;
 			case VK_RIGHT:
+				if (xInputs.empty())
+					xInputs.push_back(1);
+				else if (find(xInputs.begin(), xInputs.end(), 1) == xInputs.end())
+					xInputs.push_back(1);
+
 				if (GetPlayer()->GetIsDown())
-					GetPlayer()->SetDirection(1);
-				GetPlayer()->SetDirection(1, 99);
+					GetPlayer()->SetDirection(xInputs.back());
+				GetPlayer()->SetDirection(xInputs.back(), 99);
 				break;
 			case VK_SHIFT:
 				if (!player->GetIsDashing() && player->dir.x != 0 && !player->GetIsSpecialAttack())
@@ -129,12 +139,32 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				GetPlayer()->dir.x = 0;
 				GetPlayer()->SetLastForward(LAST_FORWARD_IS_LEFT);
 			}
+			if (!xInputs.empty())
+			{
+				auto it = find(xInputs.begin(), xInputs.end(), -1);
+				if (it != xInputs.end())
+					xInputs.erase(it);
+				if (!xInputs.empty())
+				{
+					GetPlayer()->SetDirection(xInputs.back(), 99);
+				}
+			}
 			break;
 		case VK_RIGHT:
 			if (GetPlayer()->dir.x == 1)
 			{
 				GetPlayer()->dir.x = 0;
 				GetPlayer()->SetLastForward(LAST_FORWARD_IS_RIGHT);
+			}
+			if (!xInputs.empty())
+			{
+				auto it = find(xInputs.begin(), xInputs.end(), 1);
+				if (it != xInputs.end())
+					xInputs.erase(it);
+				if (!xInputs.empty())
+				{
+					GetPlayer()->SetDirection(xInputs.back(), 99);
+				}
 			}
 			break;
 		case 'a':
@@ -264,6 +294,9 @@ void GameManager::Update()
 
 	if (player != nullptr)
 	{
+		if (!xInputs.empty())
+			GetPlayer()->dir.x = xInputs.back();
+
 		player->Update();
 		if (player->GetJumpDust())
 		{

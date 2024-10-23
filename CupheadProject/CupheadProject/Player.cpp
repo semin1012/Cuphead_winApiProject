@@ -16,65 +16,41 @@ void Player::CreateImage()
 	// idle
 	TCHAR path[128] = L"../Resource/Image/Cuphead/cuphead_idle_000";
 	ParsingToImagePath(EPlayerState::Idle, PLAYER_IDEL_SIZE, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/R_cuphead_idle_000");
-	ParsingToImagePath(EPlayerState::IdleLeft, PLAYER_IDEL_SIZE, path, 1);
 	// intro
 	_tcscpy(path, L"../Resource/Image/Cuphead/Intro/cuphead_intro_a_00");
 	ParsingToImagePath(EPlayerState::Intro, 28, path, 1);
 	// run
 	_tcscpy(path, L"../Resource/Image/Cuphead/Run/cuphead_run_00");
 	ParsingToImagePath(EPlayerState::RightRun, 16, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Run/R_cuphead_run_00");
-	ParsingToImagePath(EPlayerState::LeftRun, 16, path, 1);
 	// jump
 	_tcscpy(path, L"../Resource/Image/Cuphead/Jump/cuphead_jump_000");
 	ParsingToImagePath(EPlayerState::RightJump, 8, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Jump/R_cuphead_jump_000");
-	ParsingToImagePath(EPlayerState::LeftJump, 8, path, 1);
 	// dash
 	_tcscpy(path, L"../Resource/Image/Cuphead/Dash/cuphead_dash_000");
 	ParsingToImagePath(EPlayerState::RightDash, 8, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Dash/cuphead_dash_air_000");
 	ParsingToImagePath(EPlayerState::RightAirDash, 8, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Dash/R_cuphead_dash_000");
-	ParsingToImagePath(EPlayerState::LeftDash, 8, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Dash/R_cuphead_dash_air_000");
-	ParsingToImagePath(EPlayerState::LeftAirDash, 8, path, 1);
 	// down
 	_tcscpy(path, L"../Resource/Image/Cuphead/Down/cuphead_duck_000");
 	ParsingToImagePath(EPlayerState::DownStartRight, 7, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Down/cuphead_duck_idle_000");
 	ParsingToImagePath(EPlayerState::DownIdleRight, 5, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Down/R_cuphead_duck_000");
-	ParsingToImagePath(EPlayerState::DownStartLeft, 7, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Down/R_cuphead_duck_idle_000");
-	ParsingToImagePath(EPlayerState::DownIdleLeft, 5, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Down/cuphead_duck_shoot_000");
 	ParsingToImagePath(EPlayerState::DownShootingRight, 6, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Down/R_cuphead_duck_shoot_000");
-	ParsingToImagePath(EPlayerState::DownShootingLeft, 6, path, 1);
 	// run & shooting
 	_tcscpy(path, L"../Resource/Image/Cuphead/RunShooting/cuphead_run_shoot_00");
 	ParsingToImagePath(EPlayerState::ShootingRunRight, 16, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/RunShooting/cuphead_run_shoot_diagonal_up_00");
 	ParsingToImagePath(EPlayerState::ShootingRunRightUp, 16, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/RunShooting/R_cuphead_run_shoot_00");
-	ParsingToImagePath(EPlayerState::ShootingRunLeft, 16, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/RunShooting/R_cuphead_run_shoot_diagonal_up_00");
-	ParsingToImagePath(EPlayerState::ShootingRunLeftUp, 16, path, 1);
 	// shooting
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_straight_000");
 	ParsingToImagePath(EPlayerState::ShootingRight, 6, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/R_cuphead_shoot_straight_000");
-	ParsingToImagePath(EPlayerState::ShootingLeft, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_diagonal_up_000");
 	ParsingToImagePath(EPlayerState::ShootingRightUp, 6, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/R_cuphead_shoot_diagonal_up_000");
-	ParsingToImagePath(EPlayerState::ShootingLeftUp, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_diagonal_down_000");
 	ParsingToImagePath(EPlayerState::ShootingRightDown, 6, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/R_cuphead_shoot_diagonal_down_000");
-	ParsingToImagePath(EPlayerState::ShootingLeftDown, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_up_000");
 	ParsingToImagePath(EPlayerState::ShootingUp, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Shooting/cuphead_shoot_down_000");
@@ -86,12 +62,6 @@ void Player::CreateImage()
 	ParsingToImagePath(EPlayerState::AimRightUp, 5, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/cuphead_aim_diagonal_down_000");
 	ParsingToImagePath(EPlayerState::AimRightDown, 5, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/R_cuphead_aim_straight_000");
-	ParsingToImagePath(EPlayerState::AimLeft, 5, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/R_cuphead_aim_diagonal_up_000");
-	ParsingToImagePath(EPlayerState::AimLeftUp, 5, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/R_cuphead_aim_diagonal_down_000");
-	ParsingToImagePath(EPlayerState::AimLeftDown, 5, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/cuphead_aim_up_000");
 	ParsingToImagePath(EPlayerState::AimUp, 5, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Aim/cuphead_aim_down_000");
@@ -99,16 +69,10 @@ void Player::CreateImage()
 	// Special Attack 
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_straight_00");
 	ParsingToImagePath(EPlayerState::SCAttackRight, 13, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/R_cuphead_ex_straight_00");
-	ParsingToImagePath(EPlayerState::SCAttackLeft, 13, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_diagonal_down_00");
 	ParsingToImagePath(EPlayerState::SCAttackRightDown, 13, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/R_cuphead_ex_diagonal_down_00");
-	ParsingToImagePath(EPlayerState::SCAttackLeftDown, 13, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_diagonal_up_00");
 	ParsingToImagePath(EPlayerState::SCAttackRightUp, 13, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/R_cuphead_ex_diagonal_up_00");
-	ParsingToImagePath(EPlayerState::SCAttackLeftUp, 13, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_down_00");
 	ParsingToImagePath(EPlayerState::SCAttackDown, 13, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/cuphead_ex_up_00");
@@ -116,16 +80,10 @@ void Player::CreateImage()
 	// Jump Special Attack
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_straight_air_000");
 	ParsingToImagePath(EPlayerState::AirSCAttackRight, 6, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/R_cuphead_ex_straight_air_000");
-	ParsingToImagePath(EPlayerState::AirSCAttackLeft, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_diagonal_down_air_000");
 	ParsingToImagePath(EPlayerState::AirSCAttackRightDown, 6, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/R_cuphead_ex_diagonal_down_air_000");
-	ParsingToImagePath(EPlayerState::AirSCAttackLeftDown, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_diagonal_up_air_000");
 	ParsingToImagePath(EPlayerState::AirSCAttackRightUp, 6, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/R_cuphead_ex_diagonal_up_air_000");
-	ParsingToImagePath(EPlayerState::AirSCAttackLeftUp, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_down_air_000");
 	ParsingToImagePath(EPlayerState::AirSCAttackDown, 6, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/SCAttack/Air/cuphead_ex_up_air_000");
@@ -133,17 +91,11 @@ void Player::CreateImage()
 	// Hit
 	_tcscpy(path, L"../Resource/Image/Cuphead/Hit/cuphead_hit_000");
 	ParsingToImagePath(EPlayerState::HitRight, 6, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Hit/R_cuphead_hit_000");
-	ParsingToImagePath(EPlayerState::HitLeft, 6, path, 1);
 	// Parry
 	_tcscpy(path, L"../Resource/Image/Cuphead/Parry/cuphead_parry_000");
 	ParsingToImagePath(EPlayerState::ParryRight, 8, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Parry/R_cuphead_parry_000");
-	ParsingToImagePath(EPlayerState::ParryLeft, 8, path, 1);
 	_tcscpy(path, L"../Resource/Image/Cuphead/Parry/cuphead_parry_pink_000");
 	ParsingToImagePath(EPlayerState::ParryPinkRight, 8, path, 1);
-	_tcscpy(path, L"../Resource/Image/Cuphead/Parry/R_cuphead_parry_pink_000");
-	ParsingToImagePath(EPlayerState::ParryPinkLeft, 8, path, 1);
 
 
 #pragma endregion
@@ -254,7 +206,7 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 			curAnimCnt++;
 			lastTime = clock();
 
-			if (state == EPlayerState::HitLeft || state == EPlayerState::HitRight)
+			if (state == EPlayerState::HitRight)
 			{
 				if (curAnimCnt >= curAnimMax)
 				{
@@ -267,8 +219,6 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 				curAnimCnt = 0;
 				if (state == EPlayerState::DownStartRight)
 					state = EPlayerState::DownIdleRight;
-				else if (state == EPlayerState::DownStartLeft)
-					state = EPlayerState::DownIdleLeft;
 				curAnimMax = playerImg[(int)state].size();
 			}
 		}
@@ -436,8 +386,6 @@ void Player::Update()
 				switch (dir.x)
 				{
 				case -1:
-					state = EPlayerState::LeftJump;
-					break;
 				case 1:
 				case 0:
 					state = EPlayerState::RightJump;
@@ -462,8 +410,6 @@ void Player::Update()
 					state = EPlayerState::Idle;
 					break;
 				case -1:
-					state = EPlayerState::LeftRun;
-					break;
 				case 1:
 					state = EPlayerState::RightRun;
 					break;
@@ -479,15 +425,11 @@ void Player::Update()
 		isGrace = true;
 		switch (dir.x)
 		{
+		case -1:
 		case 1:
 			if (isDashAndJump)
 				state = EPlayerState::RightAirDash;
 			else state = EPlayerState::RightDash;
-			break;
-		case -1:
-			if (isDashAndJump)
-				state = EPlayerState::LeftAirDash;
-			else state = EPlayerState::LeftDash;
 			break;
 		}
 		if (curTime - startChangeStateTime > 350)
@@ -500,11 +442,9 @@ void Player::Update()
 			case 0:
 				state = EPlayerState::Idle;
 				break;
+			case -1:
 			case 1:
 				state = EPlayerState::RightRun;
-				break;
-			case -1:
-				state = EPlayerState::LeftRun;
 				break;
 			}
 			curAnimCnt = 0;
@@ -572,14 +512,7 @@ bool Player::Collided(Boss* boss)
 		isHitTime = clock();
 		isGrace = true;
 		isHit = true;
-		if (dir.x == -1)
-			state = EPlayerState::HitLeft;
-		else if (dir.x == 0)
-		{
-			if (lastForward == LAST_FORWARD_IS_LEFT) state = EPlayerState::HitLeft;
-			else state = EPlayerState::HitRight;
-		}
-		else state = EPlayerState::HitRight;
+		state = EPlayerState::HitRight;
 		curAnimCnt = 0;
 		return true;
 	}
@@ -703,41 +636,23 @@ void Player::SetState(EPlayerState state)
 	{
 		if (isDown)
 		{
-			if (dir.x == 1) temp = EPlayerState::DownShootingRight;
-			else if (dir.x == -1) temp = EPlayerState::DownShootingLeft;
-			else
-			{
-				if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::DownShootingLeft;
-				else temp = EPlayerState::DownShootingRight;
-			}
+			temp = EPlayerState::DownShootingRight;
 		}
 		else
 		{
 			switch (dir.y)
 			{
 			case -1:
-				if (dir.x == 1) temp = EPlayerState::ShootingRunRightUp;
-				else if (dir.x == -1) temp = EPlayerState::ShootingRunLeftUp;
+				if (dir.x != 0) temp = EPlayerState::ShootingRunRightUp;
 				else temp = EPlayerState::ShootingUp;
 				break;
 			case 0:
-				if (dir.x == 1) temp = EPlayerState::ShootingRunRight;
-				else if (dir.x == -1) temp = EPlayerState::ShootingRunLeft;
-				else
-				{
-					if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::ShootingLeft;
-					else temp = EPlayerState::ShootingRight;
-				}
+				if (dir.x != 0) temp = EPlayerState::ShootingRunRight;
+				else temp = EPlayerState::ShootingRight;
 				break;
 			case 1:
-				if (dir.x == 1) temp = EPlayerState::ShootingRunRight;
-				else if (dir.x == -1) temp = EPlayerState::ShootingRunLeft;
-				else
-				{
-					if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::ShootingLeft;
-					else temp = EPlayerState::ShootingRight;
-				}
-				break;
+				if (dir.x != 0) temp = EPlayerState::ShootingRunRight;
+				else temp = EPlayerState::ShootingRight;
 			}
 		}
 	}
@@ -750,42 +665,28 @@ void Player::SetState(EPlayerState state)
 		case -1:
 			if (isShooting)
 			{
-				if (dir.x == 1) temp = EPlayerState::ShootingRightUp;
-				else if (dir.x == -1) temp = EPlayerState::ShootingLeftUp;
+				if (dir.x != 0) temp = EPlayerState::ShootingRightUp;
 				else temp = EPlayerState::ShootingUp;
 			}
-			else if (dir.x == 1) temp = EPlayerState::AimRightUp;
-			else if (dir.x == -1) temp = EPlayerState::AimLeftUp;
+			else if (dir.x != 0) temp = EPlayerState::AimRightUp;
 			else temp = EPlayerState::AimUp;
 			break;
 		case 0:
 			if (isShooting)
 			{
-				if (dir.x == -1) temp = EPlayerState::ShootingLeft;
-				else if (dir.x == 1) temp = EPlayerState::ShootingRight;
-				else
-				{
-					if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::ShootingLeft;
-					else temp = EPlayerState::ShootingRight;
-				}
+				if (dir.x != 0) temp = EPlayerState::ShootingRight;
+				else temp = EPlayerState::ShootingRight;
 			}
-			else if (dir.x == -1) temp = EPlayerState::AimLeft;
-			else if (dir.x == 1) temp = EPlayerState::AimRight;
-			else
-			{
-				if (lastForward == LAST_FORWARD_IS_LEFT) temp = EPlayerState::AimLeft;
-				else temp = EPlayerState::AimRight;
-			}
+			else if (dir.x != 0) temp = EPlayerState::AimRight;
+			else temp = EPlayerState::AimRight;
 			break;
 		case 1:
 			if (isShooting)
 			{
-				if (dir.x == 1) temp = EPlayerState::ShootingRightDown;
-				else if (dir.x == -1) temp = EPlayerState::ShootingLeftDown;
+				if (dir.x != 0) temp = EPlayerState::ShootingRightDown;
 				else temp = EPlayerState::ShootingDown;
 			}
-			else if (dir.x == 1) temp = EPlayerState::AimRightDown;
-			else if (dir.x == -1) temp = EPlayerState::AimLeftDown;
+			else if (dir.x != 0) temp = EPlayerState::AimRightDown;
 			else temp = EPlayerState::AimDown;
 			break;
 		}
@@ -838,11 +739,11 @@ void Player::Turn()
 {
 	static int turncount = 0;
 	printf("Turn() : %d\n", turncount++);	
-	//for (int i = 1; i < playerImg.size(); i++)
-	//{
-	//	for (int j = 0; j < playerImg[i].size(); j++)
-	//		playerImg[i][j]->RotateFlip(RotateFlipType::RotateNoneFlipX);
-	//}
+	for (int i = 1; i < playerImg.size(); i++)
+	{
+		for (int j = 0; j < playerImg[i].size(); j++)
+			playerImg[i][j]->RotateFlip(RotateFlipType::RotateNoneFlipX);
+	}
 }
 
 void Player::SetDirection(int forwardX)
@@ -895,38 +796,9 @@ void Player::Parry()
 	if (isParry)
 	{
 		isDoubleParry = true;
-		switch (dir.x)
-		{
-		case 0:
-			if (lastForward == LAST_FORWARD_IS_LEFT)
-				state = EPlayerState::ParryPinkLeft;
-			else state = EPlayerState::ParryPinkRight;
-			break;
-		case 1:
-			state = EPlayerState::ParryPinkRight;
-			break;
-		case -1:
-			state = EPlayerState::ParryPinkLeft;
-			break;
-		}
+		state = EPlayerState::ParryPinkRight;
 	}
-	else
-	{
-		switch (dir.x)
-		{
-		case 0:
-			if (lastForward == LAST_FORWARD_IS_LEFT)
-				state = EPlayerState::ParryLeft;
-			else state = EPlayerState::ParryRight;
-			break;
-		case 1:
-			state = EPlayerState::ParryRight;
-			break;
-		case -1:
-			state = EPlayerState::ParryLeft;
-			break;
-		}
-	}
+	else state = EPlayerState::ParryRight;
 	isParry = true;
 }
 
@@ -937,10 +809,7 @@ void Player::SetIsJumping(bool isJumping)
 	if (isJumping)
 		curJumpPower = JumpMaxPower;
 
-	if (dir.x == -1)
-		state = EPlayerState::LeftJump;
-	else 
-		state = EPlayerState::RightJump;
+	state = EPlayerState::RightJump;
 	curAnimCnt = 0;
 	curAnimMax = playerImg[(int)state].size();
 }
@@ -953,9 +822,7 @@ void Player::SetIsDashing(bool isDashing)
 
 	this->isDashing = isDashing;
 	isGrace = true;
-	if (dir.x == -1)
-		state = EPlayerState::LeftDash;
-	else state = EPlayerState::RightDash;
+	state = EPlayerState::RightDash;
 	speed = DASH_SPEED;
 	startChangeStateTime = clock();
 
@@ -971,14 +838,7 @@ void Player::SetIsDown(bool isDown)
 	this->isDown = isDown;
 	if (isDown)
 	{
-		if (dir.x == -1)
-			state = EPlayerState::DownStartLeft;
-		else if (dir.x == 1) state = EPlayerState::DownStartRight;
-		else
-		{
-			if (lastForward == LAST_FORWARD_IS_LEFT) state = EPlayerState::DownStartLeft;
-			else state = EPlayerState::DownStartRight;
-		}
+		state = EPlayerState::DownStartRight;
 	}
 
 	curAnimCnt = 0;
@@ -993,14 +853,7 @@ void Player::SetIsShooting(bool isShooting)
 
 	if (isDown && isShooting == false)
 	{
-		if (dir.x == -1)
-			state = EPlayerState::DownIdleLeft;
-		else if (dir.x == 1) state = EPlayerState::DownIdleRight;
-		else
-		{
-			if (lastForward == LAST_FORWARD_IS_LEFT) state = EPlayerState::DownIdleLeft;
-			else state = EPlayerState::DownIdleRight;
-		}
+		state = EPlayerState::DownIdleRight;
 	}
 
 	this->isShooting = isShooting;
@@ -1040,22 +893,14 @@ void Player::SetIsSpecialAttack(bool isSpecialAttack)
 			{
 			case -1:
 				if (dir.x == 0) state = EPlayerState::AirSCAttackUp;
-				else if (dir.x == 1) state = EPlayerState::AirSCAttackRightUp;
-				else state = EPlayerState::AirSCAttackLeftUp;
+				else state = EPlayerState::AirSCAttackRightUp;
 				break;
 			case 0:
-				if (dir.x == 0)
-				{
-					if (lastForward == LAST_FORWARD_IS_LEFT) state = EPlayerState::AirSCAttackLeft;
-					else state = EPlayerState::AirSCAttackRight;
-				}
-				else if (dir.x == 1) state = EPlayerState::AirSCAttackRight;
-				else state = EPlayerState::AirSCAttackLeft;
+				state = EPlayerState::AirSCAttackRight;
 				break;
 			case 1:
 				if (dir.x == 0) state = EPlayerState::AirSCAttackDown;
-				else if (dir.x == 1) state = EPlayerState::AirSCAttackRightDown;
-				else state = EPlayerState::AirSCAttackLeftDown;
+				else state = EPlayerState::AirSCAttackRightDown;
 				break;
 			}
 		}
@@ -1065,22 +910,14 @@ void Player::SetIsSpecialAttack(bool isSpecialAttack)
 			{
 			case -1:
 				if (dir.x == 0) state = EPlayerState::SCAttackUp;
-				else if (dir.x == 1) state = EPlayerState::SCAttackRightUp;
-				else state = EPlayerState::SCAttackLeftUp;
+				else state = EPlayerState::SCAttackRightUp;
 				break;
 			case 0:
-				if (dir.x == 0)
-				{
-					if (lastForward == LAST_FORWARD_IS_LEFT) state = EPlayerState::SCAttackLeft;
-					else state = EPlayerState::SCAttackRight;
-				}
-				else if (dir.x == 1) state = EPlayerState::SCAttackRight;
-				else state = EPlayerState::SCAttackLeft;
+				state = EPlayerState::SCAttackRight;
 				break;
 			case 1:
 				if (dir.x == 0) state = EPlayerState::SCAttackDown;
-				else if (dir.x == 1) state = EPlayerState::SCAttackRightDown;
-				else state = EPlayerState::SCAttackLeftDown;
+				else state = EPlayerState::SCAttackRightDown;
 				break;
 			}
 		}
