@@ -327,10 +327,17 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
             gameMgr->GetPlayer()->forwardDir.y = 1;
         gameMgr->GetPlayer()->dir.y = 1;
     }
+    if (gameMgr->GetIsWorld())
+    {
+        if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+            gameMgr->GetPlayer()->dir.x = -1;
+        if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+            gameMgr->GetPlayer()->dir.x = 1;
+    }
+
 
     if (gameMgr->GetIsWorld())
     {
-
         switch (gameMgr->GetPlayer()->dir.y)
         {
         // 아래로 이동

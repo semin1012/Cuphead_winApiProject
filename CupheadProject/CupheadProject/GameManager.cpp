@@ -23,6 +23,8 @@ GameManager::GameManager(RECT* rectView)
 	isStage = false;
 	fadeEffect = nullptr;
 	playingCameraShake = false;
+	shakeX = 0;
+	shakeY = 0;
 
 	frontImages.push_back(new FrontImage(EFrontImage::FX));
 	SetCameraPos(camera_x, camera_y);
@@ -125,9 +127,7 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						delete cards.back();
 						cards.pop_back();
 					}
-
 				}
-				
 				break;
 			}
 		}
@@ -206,7 +206,8 @@ void GameManager::Draw(HDC& hdc)
 	if (background != nullptr)
 	{
 		background->Draw(hdc);
-		background->SetCameraPos(camera_x, camera_y);
+		if (!GetIsWorld())
+			background->SetCameraPos(shakeX, shakeY);
 	}
 
 	Gdi_Draw(hdc);
@@ -316,7 +317,7 @@ void GameManager::Update()
 
 	if (player != nullptr)
 	{
-		if (player->GetSpecailAttackCount() != cards.size())
+		if (player->GetSpecailAttackCount() != cards.size() && !isWorld)
 		{
 			for (int i = cards.size(); i < player->GetSpecailAttackCount(); i++)
 			{
@@ -411,6 +412,9 @@ void GameManager::SetCameraPos(int x, int y)
 		return;
 	}
 
+	if (CollidedPlayerWithWorldCollisions(deltaX, deltaY))
+		return;
+
 	if (background != nullptr)
 	{
 		if (isMoveCameraX)
@@ -421,10 +425,6 @@ void GameManager::SetCameraPos(int x, int y)
 
 	int mapSizeWidth = background->GetWidth();
 	int mapSizeHeight = background->GetHeight();
-
-	if (CollidedPlayerWithWorldCollisions(deltaX, deltaY))
-		return;
-
 	if (GetIsWorld())
 	{
 		if (background->GetTripper() != nullptr)
@@ -562,12 +562,12 @@ void GameManager::CameraShake()
 	if (curTime - cameraShakeStartTime > 500)
 	{
 		playingCameraShake = false;
-		camera_x = 0;
-		camera_y = 0;
+		shakeX = 0;
+		shakeY = 0;
 	}
 
-	camera_x = (rand() % 200 - 100) / 20;
-	camera_y = (rand() % 200 - 100) / 20;
+	shakeX = (rand() % 200 - 100) / 20;
+	shakeY = (rand() % 200 - 100) / 20;
 }
 
 void GameManager::SetDebugMode()
@@ -635,7 +635,7 @@ void GameManager::SetIsTitle(bool isTitle)
 		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
 
 		// TODO:
-		SetStage(1);
+		//SetStage(1);
 	}
 }
 
@@ -734,14 +734,16 @@ void GameManager::Gdi_Draw(HDC hdc)
 	if (boss != nullptr)
 	{
 		boss->Draw(hdc, graphics);
-		boss->SetCameraPos(camera_x, camera_y);
+		boss->SetCameraPos(shakeX, shakeY);
 	}
 
 
 	if (player != nullptr)
 	{
 		player->Draw(hdc, graphics);
-		player->SetCameraPos(camera_x, camera_y);
+
+		if (!isWorld)
+			player->SetCameraPos(shakeX, shakeY);
 
 		for (auto bullet : player->GetBullets())
 		{
@@ -761,7 +763,7 @@ void GameManager::Gdi_Draw(HDC hdc)
 			else
 			{
 				effect->Draw(hdc, graphics);
-				effect->SetCameraPos(camera_x, camera_y);
+				effect->SetCameraPos(shakeX, shakeY);
 				it++;
 			}
 		}
@@ -778,7 +780,7 @@ void GameManager::Gdi_Draw(HDC hdc)
 			{
 				if (parry->StartAnimation()) 
 				{
-					parry->SetCameraPos(camera_x, camera_y);
+					parry->SetCameraPos(shakeX, shakeY);
 					parry->Draw(hdc, graphics);
 				}
 				it++;

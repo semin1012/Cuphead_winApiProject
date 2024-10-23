@@ -165,7 +165,7 @@ Player::Player()
 	isGrace = false;
 	isParry = false;
 	isDoubleParry = false;
-	specialAttackCount = 5;
+	specialAttackCount = 2;
 	isDeath = false;
 	health = 3;
 	for (int i = 0; i < BULLET_MAX_COUNT; i++)
@@ -338,9 +338,7 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 void Player::Update()
 {
 	if (state == EPlayerState::Ghost)
-	{
 		y -= 1;
-	}
 
 	if (startStage)
 	{
@@ -1031,9 +1029,9 @@ void Player::SetStage()
 	bInput = false;
 	startStage = true;
 	startChangeStateTime = clock();
+	dir.x = 0;
 	camera_x = 0;
 	camera_y = 0;
-	dir.x = 0;
 	lastForward = LAST_FORWARD_IS_RIGHT;
 	state = EPlayerState::Intro;
 }

@@ -35,6 +35,8 @@ private:
 	RECT					cameraView;
 	int						camera_x;
 	int						camera_y;
+	int						shakeX;
+	int						shakeY;
 	LPPOINT					mouseDelta;
 	bool					bMouseDrag;
 	RECT*					rectView;
