@@ -115,6 +115,7 @@ private:
 
 	int						x;
 	int						y;
+	int						health;
 	int						camera_x;
 	int						camera_y;
 	int						curAnimMax;
@@ -186,6 +187,9 @@ public:
 	void		Move(int x, int y);
 	float		GetSpeed()									{ return speed; }
 	void		SetSpeed(float speed);
+	void		Turn();
+	void		SetDirection(int x, int y);
+	void		SetDirection(int forwardX);
 
 	int			GetXPos()									{ return x; }
 	int			GetYPos()									{ return y; }

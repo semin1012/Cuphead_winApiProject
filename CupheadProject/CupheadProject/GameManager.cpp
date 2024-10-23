@@ -69,6 +69,16 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 				}
 				break;
+			case VK_LEFT:
+				if (GetPlayer()->GetIsDown())
+					GetPlayer()->SetDirection(-1);
+				GetPlayer()->SetDirection(-1, 99);
+				break;
+			case VK_RIGHT:
+				if (GetPlayer()->GetIsDown())
+					GetPlayer()->SetDirection(1);
+				GetPlayer()->SetDirection(1, 99);
+				break;
 			case VK_SHIFT:
 				if (!player->GetIsDashing() && player->dir.x != 0 && !player->GetIsSpecialAttack())
 					player->SetIsDashing(true);
@@ -524,7 +534,7 @@ void GameManager::SetIsTitle(bool isTitle)
 		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
 
 		// TODO:
-		//SetStage(1);
+		SetStage(1);
 	}
 }
 

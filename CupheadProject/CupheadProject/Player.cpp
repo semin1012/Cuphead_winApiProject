@@ -211,6 +211,7 @@ Player::Player()
 	isParry = false;
 	isDoubleParry = false;
 	specialAttackCount = 0;
+	health = 3;
 	for (int i = 0; i < BULLET_MAX_COUNT; i++)
 	{
 		Bullet* bullet = new Bullet();
@@ -833,6 +834,51 @@ void Player::SetSpeed(float speed)
 	this->speed = speed;
 }
 
+void Player::Turn()
+{
+	static int turncount = 0;
+	printf("Turn() : %d\n", turncount++);	
+	//for (int i = 1; i < playerImg.size(); i++)
+	//{
+	//	for (int j = 0; j < playerImg[i].size(); j++)
+	//		playerImg[i][j]->RotateFlip(RotateFlipType::RotateNoneFlipX);
+	//}
+}
+
+void Player::SetDirection(int forwardX)
+{
+	this->forwardDir.x = forwardX;
+}
+
+void Player::SetDirection(int x, int y)
+{
+	if (x != 99)
+	{
+		if (this->dir.x != x)
+		{
+			if (lastForward == LAST_FORWARD_IS_LEFT)
+			{
+				if (x == 1)
+				{
+					Turn();
+					lastForward = LAST_FORWARD_IS_RIGHT;
+				}
+			}
+			else
+			{
+				if (x == -1)
+				{
+					Turn();
+					lastForward = LAST_FORWARD_IS_LEFT;
+				}
+			}
+		}
+		this->dir.x = x;
+	}
+	if (y != 99)
+		this->dir.y = y;
+}
+
 void Player::SetXPos(int x)
 {
 	this->x = x;
@@ -1121,6 +1167,8 @@ void Player::SetStage()
 	bInput = false;
 	startStage = true;
 	startChangeStateTime = clock();
+	dir.x = 0;
+	lastForward = LAST_FORWARD_IS_RIGHT;
 	state = EPlayerState::Intro;
 }
 
