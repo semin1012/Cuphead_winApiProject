@@ -299,9 +299,7 @@ void GameManager::Draw(HDC& hdc)
 void GameManager::Update()
 {
 	if (playingCameraShake)
-	{
 		CameraShake();
-	}
 
 	if (!frontImages.empty())
 	{
@@ -635,7 +633,7 @@ void GameManager::SetIsTitle(bool isTitle)
 		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
 
 		// TODO:
-		//SetStage(1);
+		SetStage(1);
 	}
 }
 

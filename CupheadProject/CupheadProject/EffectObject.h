@@ -7,6 +7,7 @@ enum class EEffectType
 {
 	JumpUpDust,
 	JumpDownDust,
+	RunDust,
 	BossPh3Intro,
 	BossPh3IntroBack,
 	BossPh3MoveDirt,

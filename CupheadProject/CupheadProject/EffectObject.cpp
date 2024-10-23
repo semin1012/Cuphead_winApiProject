@@ -77,7 +77,25 @@ void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 	if (!isActive)
 		return;
 
-	if (type != EEffectType::Died)
+	if (type == EEffectType::Died)
+	{
+		int unitX = images[0]->GetWidth() / 3;
+		int unitY = images[0]->GetHeight() / 7;
+		Rect rect = { x, y, unitX, unitY };
+		int animX = unitX * curAnimCnt % 3;
+		int animY = unitY * (int)(curAnimCnt / 3);
+		graphics.DrawImage(images[0], rect, animX, animY, unitX, unitY, Gdiplus::Unit::UnitPixel);	
+	}
+	else if (type == EEffectType::RunDust)
+	{
+		int unitX = images[0]->GetWidth() / 19;
+		int unitY = images[0]->GetHeight();
+		Rect rect = { x, y, unitX, unitY };
+		int animX = unitX * curAnimCnt;
+		int animY = 0;
+		graphics.DrawImage(images[0], rect, animX, animY, unitX, unitY, Gdiplus::Unit::UnitPixel);
+	}
+	else
 	{
 		int width = images[curAnimCnt]->GetWidth();
 		int height = images[curAnimCnt]->GetHeight();
@@ -87,20 +105,11 @@ void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 		collider.bottom = y + height / 2;
 		graphics.DrawImage(images[curAnimCnt], collider.left, collider.top, width, height);
 	}
-	else
-	{
-		int unitX = images[0]->GetWidth() / 3;
-		int unitY = images[0]->GetHeight() / 7;
-		Rect rect = { x, y, unitX, unitY };
-		int animX = unitX * curAnimCnt % 3;
-		int animY = unitY * (int)(curAnimCnt / 3);
-		graphics.DrawImage(images[0], rect, animX, animY, unitX, unitY, Gdiplus::Unit::UnitPixel);
-	}
 }
 
 void EffectObject::SetEffect(EEffectType type)
 {
-	if ( type != this->type)
+	if (type != this->type)
 		CreateImage(type);
 	isActive = true;
 	curAnimCnt = 0;
@@ -109,6 +118,7 @@ void EffectObject::SetEffect(EEffectType type)
 void EffectObject::CreateImage(EEffectType type)
 {
 	TCHAR temp[128];
+	Image* pImg;
 	this->type = type;
 	switch (type)
 	{
@@ -163,9 +173,16 @@ void EffectObject::CreateImage(EEffectType type)
 	case EEffectType::Died:
 		images.resize(1);
 		_tcscpy(temp, L"../Resource/Image/UI/Died/died.png");
-		Image* pImg = new Image(temp);
+		pImg = new Image(temp);
 		images[0] = pImg;
 		curAnimMax = 20;
+		break;
+	case EEffectType::RunDust:
+		images.resize(1);
+		_tcscpy(temp, L"../Resource/Image/SFX/RunDust.png");
+		pImg = new Image(temp);
+		images[0] = pImg;
+		curAnimMax = 19;
 		break;
 	}
 }

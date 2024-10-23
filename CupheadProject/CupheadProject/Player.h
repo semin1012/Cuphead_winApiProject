@@ -3,6 +3,7 @@
 #include "framework.h"
 #include "Bullet.h"
 #include "Collider.h"
+#include "EffectObject.h"
 
 class Boss;
 
@@ -88,6 +89,7 @@ class Player
 {
 private:
 	std::vector<Bullet*>	bullets;
+	std::vector<EffectObject*> effects;
 
 	int						x;
 	int						y;
@@ -210,4 +212,3 @@ public:
 
 	std::vector<Bullet*>		GetBullets()						{ return bullets; }
 };
-
