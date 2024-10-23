@@ -113,6 +113,7 @@ private:
 	bool					setJumpDust;
 	bool					bInput;
 	bool					startStage;
+	bool					isDeath;
 
 	const int				JumpMaxPower = 55;
 	int						curJumpPower;
@@ -192,6 +193,8 @@ public:
 	void		SetCanInput(bool bInput)					{ this->bInput = bInput; }
 	bool		GetIsHit()									{ return isHit; }
 	bool		GetIsGraceTime()							{ return isGrace; }
+	void		DecreaseHealth();
+	int			GetHealth()									{ return health; }
 
 	bool		ReadyToSetState();
 

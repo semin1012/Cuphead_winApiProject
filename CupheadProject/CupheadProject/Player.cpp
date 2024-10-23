@@ -163,6 +163,7 @@ Player::Player()
 	isParry = false;
 	isDoubleParry = false;
 	specialAttackCount = 0;
+	isDeath = false;
 	health = 3;
 	for (int i = 0; i < BULLET_MAX_COUNT; i++)
 	{
@@ -501,6 +502,8 @@ void Player::Update()
 
 bool Player::Collided(Boss* boss)
 {
+	if (isDeath)
+		return false;
 	if (this->collider.IsOverlaps(*boss->GetCollider()))
 	{
 		if (boss->GetIsPunch())
@@ -508,12 +511,7 @@ bool Player::Collided(Boss* boss)
 			if (isDown)
 				return false;
 		}
-
-		isHitTime = clock();
-		isGrace = true;
-		isHit = true;
-		state = EPlayerState::HitRight;
-		curAnimCnt = 0;
+		DecreaseHealth();
 		return true;
 	}
 	return false;
@@ -738,7 +736,6 @@ void Player::SetSpeed(float speed)
 void Player::Turn()
 {
 	static int turncount = 0;
-	printf("Turn() : %d\n", turncount++);	
 	for (int i = 1; i < playerImg.size(); i++)
 	{
 		for (int j = 0; j < playerImg[i].size(); j++)
@@ -982,6 +979,22 @@ void Player::SetIsSpecialAttack(bool isSpecialAttack)
 void Player::SetLastForward(bool lastForward)
 {
 	this->lastForward = lastForward;
+}
+
+void Player::DecreaseHealth()
+{
+	isHitTime = clock();
+	isGrace = true;
+	isHit = true;
+	state = EPlayerState::HitRight;
+	curAnimCnt = 0;
+	health -= 1;
+
+	if (health <= 0)
+	{
+		health = 0;
+		isDeath = true;
+	}
 }
 
 bool Player::ReadyToSetState()

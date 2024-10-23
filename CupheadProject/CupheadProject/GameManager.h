@@ -15,6 +15,7 @@
 #include "EffectObject.h"
 #include "FrontImage.h"
 #include "ParryObject.h"
+#include "HealthUI.h"
 #define TILE_SIZE 30
 
 class GameManager
@@ -22,11 +23,12 @@ class GameManager
 private:
 	std::vector<EffectObject*>	effects;
 	std::vector<ParryObject*>	parryObjects;
+	std::vector<FrontImage*>	frontImages;
 	std::vector<int>		xInputs;
 	Background*				background;
 	Player*					player;
 	Boss*					boss;
-	FrontImage*				frontImage;
+	HealthUI*				health;
 	bool					debugMode;
 	RECT					cameraView;
 	int						camera_x;

@@ -14,6 +14,7 @@ GameManager::GameManager(RECT* rectView)
 
 	player = nullptr;
 	boss = nullptr;
+	health = nullptr;
 
 	background = new TitleMap();
 	background->SetRectView(*rectView);
@@ -21,8 +22,8 @@ GameManager::GameManager(RECT* rectView)
 	isWorld = false;
 	isStage = false;
 	fadeEffect = nullptr;
-	frontImage = nullptr;
 
+	frontImages.push_back(new FrontImage(EFrontImage::FX));
 	SetCameraPos(camera_x, camera_y);
 }
 
@@ -283,12 +284,15 @@ void GameManager::Draw(HDC& hdc)
 
 void GameManager::Update()
 {
-	if (frontImage != nullptr)
+	if (!frontImages.empty())
 	{
-		if (frontImage->GetIsActive() == false)
+		for (auto it = frontImages.begin(); it != frontImages.end(); )
 		{
-			delete frontImage;
-			frontImage = nullptr;
+			if ((*it)->GetIsActive() == false)
+			{
+				it = frontImages.erase(it);
+			}
+			else it++;
 		}
 	}
 
@@ -329,7 +333,10 @@ void GameManager::Update()
 			}
 
 			if (!player->GetIsGraceTime() && player->GetCanInput())
-				player->Collided(boss);
+			{
+				if (player->Collided(boss))
+					health->SetHealth(player->GetHealth());
+			}
 		}
 	}
 }
@@ -599,7 +606,9 @@ void GameManager::SetStage(int stage)
 	boss = new Boss();
 	boss->SetPlayer(player);
 
-	frontImage = new FrontImage();
+	frontImages.push_back(new FrontImage(EFrontImage::Ready));
+
+	health = new HealthUI();
 }
 
 void GameManager::SetMouseDeltaPos(HWND& hWnd)
@@ -710,10 +719,14 @@ void GameManager::Gdi_Draw(HDC hdc)
 		}
 	}
 
-	if (frontImage != nullptr)
+	if (!frontImages.empty())
 	{
-		frontImage->Draw(hdc, graphics);
+		for (auto frontImage : frontImages)
+			frontImage->Draw(hdc, graphics);
 	}
+
+	if (health != nullptr)
+		health->Draw(graphics);
 }
 
 void GameManager::Gdi_End()

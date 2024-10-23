@@ -2,16 +2,24 @@
 #include "framework.h"
 #include <vector>
 
+enum class EFrontImage
+{
+	Ready,
+	FX,
+	MAX
+};
+
 class FrontImage
 {
 	std::vector<Image*> images;
+	EFrontImage			type;
 	int					curAnimCnt;
 	int					curAnimMax;
 	clock_t				animLastTime;
 	bool				isActive;
 
 public:
-	FrontImage();
+	FrontImage(EFrontImage type);
 	~FrontImage();
 
 	void CreateImage();

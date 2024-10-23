@@ -1,12 +1,13 @@
 #include "FrontImage.h"
 #include <string>
 
-FrontImage::FrontImage()
+FrontImage::FrontImage(EFrontImage type)
 {
 	curAnimCnt = 0;
 	curAnimMax = 0;
 	isActive = true;
 	animLastTime = clock();
+	this->type = type;
 	CreateImage();
 }
 
@@ -20,8 +21,18 @@ FrontImage::~FrontImage()
 
 void FrontImage::CreateImage()
 {
-	TCHAR temp[128] = L"../Resource/Image/Ready/FightText_GetReady_00";
-	ParsingToImagePath(51, temp, 2);
+	TCHAR temp[128];
+	switch (type)
+	{
+	case EFrontImage::Ready:
+		_tcscpy(temp, L"../Resource/Image/Ready/FightText_GetReady_00");
+		ParsingToImagePath(51, temp, 2);
+		break;
+	case EFrontImage::FX:
+		_tcscpy(temp, L"../Resource/Image/UI/FX/cuphead_screen_fx_0");
+		ParsingToImagePath(30, temp, 1);
+		break;
+	}
 }
 
 void FrontImage::Draw(HDC& hdc, Graphics& graphics)
@@ -33,14 +44,15 @@ void FrontImage::Draw(HDC& hdc, Graphics& graphics)
 	clock_t curTime = clock();
 	curAnimMax = images.size();
 
-	if (curTime - animLastTime > 35)
+	if (curTime - animLastTime > 100)
 	{
 		curAnimCnt++;
 
 		if (curAnimCnt >= curAnimMax)
 		{
 			curAnimCnt = 0;
-			isActive = false;
+			if (type == EFrontImage::Ready)
+				isActive = false;
 		}
 
 		animLastTime = clock();
@@ -48,8 +60,21 @@ void FrontImage::Draw(HDC& hdc, Graphics& graphics)
 
 	if (!isActive)
 		return;
-
-	graphics.DrawImage(images[curAnimCnt], 0, 0, WINDOWS_WIDTH, WINDOWS_HEIGHT);
+	if (type == EFrontImage::FX)
+	{
+		ImageAttributes imgAttr;
+		ColorMatrix colorMatrix =
+		{
+			0.2f, 0.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.2f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.2f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.3f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+		};
+		imgAttr.SetColorMatrix(&colorMatrix);
+		graphics.DrawImage(images[curAnimCnt], Rect(0, 0, WINDOWS_WIDTH, WINDOWS_HEIGHT), 0, 0, images[curAnimCnt]->GetWidth(), images[curAnimCnt]->GetHeight(), UnitPixel, &imgAttr);
+	}
+	else graphics.DrawImage(images[curAnimCnt], 0, 0, WINDOWS_WIDTH, WINDOWS_HEIGHT);
 }
 
 void FrontImage::ParsingToImagePath(int spriteSize, TCHAR* path, int startNum)
@@ -62,8 +87,14 @@ void FrontImage::ParsingToImagePath(int spriteSize, TCHAR* path, int startNum)
 		TCHAR temp[128];
 		_tcscpy(temp, path);
 
-		wchar_t num[3];
+		wchar_t num[4];
 		if (j < 10)
+		{
+			_tcscpy(num, std::to_wstring(0).c_str());
+			_tcscat(num, std::to_wstring(0).c_str());
+			_tcscat(num, std::to_wstring(j).c_str());
+		}
+		else if (j < 100)
 		{
 			_tcscpy(num, std::to_wstring(0).c_str());
 			_tcscat(num, std::to_wstring(j).c_str());
