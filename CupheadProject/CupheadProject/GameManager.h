@@ -16,6 +16,7 @@
 #include "FrontImage.h"
 #include "ParryObject.h"
 #include "HealthUI.h"
+#include "CardUI.h"
 #define TILE_SIZE 30
 
 class GameManager
@@ -24,6 +25,7 @@ private:
 	std::vector<EffectObject*>	effects;
 	std::vector<ParryObject*>	parryObjects;
 	std::vector<FrontImage*>	frontImages;
+	std::vector<CardUI*>		cards;
 	std::vector<int>		xInputs;
 	Background*				background;
 	Player*					player;
@@ -40,6 +42,8 @@ private:
 	bool					isTitle;
 	bool					isStage;
 	int						stage;
+	bool					playingCameraShake;
+	clock_t					cameraShakeStartTime;
 
 
 	FadeEffect*				fadeEffect;
@@ -59,6 +63,7 @@ public:
 	void		SetCameraPos(int x, int y);
 	void		AddTile(HWND& hWnd, LPPOINT& mousePos);
 	bool		CompairTilePos(Collider& collide);
+	void		CameraShake();
 	
 	void		SetDebugMode();
 
@@ -69,6 +74,7 @@ public:
 	bool		GetMouseDragState();
 	Player*		GetPlayer();
 	Background* GetBackground();
+	std::vector<int> GetInputs() { return xInputs; }
 
 	bool		GetIsWorld();
 	void		SetIsWorld(bool isWorld);

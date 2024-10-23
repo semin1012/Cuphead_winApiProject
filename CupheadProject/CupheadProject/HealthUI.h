@@ -3,7 +3,7 @@
 
 class HealthUI
 {
-	Image*		image;
+	CImage		image;
 	int			x;
 	int			y;
 	int			health;
@@ -12,7 +12,7 @@ public:
 	HealthUI();
 	HealthUI(int health);
 	~HealthUI();
-	void	Draw(Graphics& graphics);
+	void	Draw(HDC& hdc);
 	void	SetHealth(int health);
 };
 

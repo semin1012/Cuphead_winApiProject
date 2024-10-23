@@ -5,6 +5,8 @@ Background::Background()
     rectView = nullptr;
     x = 0;
     y = 0;
+    camera_x = 0;
+    camera_y = 0;
     width = 0;
     height = 0;
     debugMode = false;
@@ -18,6 +20,8 @@ Background::Background(RECT& rectView, int x, int y)
     this->y = y;
     width = 0;
     height = 0;
+    camera_x = 0;
+    camera_y = 0;
     debugMode = false;
     tripper = nullptr;
 }
@@ -29,6 +33,16 @@ Background::~Background()
 void Background::SetRectView(RECT& rectView)
 {
     this->rectView = &rectView;
+}
+
+void Background::SetCameraPos(int x, int y)
+{
+    int deltaX = (camera_x - x);
+    this->x -= deltaX;
+    camera_x = x;
+    int deltaY = (camera_y - y);
+    this->y -= deltaY;
+    camera_y = y;
 }
 
 int Background::GetXPos()

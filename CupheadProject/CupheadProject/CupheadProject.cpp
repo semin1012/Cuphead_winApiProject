@@ -25,6 +25,7 @@ using namespace std;
 #define MAX_LOADSTRING 100
 #define TIMER_KEYSTATE 0
 
+
 #pragma region WinMain
 HINSTANCE hInst;
 WCHAR szTitle[MAX_LOADSTRING];
@@ -174,7 +175,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
     {
-        SetTimer(hWnd, TIMER_KEYSTATE, 18, KeyStateProc);
+        SetTimer(hWnd, TIMER_KEYSTATE, 24, KeyStateProc);
         mousePos = new POINT;
         Init(hWnd);
         GetWindowRect(hWnd, &rectView);

@@ -6,6 +6,8 @@ Boss::Boss()
 {
 	x = 1000;
 	y = 700;
+	camera_x = 0;
+	camera_y = 0;
 	phase = 1;
 	curAnimMax = 0;
 	curAnimCnt = 0;
@@ -24,6 +26,7 @@ Boss::Boss()
 	hp = HEALTH;
 	moveLastTime = clock();
 	deltaPosY = 0;
+	isCameraShake = false;
 	CreateImage();
 }
 
@@ -326,6 +329,7 @@ void Boss::CheckAnimCount()
 		}
 		else if (state == EBossState::Smash && curAnimCnt == 9)
 		{
+			isCameraShake = true;
 			effects[(int)EBossEffect::SmashDust]->SetIsActive(true);
 			effects[(int)EBossEffect::SmashDust]->SetPosition(x, y - 35);
 			curAnimCnt++;
@@ -462,6 +466,7 @@ void Boss::Jump()
 			SetJumpState();
 		if (phase == 2)
 		{
+			isCameraShake = true;
 			effects[(int)EBossEffect::Ph2JumpDust]->SetIsActive(true);
 			effects[(int)EBossEffect::Ph2JumpDust]->SetPosition(x, y);
 		}
@@ -535,6 +540,16 @@ void Boss::SetJumpDirection()
 		SetJumpState();
 		ChangeState(EBossState::Jump);
 	}
+}
+
+void Boss::SetCameraPos(int x, int y)
+{
+	int deltaX = (camera_x - x);
+	this->x -= deltaX;
+	camera_x = x;
+	int deltaY = (camera_y - y);
+	this->y -= deltaY;
+	camera_y = y;
 }
 
 void Boss::SetPlayer(Player* player)

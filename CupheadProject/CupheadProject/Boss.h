@@ -89,6 +89,10 @@ class Boss
 	int						deltaPosY;
 	int						prevXPos;
 	int						prevDirX;
+
+	int						camera_x;
+	int						camera_y;
+
 	clock_t					animLastTime;
 	EBossState				state;
 	EBossStateSprite		animState;
@@ -101,6 +105,8 @@ class Boss
 	clock_t					startChangeStateTime;
 	bool					isShowParry;
 	clock_t					moveLastTime;
+
+	bool					isCameraShake;
 	
 	bool					isJumping;
 	const int				JumpMaxPower = 65;
@@ -131,7 +137,11 @@ public:
 	void		Smash();
 	void		SetJumpDirection();
 	bool		GetIsPunch()				{ return state == EBossState::Punch; }
+	bool		GetIsDeath()				{ return hp <= 0; }
+	void		SetCameraPos(int x, int y);
 
+	bool		GetIsCameraShake()			{ return isCameraShake; }
+	void		SetIsCameraShake(bool shake) { isCameraShake = shake; }
 	void		SetCollider();
 	void		SetJumpState();
 	void		SetPunchState();

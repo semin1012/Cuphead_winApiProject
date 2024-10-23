@@ -6,6 +6,7 @@ enum class EFrontImage
 {
 	Ready,
 	FX,
+	KnockOut,
 	MAX
 };
 

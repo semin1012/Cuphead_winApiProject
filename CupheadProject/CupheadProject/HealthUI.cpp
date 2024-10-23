@@ -2,8 +2,7 @@
 
 HealthUI::HealthUI()
 {
-	Image* pImg = new Image(L"../Resource/Image/UI/Health/Health.png");
-	image = pImg;
+	image.Load(L"../Resource/Image/UI/Health/Health.png");
 	x = 35;
 	y = 750;
 	health = 3;
@@ -19,12 +18,10 @@ HealthUI::~HealthUI()
 	delete image;
 }
 
-void HealthUI::Draw(Graphics& graphics)
+void HealthUI::Draw(HDC& hdc)
 {
-	graphics.ResetTransform();
-
-	int unitX = image->GetWidth() / 6;
-	int unitY = image->GetHeight() / 2;
+	int unitX = image.GetWidth() / 6;
+	int unitY = image.GetHeight() / 2;
 	Rect rect = { x, y, unitX, unitY };
 
 	int animX;
@@ -33,7 +30,7 @@ void HealthUI::Draw(Graphics& graphics)
 	else
 		animX = unitX * health;
 
-	graphics.DrawImage(image, rect, animX, 0, unitX, unitY, Gdiplus::Unit::UnitPixel);
+	image.Draw(hdc, x, y, unitX, unitY, animX, 0, unitX, unitY);
 }
 
 void HealthUI::SetHealth(int health)

@@ -20,6 +20,8 @@ class Bullet
 	POINT					createPos;
 	int						x;
 	int						y;
+	int						camera_x;
+	int						camera_y;
 	int						speed;
 	int						curAnimCnt;
 	int						curAnimMax;
@@ -43,6 +45,8 @@ public:
 	bool		Collided(Collider* collider);
 	void		CreateImage();
 	void		ParsingToImagePath(EBulletState fireBall, int spriteSize, TCHAR* path, int startNum);
+
+	void		SetCameraPos(int x, int y);
 
 	Collider*	GetCollider();
 	bool		GetisActive()			{ return isActive; }

@@ -154,7 +154,7 @@ Player::Player()
 	isSpecialAttackAndJump = false;
 	setJumpDust = false;
 	lastForward = LAST_FORWARD_IS_RIGHT;
-	speed = 1;
+	speed = 1.5f;
 	isHit = false;
 	isHitTime = clock();
 	bInput = true;
@@ -162,7 +162,7 @@ Player::Player()
 	isGrace = false;
 	isParry = false;
 	isDoubleParry = false;
-	specialAttackCount = 0;
+	specialAttackCount = 5;
 	isDeath = false;
 	health = 3;
 	for (int i = 0; i < BULLET_MAX_COUNT; i++)
@@ -202,7 +202,7 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 	{
 		curAnimMax = playerImg[(int)state].size();
 
-		if (curTime - lastTime > 50)
+		if (curTime - lastTime > 33)
 		{
 			curAnimCnt++;
 			lastTime = clock();
@@ -797,6 +797,8 @@ void Player::Parry()
 	}
 	else state = EPlayerState::ParryRight;
 	isParry = true;
+	if (specialAttackCount < 5)
+		specialAttackCount++;
 }
 
 void Player::SetIsJumping(bool isJumping)
@@ -876,6 +878,7 @@ void Player::SetIsSpecialAttack(bool isSpecialAttack)
 	if (isDashing || isSpecialAttackAndJump || this->isSpecialAttack)
 		return;
 
+	specialAttackCount -= 1;
 	this->isSpecialAttack = isSpecialAttack;
 	if (isSpecialAttack)
 	{
@@ -1017,6 +1020,8 @@ void Player::SetStage()
 	bInput = false;
 	startStage = true;
 	startChangeStateTime = clock();
+	camera_x = 0;
+	camera_y = 0;
 	dir.x = 0;
 	lastForward = LAST_FORWARD_IS_RIGHT;
 	state = EPlayerState::Intro;

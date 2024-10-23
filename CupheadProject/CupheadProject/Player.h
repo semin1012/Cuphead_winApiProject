@@ -91,11 +91,13 @@ private:
 	int						x;
 	int						y;
 	int						health;
+
 	int						camera_x;
 	int						camera_y;
 	int						curAnimMax;
 	int						curAnimCnt;
 	int						specialAttackCount;
+
 	clock_t					lastTime;
 	bool					inWorld;
 
@@ -195,6 +197,7 @@ public:
 	bool		GetIsGraceTime()							{ return isGrace; }
 	void		DecreaseHealth();
 	int			GetHealth()									{ return health; }
+	int			GetSpecailAttackCount()						{ return specialAttackCount; }
 
 	bool		ReadyToSetState();
 

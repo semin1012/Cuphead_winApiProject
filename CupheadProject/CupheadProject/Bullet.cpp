@@ -6,6 +6,8 @@ Bullet::Bullet()
 	speed = 35.0f;
 	curAnimCnt = 0;
 	curAnimMax = 0;
+	camera_x = 0;
+	camera_y = 0;
 	spawnAnimCnt = 0;
 	createTime = clock();
 	animLastTime = clock();
@@ -202,6 +204,16 @@ void Bullet::ParsingToImagePath(EBulletState state, int spriteSize, TCHAR* path,
 		Image* pImg = new Image(temp);
 		images[(int)state][i] = pImg;
 	}
+}
+
+void Bullet::SetCameraPos(int x, int y)
+{
+	int deltaX = (camera_x - x);
+	this->x -= deltaX;
+	camera_x = x;
+	int deltaY = (camera_y - y);
+	this->y -= deltaY;
+	camera_y = y;
 }
 
 Collider* Bullet::GetCollider()

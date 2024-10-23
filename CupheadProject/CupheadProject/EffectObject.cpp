@@ -14,6 +14,8 @@ EffectObject::EffectObject()
 	createTime = clock();
 	x = 0;
 	y = 0;
+	camera_x = 0;
+	camera_y = 0;
 }
 
 EffectObject::EffectObject(EEffectType type, int x, int y, bool isLoop, bool isBack, bool isActive) : EffectObject()
@@ -31,6 +33,16 @@ EffectObject::~EffectObject()
 	for (auto it = images.begin(); it != images.end(); it++)
 		delete *it;
 	images.clear();
+}
+
+void EffectObject::SetCameraPos(int x, int y)
+{
+	int deltaX = (camera_x - x);
+	this->x -= deltaX;
+	camera_x = x;
+	int deltaY = (camera_y - y);
+	this->y -= deltaY;
+	camera_y = y;
 }
 
 void EffectObject::Draw(HDC& hdc, Graphics& graphics)

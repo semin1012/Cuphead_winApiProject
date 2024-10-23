@@ -27,6 +27,10 @@ class EffectObject
 	int					curAnimMax;
 	int					x;
 	int					y;
+
+	int						camera_x;
+	int						camera_y;
+
 	bool				isActive;
 	bool				isLoop;
 	bool				isBack;
@@ -40,6 +44,8 @@ public:
 	EffectObject(EEffectType type, int x, int y, bool isLoop = false, bool isBack = false, bool isActive = true);
 	~EffectObject();
 	
+	void		SetCameraPos(int x, int y);
+
 	void	Draw(HDC& hdc, Graphics& graphics);
 	void	SetEffect(EEffectType type);
 	void	CreateImage(EEffectType type);

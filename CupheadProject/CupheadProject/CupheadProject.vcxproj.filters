@@ -93,6 +93,9 @@
     <ClInclude Include="HealthUI.h">
       <Filter>헤더 파일\UI</Filter>
     </ClInclude>
+    <ClInclude Include="CardUI.h">
+      <Filter>헤더 파일\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CupheadProject.cpp">
@@ -141,6 +144,9 @@
       <Filter>소스 파일\Manager</Filter>
     </ClCompile>
     <ClCompile Include="HealthUI.cpp">
+      <Filter>소스 파일\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CardUI.cpp">
       <Filter>소스 파일\UI</Filter>
     </ClCompile>
   </ItemGroup>

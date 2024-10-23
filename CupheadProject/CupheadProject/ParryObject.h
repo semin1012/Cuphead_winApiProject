@@ -17,6 +17,8 @@ class ParryObject
 	Collider			collider;
 	int					x;
 	int					y;
+	int						camera_x;
+	int						camera_y;
 	int					curAnimMax;
 	int					curAnimCnt;
 	bool				isActive;
@@ -28,6 +30,7 @@ public:
 	ParryObject();
 	ParryObject(int x, int y);
 	~ParryObject();
+	void		SetCameraPos(int x, int y);
 
 	void		Draw(HDC& hdc, Graphics& graphics);
 	bool		Collided(Player* player);

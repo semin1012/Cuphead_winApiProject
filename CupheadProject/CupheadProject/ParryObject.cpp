@@ -5,6 +5,8 @@ ParryObject::ParryObject()
 {
 	x = 0;
 	y = 0;
+	camera_x = 0;
+	camera_y = 0;
 	curAnimMax = 0;
 	curAnimCnt = 0;
 	isActive = true;
@@ -29,6 +31,16 @@ ParryObject::~ParryObject()
 	}
 
 	images.clear();
+}
+
+void ParryObject::SetCameraPos(int x, int y)
+{
+	int deltaX = (camera_x - x);
+	this->x -= deltaX;
+	camera_x = x;
+	int deltaY = (camera_y - y);
+	this->y -= deltaY;
+	camera_y = y;
 }
 
 void ParryObject::Draw(HDC& hdc, Graphics& graphics)

@@ -22,6 +22,7 @@ GameManager::GameManager(RECT* rectView)
 	isWorld = false;
 	isStage = false;
 	fadeEffect = nullptr;
+	playingCameraShake = false;
 
 	frontImages.push_back(new FrontImage(EFrontImage::FX));
 	SetCameraPos(camera_x, camera_y);
@@ -116,8 +117,17 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 			case 'v':
 			case 'V':
-				if (!player->GetIsSpecialAttack())
-					player->SetIsSpecialAttack(true);
+				if (player->GetSpecailAttackCount() > 0)
+				{
+					if (!player->GetIsSpecialAttack())
+					{
+						player->SetIsSpecialAttack(true);
+						delete cards.back();
+						cards.pop_back();
+					}
+
+				}
+				
 				break;
 			}
 		}
@@ -194,7 +204,10 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 void GameManager::Draw(HDC& hdc)
 {
 	if (background != nullptr)
+	{
 		background->Draw(hdc);
+		background->SetCameraPos(camera_x, camera_y);
+	}
 
 	Gdi_Draw(hdc);
 
@@ -284,6 +297,11 @@ void GameManager::Draw(HDC& hdc)
 
 void GameManager::Update()
 {
+	if (playingCameraShake)
+	{
+		CameraShake();
+	}
+
 	if (!frontImages.empty())
 	{
 		for (auto it = frontImages.begin(); it != frontImages.end(); )
@@ -298,6 +316,14 @@ void GameManager::Update()
 
 	if (player != nullptr)
 	{
+		if (player->GetSpecailAttackCount() != cards.size())
+		{
+			for (int i = cards.size(); i < player->GetSpecailAttackCount(); i++)
+			{
+				cards.push_back(new CardUI(i));
+			}
+		}
+
 		if (!xInputs.empty())
 			GetPlayer()->dir.x = xInputs.back();
 
@@ -311,6 +337,13 @@ void GameManager::Update()
 		if (boss != nullptr)
 		{
 			boss->Update();
+
+			if (boss->GetIsCameraShake())
+			{
+				cameraShakeStartTime = clock();
+				playingCameraShake = true;
+				boss->SetIsCameraShake(false);
+			}
 
 			if (boss->GetIsTransitionToPhase())
 			{
@@ -328,7 +361,11 @@ void GameManager::Update()
 				if (bullet->GetisActive() && !bullet->GetIsCollided())
 				{
 					if (bullet->Collided(boss->GetCollider()))
+					{
 						boss->Hit(bullet);
+						if (boss->GetIsDeath())
+							frontImages.push_back(new FrontImage(EFrontImage::KnockOut));
+					}
 				}
 			}
 
@@ -357,14 +394,18 @@ void GameManager::SetCameraPos(int x, int y)
 	static bool isMoveCameraY = true;
 	static bool isMoveCameraX = true;
 
+	int deltaX = (camera_x - x);
+	int deltaY = (camera_y - y);
+
 	if (!GetIsWorld())
 	{
 		isMoveCameraX = false;
-		isMoveCameraY = false;
+		isMoveCameraY = false; 
+		
+		float speed = player->GetSpeed();
+		player->Move(deltaX * speed, 0);
+		return;
 	}
-
-	int deltaX = (camera_x - x);
-	int deltaY = (camera_y - y);
 
 	if (background != nullptr)
 	{
@@ -507,6 +548,22 @@ bool GameManager::CompairTilePos(Collider& collider)
 	if (collider.top >= cameraView.bottom ) return false;  //- TILE_SIZE) return false;
 	if (collider.bottom <= cameraView.top ) return false;  //+ TILE_SIZE) return false;
 	return true;
+}
+
+void GameManager::CameraShake()
+{
+	clock_t curTime = clock();
+	playingCameraShake = true;
+
+	if (curTime - cameraShakeStartTime > 500)
+	{
+		playingCameraShake = false;
+		camera_x = 0;
+		camera_y = 0;
+	}
+
+	camera_x = (rand() % 200 - 100) / 20;
+	camera_y = (rand() % 200 - 100) / 20;
 }
 
 void GameManager::SetDebugMode()
@@ -673,12 +730,14 @@ void GameManager::Gdi_Draw(HDC hdc)
 	if (boss != nullptr)
 	{
 		boss->Draw(hdc, graphics);
+		boss->SetCameraPos(camera_x, camera_y);
 	}
 
 
 	if (player != nullptr)
 	{
 		player->Draw(hdc, graphics);
+		player->SetCameraPos(camera_x, camera_y);
 
 		for (auto bullet : player->GetBullets())
 		{
@@ -698,6 +757,7 @@ void GameManager::Gdi_Draw(HDC hdc)
 			else
 			{
 				effect->Draw(hdc, graphics);
+				effect->SetCameraPos(camera_x, camera_y);
 				it++;
 			}
 		}
@@ -712,11 +772,23 @@ void GameManager::Gdi_Draw(HDC hdc)
 				it = parryObjects.erase(it);
 			else
 			{
-				if (parry->StartAnimation())
+				if (parry->StartAnimation()) 
+				{
+					parry->SetCameraPos(camera_x, camera_y);
 					parry->Draw(hdc, graphics);
+				}
 				it++;
 			}
 		}
+	}
+
+	if (health != nullptr)
+		health->Draw(hdc);
+
+	if (!cards.empty())
+	{
+		for (auto card : cards)
+			card->Draw(hdc);
 	}
 
 	if (!frontImages.empty())
@@ -725,8 +797,6 @@ void GameManager::Gdi_Draw(HDC hdc)
 			frontImage->Draw(hdc, graphics);
 	}
 
-	if (health != nullptr)
-		health->Draw(graphics);
 }
 
 void GameManager::Gdi_End()

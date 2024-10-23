@@ -25,12 +25,16 @@ void FrontImage::CreateImage()
 	switch (type)
 	{
 	case EFrontImage::Ready:
-		_tcscpy(temp, L"../Resource/Image/Ready/FightText_GetReady_00");
+		_tcscpy(temp, L"../Resource/Image/UI/Ready/FightText_GetReady_0");
 		ParsingToImagePath(51, temp, 2);
 		break;
 	case EFrontImage::FX:
 		_tcscpy(temp, L"../Resource/Image/UI/FX/cuphead_screen_fx_0");
-		ParsingToImagePath(30, temp, 1);
+		ParsingToImagePath(50, temp, 1);
+		break;
+	case EFrontImage::KnockOut:
+		_tcscpy(temp, L"../Resource/Image/UI/Knockout/FightText_KO_0");
+		ParsingToImagePath(26, temp, 1);
 		break;
 	}
 }
@@ -44,14 +48,14 @@ void FrontImage::Draw(HDC& hdc, Graphics& graphics)
 	clock_t curTime = clock();
 	curAnimMax = images.size();
 
-	if (curTime - animLastTime > 100)
+	if (curTime - animLastTime > 33)
 	{
 		curAnimCnt++;
 
 		if (curAnimCnt >= curAnimMax)
 		{
 			curAnimCnt = 0;
-			if (type == EFrontImage::Ready)
+			if (type != EFrontImage::FX)
 				isActive = false;
 		}
 
@@ -65,9 +69,9 @@ void FrontImage::Draw(HDC& hdc, Graphics& graphics)
 		ImageAttributes imgAttr;
 		ColorMatrix colorMatrix =
 		{
-			0.2f, 0.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 0.2f, 0.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 0.2f, 0.0f, 0.0f,
+			0.1f, 0.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.1f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.1f, 0.0f, 0.0f,
 			0.0f, 0.0f, 0.0f, 0.3f, 0.0f,
 			0.0f, 0.0f, 0.0f, 0.0f, 1.0f
 		};

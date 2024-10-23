@@ -9,6 +9,8 @@ class Background
 protected:
 	RECT*					rectView;
 	Tripper*				tripper;
+	int						camera_x;
+	int						camera_y;
 	int						x;
 	int						y;
 	int						width;
@@ -24,6 +26,7 @@ public:
 	virtual void	Draw(HDC& hdc) = 0;
 	virtual void	CreateImage() = 0;
 	void			SetRectView(RECT& rectView);
+	void		SetCameraPos(int x, int y);
 
 	int			GetXPos();
 	int			GetYPos();
