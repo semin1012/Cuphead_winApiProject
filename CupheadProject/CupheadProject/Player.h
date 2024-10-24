@@ -126,6 +126,7 @@ private:
 	float					speed;
 	clock_t					startChangeStateTime;
 	clock_t					lastShootingTime;
+	clock_t					createRunDustTime;
 
 	EPlayerState			state;
 	EPlayerState			prevState;
@@ -177,6 +178,7 @@ public:
 	void		SetXPos(int x);
 	void		SetYPos(int y);
 	void		Parry();
+	void		SetRunDustEffect();
 
 	bool		GetIsJumping()								{ return isJumping; }
 	void		SetIsJumping(bool isJumping);

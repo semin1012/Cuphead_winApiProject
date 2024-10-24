@@ -59,7 +59,7 @@ void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 
 	graphics.ResetTransform();
 	clock_t curTime = clock();
-	if (type != EEffectType::Died)
+	if (type != EEffectType::Died && type != EEffectType::RunDust)
 		curAnimMax = images.size();
 
 	if (curTime - animLastTime > 33)
@@ -90,7 +90,7 @@ void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 	{
 		int unitX = images[0]->GetWidth() / 19;
 		int unitY = images[0]->GetHeight();
-		Rect rect = { x, y, unitX, unitY };
+		Rect rect = { x - unitX / 2, y - unitY, unitX, unitY };
 		int animX = unitX * curAnimCnt;
 		int animY = 0;
 		graphics.DrawImage(images[0], rect, animX, animY, unitX, unitY, Gdiplus::Unit::UnitPixel);
@@ -109,10 +109,10 @@ void EffectObject::Draw(HDC& hdc, Graphics& graphics)
 
 void EffectObject::SetEffect(EEffectType type)
 {
-	if (type != this->type)
-		CreateImage(type);
 	isActive = true;
 	curAnimCnt = 0;
+	if (type != this->type)
+		CreateImage(type);
 }
 
 void EffectObject::CreateImage(EEffectType type)

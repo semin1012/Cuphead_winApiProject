@@ -168,6 +168,13 @@ Player::Player()
 	specialAttackCount = 2;
 	isDeath = false;
 	health = 3;
+	createRunDustTime = clock();
+	for (int i = 0; i < 5; i++)
+	{
+		EffectObject* effect = new EffectObject(EEffectType::RunDust, x, y);
+		effect->SetIsActive(false);
+		effects.push_back(effect);
+	}
 	for (int i = 0; i < BULLET_MAX_COUNT; i++)
 	{
 		Bullet* bullet = new Bullet();
@@ -203,6 +210,15 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 	// 월드가 아니라면
 	if (!inWorld)
 	{
+		if (!effects.empty())
+		{
+			for (auto effect : effects)
+			{
+				if (effect->GetisActive())
+					effect->Draw(hdc, grapichs);
+			}
+		}
+
 		curAnimMax = playerImg[(int)state].size();
 
 		if (curTime - lastTime > 33)
@@ -340,6 +356,11 @@ void Player::Update()
 	if (state == EPlayerState::Ghost)
 		y -= 1;
 
+	if (state == EPlayerState::RightRun || state == EPlayerState::ShootingRunRight || state == EPlayerState::ShootingRunRightUp)
+	{
+		SetRunDustEffect();
+	}
+
 	if (startStage)
 	{
 		clock_t curTime = clock();
@@ -397,7 +418,9 @@ void Player::Update()
 				case -1:
 				case 1:
 				case 0:
-					state = EPlayerState::RightJump;
+					if (health <= 0)
+						SetState(EPlayerState::Ghost);
+					else SetState(EPlayerState::RightJump);
 					break;
 				}
 			}
@@ -416,14 +439,16 @@ void Player::Update()
 				switch (dir.y)
 				{
 				case 0:
-					state = EPlayerState::Idle;
+					SetState(EPlayerState::Idle);
 					break;
 				case -1:
 				case 1:
-					state = EPlayerState::RightRun;
+					SetState(EPlayerState::RightRun);
 					break;
 				}
 			}
+			if (health <= 0)
+				SetState(EPlayerState::Ghost);
 		}
 	}
 
@@ -807,6 +832,25 @@ void Player::Parry()
 	isParry = true;
 	if (specialAttackCount < 5)
 		specialAttackCount++;
+}
+
+void Player::SetRunDustEffect()
+{
+	clock_t curTime = clock();
+	if (curTime - createRunDustTime > 300)
+	{
+		for (auto effect : effects)
+		{
+			if (!effect->GetisActive())
+			{
+				effect->SetEffect(EEffectType::RunDust);
+				effect->SetIsActive(true);
+				effect->SetPosition(x + 30 * dir.x, y);
+				createRunDustTime = clock();
+				return;
+			}
+		}
+	}
 }
 
 void Player::SetIsJumping(bool isJumping)
