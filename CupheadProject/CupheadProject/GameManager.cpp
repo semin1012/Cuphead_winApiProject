@@ -51,8 +51,11 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if (wParam == 'R' || wParam == 'r')
 			{
-				sceneState = (int)ESceneState::Restart;
-				fadeEffect = new FadeEffect();
+				if (fadeEffect == nullptr)
+				{
+					sceneState = (int)ESceneState::Restart;
+					fadeEffect = new FadeEffect();
+				}
 			}
 			break;
 		}

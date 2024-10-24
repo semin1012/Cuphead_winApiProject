@@ -307,7 +307,7 @@ void Boss::CheckAnimCount()
 				animLastTime = clock();
 			}
 		}
-		else if (phase == 1 && state == EBossState::TransitionToPh)
+		else if (state == EBossState::TransitionToPh && phase == 1)
 		{
 			if (curAnimCnt == 36)
 			{
@@ -337,12 +337,15 @@ void Boss::CheckAnimCount()
 		}
 		else 
 		{
-			if (state == EBossState::TransitionToPh && phase != 3)
+			if (state == EBossState::TransitionToPh)
 			{
-				if (curTime - startChangeStateTime >= 3000)
+				if (phase != 3)
 				{
-					ChangeState(EBossState::Slime);
-					isPossibleCollision = true;
+					if (curTime - startChangeStateTime >= 3000)
+					{
+						ChangeState(EBossState::Slime);
+						isPossibleCollision = true;
+					}
 				}
 			}
 			curAnimCnt++;
@@ -351,45 +354,44 @@ void Boss::CheckAnimCount()
 
 		if (curAnimCnt >= curAnimMax)
 		{
-			if (state == EBossState::Jump)
+			switch (state)
 			{
+			case EBossState::Jump:
 				targetX = player->GetXPos();
 				isJumping = true;
 				ChangeState(EBossState::AirUp);
-			}
-			else if (state == EBossState::AirUpTurn)
-			{
+				break;
+			case EBossState::AirUpTurn:
 				ChangeState(EBossState::Jump);
 				SetJumpState();
-			}
-			else if (state == EBossState::Punch)
-			{
+				break;
+			case EBossState::Punch:
 				startChangeStateTime = clock();
 				curAnimCnt = 0;
 				bAttackCollider = false;
 				SetCollider();
 				SetJumpDirection();
-			}
-			else if (state == EBossState::TransitionToPh)
-			{
+				break;
+			case EBossState::TransitionToPh:
 				if (phase == 1)
 				{
 					isPossibleCollision = true;
 					phase = 2;
 					ChangeState(EBossState::Jump);
 				}
-			}
-			else if (state == EBossState::Intro && phase == 3)
-			{
-				ChangeState(EBossState::TransitionToPh);
-			}
-			else if (state == EBossState::Smash)
-			{
+				break;
+			case EBossState::Intro:
+				if ( phase == 3)
+					ChangeState(EBossState::TransitionToPh);
+				break;
+			case EBossState::Smash:
 				startChangeStateTime = clock();
 				ChangeState(EBossState::Move);
-			}
-			else if (state == EBossState::Trans)
+				break;
+			case EBossState::Trans:
 				ChangeState(EBossState::Move);
+				break;
+			}
 			curAnimCnt = 0;
 		}
 	}

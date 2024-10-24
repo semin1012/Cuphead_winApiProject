@@ -475,11 +475,13 @@ void Player::Update()
 			switch (dir.x)
 			{
 			case 0:
-				state = EPlayerState::Idle;
+				if (isJumping) state = EPlayerState::RightJump;
+				else state = EPlayerState::Idle;
 				break;
 			case -1:
 			case 1:
-				state = EPlayerState::RightRun;
+				if (isJumping) state = EPlayerState::RightJump;
+				else state = EPlayerState::RightRun;				
 				break;
 			}
 			curAnimCnt = 0;
