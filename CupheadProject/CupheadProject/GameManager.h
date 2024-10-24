@@ -17,7 +17,18 @@
 #include "ParryObject.h"
 #include "HealthUI.h"
 #include "CardUI.h"
+#include "ClearMap.h"
 #define TILE_SIZE 30
+
+enum class ESceneState
+{
+	Title,
+	World,
+	Stage,
+	Clear,
+	Gameover,
+	Max
+};
 
 class GameManager
 {
@@ -40,12 +51,11 @@ private:
 	LPPOINT					mouseDelta;
 	bool					bMouseDrag;
 	RECT*					rectView;
-	bool					isWorld;
-	bool					isTitle;
-	bool					isStage;
+	int						sceneState;
 	int						stage;
 	bool					playingCameraShake;
 	clock_t					cameraShakeStartTime;
+	clock_t					clearTime;
 
 
 	FadeEffect*				fadeEffect;
@@ -83,9 +93,9 @@ public:
 	bool		GetIsTitle();
 	void		SetIsTitle(bool isTitle);
 	bool		GetIsStage();
-	void		SetIsStage(bool isStage);
 
 	void		SetStage(int stage);
+	void		Clear();
 
 	// mouse event
 	void		SetMouseDeltaPos(HWND& hWnd);

@@ -19,7 +19,7 @@ StageMap::~StageMap()
 {
 }
 
-void StageMap::Draw(HDC& hdc)
+void StageMap::Draw(HDC& hdc, Graphics& graphics)
 {
 	clock_t curTime = clock();
 

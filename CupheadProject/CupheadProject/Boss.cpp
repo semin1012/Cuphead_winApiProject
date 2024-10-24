@@ -443,6 +443,7 @@ void Boss::SetEffectImagesIn3Phase()
 		effect->SetPosition(x, y - 35);
 		effect->SetIsActive(true);
 	}
+	isCameraShake = true;
 }
 
 void Boss::Jump()

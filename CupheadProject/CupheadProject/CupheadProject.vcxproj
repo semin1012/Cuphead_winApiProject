@@ -130,6 +130,7 @@
     <ClInclude Include="Background.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="CardUI.h" />
+    <ClInclude Include="ClearMap.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CupheadProject.h" />
     <ClInclude Include="EffectObject.h" />
@@ -152,6 +153,7 @@
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="CardUI.cpp" />
+    <ClCompile Include="ClearMap.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CupheadProject.cpp" />
     <ClCompile Include="EffectObject.cpp" />

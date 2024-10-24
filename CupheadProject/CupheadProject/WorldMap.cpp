@@ -16,7 +16,7 @@ WorldMap::~WorldMap()
 	delete tripper;
 }
 
-void WorldMap::Draw(HDC& hdc)
+void WorldMap::Draw(HDC& hdc, Graphics& graphics)
 {
 	// hMemDc 같은 거 밖으로 빼기 
 	// hMemDc를 배열로 해서 각각의 속성별로 관리하기

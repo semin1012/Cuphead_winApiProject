@@ -17,7 +17,7 @@ private:
 public:
 	WorldMap();
 	~WorldMap();
-	void		Draw(HDC& hdc);
+	void		Draw(HDC& hdc, Graphics& graphics);
 	void		CreateImage();
 
 	CImage*		GetLeftMapImg();

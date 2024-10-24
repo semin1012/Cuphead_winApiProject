@@ -194,11 +194,13 @@ Player::~Player()
 	for (auto it = playerImg.begin(); it != playerImg.end(); it++)
 	{
 		for (auto img : *it)
-		{
 			delete (img);
-		}
 	}
 	playerImg.clear();
+
+	for (auto it = effects.begin(); it != effects.end(); it++)
+		delete *it;
+	effects.clear();
 }
 
 void Player::Draw(HDC& hdc, Graphics& grapichs)
@@ -333,7 +335,6 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 				}
 				lastTime = clock();
 			}
-			
 		}
 
 		int animX = unitX * curAnimCnt;

@@ -23,7 +23,7 @@ public:
 	Background(RECT& rectView, int x, int y);
 	virtual ~Background();
 
-	virtual void	Draw(HDC& hdc) = 0;
+	virtual void	Draw(HDC& hdc, Graphics& graphics) = 0;
 	virtual void	CreateImage() = 0;
 	void			SetRectView(RECT& rectView);
 	void		SetCameraPos(int x, int y);

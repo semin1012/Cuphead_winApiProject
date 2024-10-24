@@ -18,9 +18,7 @@ GameManager::GameManager(RECT* rectView)
 
 	background = new TitleMap();
 	background->SetRectView(*rectView);
-	isTitle = true;
-	isWorld = false;
-	isStage = false;
+	sceneState = (int)ESceneState::Title;
 	fadeEffect = nullptr;
 	playingCameraShake = false;
 	shakeX = 0;
@@ -133,7 +131,7 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_KEYUP:
-		if (isTitle)
+		if (sceneState == (int)ESceneState::Title)
 			break;
 		if (GetIsStage())
 		{
@@ -180,7 +178,7 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case 'a':
 		case 'A':
-			if (isWorld && fadeEffect == nullptr)
+			if (sceneState == (int)ESceneState::World && fadeEffect == nullptr)
 			{
 				Tripper *tripper = GetBackground()->GetTripper();
 				if (tripper->GetCollidedPlayer())
@@ -203,13 +201,6 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void GameManager::Draw(HDC& hdc)
 {
-	if (background != nullptr)
-	{
-		background->Draw(hdc);
-		if (!GetIsWorld())
-			background->SetCameraPos(shakeX, shakeY);
-	}
-
 	Gdi_Draw(hdc);
 
 #pragma region Fade Effect
@@ -220,10 +211,15 @@ void GameManager::Draw(HDC& hdc)
 		fadeEffect->Draw(hdc);
 		if (fadeEffect->GetIsFadeIn() && !effectOut)
 		{
-			if (GetIsTitle())
+			if (sceneState == (int)ESceneState::Title)
 				SetIsTitle(false);
-			else if (!GetIsTitle() && GetIsWorld() && !GetIsStage())
+			else if (sceneState == (int)ESceneState::World)
 				SetStage(background->GetTripper()->GetStage());
+			else if (sceneState == (int)ESceneState::Clear)
+			{
+				delete background;
+				background = new ClearMap();
+			}
 			effectOut = true;
 		}
 		if (fadeEffect->GetIsEnd())
@@ -293,11 +289,13 @@ void GameManager::Draw(HDC& hdc)
 		DeleteObject(hPen);
 	}
 #pragma endregion
-
 }
 
 void GameManager::Update()
 {
+	if (sceneState == (int)ESceneState::Clear)
+		return;
+
 	if (playingCameraShake)
 		CameraShake();
 
@@ -315,7 +313,7 @@ void GameManager::Update()
 
 	if (player != nullptr)
 	{
-		if (player->GetSpecailAttackCount() != cards.size() && !isWorld)
+		if (player->GetSpecailAttackCount() != cards.size() && sceneState != (int)ESceneState::World)
 		{
 			for (int i = cards.size(); i < player->GetSpecailAttackCount(); i++)
 			{
@@ -335,6 +333,9 @@ void GameManager::Update()
 
 		if (boss != nullptr)
 		{
+			if (boss->GetIsDeath())
+				Clear();
+
 			boss->Update();
 
 			if (boss->GetIsCameraShake())
@@ -363,7 +364,11 @@ void GameManager::Update()
 					{
 						boss->Hit(bullet);
 						if (boss->GetIsDeath())
+						{
 							frontImages.push_back(new FrontImage(EFrontImage::KnockOut));
+							clearTime = clock();
+							
+						}
 					}
 				}
 			}
@@ -372,6 +377,7 @@ void GameManager::Update()
 			{
 				if (player->Collided(boss))
 				{
+					xInputs.clear();
 					health->SetHealth(player->GetHealth());
 					if (player->GetHealth() <= 0)
 						effects.push_back(new EffectObject(EEffectType::Died, 0, 0, true));
@@ -391,7 +397,7 @@ void GameManager::SetCameraView()
 
 void GameManager::SetCameraPos(int x, int y)
 {
-	if (isTitle)
+	if (sceneState == (int)ESceneState::Title)
 		return;
 
 	static bool isMoveCameraY = true;
@@ -606,7 +612,7 @@ Background* GameManager::GetBackground()
 
 bool GameManager::GetIsWorld()
 {
-	return isWorld;
+	return sceneState == (int)ESceneState::World;
 }
 
 void GameManager::SetIsWorld(bool isWorld)
@@ -617,15 +623,16 @@ void GameManager::SetIsWorld(bool isWorld)
 
 bool GameManager::GetIsTitle()
 {
-	return isTitle;
+	return sceneState == (int)ESceneState::Title;
 }
 
 void GameManager::SetIsTitle(bool isTitle)
 {
-	this->isTitle = isTitle;
-	if (isTitle == false)
+	if (isTitle == true)
+		sceneState = (int)ESceneState::Title;
+	else
 	{
-		isWorld = true;
+		sceneState = (int)ESceneState::World;
 		delete background;
 
 		background = new WorldMap();
@@ -639,18 +646,12 @@ void GameManager::SetIsTitle(bool isTitle)
 
 bool GameManager::GetIsStage()
 {
-	return isStage;
-}
-
-void GameManager::SetIsStage(bool isStage)
-{
-	this->isStage = isStage;
+	return sceneState == (int)ESceneState::Stage;
 }
 
 void GameManager::SetStage(int stage)
 {
-	isWorld = false;
-	isStage = true;
+	sceneState = (int)ESceneState::Stage;
 	stage = 1;
 	delete background;
 
@@ -668,6 +669,20 @@ void GameManager::SetStage(int stage)
 	frontImages.push_back(new FrontImage(EFrontImage::Ready));
 
 	health = new HealthUI();
+}
+
+void GameManager::Clear()
+{
+	clock_t curTime = clock();
+
+	if (curTime - clearTime > 2000)
+	{
+		camera_x = 0;
+		camera_y = 0;
+		if (fadeEffect == nullptr)
+			fadeEffect = new FadeEffect();
+		sceneState = (int)ESceneState::Clear;
+	}
 }
 
 void GameManager::SetMouseDeltaPos(HWND& hWnd)
@@ -729,78 +744,86 @@ void GameManager::Gdi_Draw(HDC hdc)
 {
 	Graphics graphics(hdc);
 
-	if (boss != nullptr)
+	if (background != nullptr)
 	{
-		boss->Draw(hdc, graphics);
-		boss->SetCameraPos(shakeX, shakeY);
+		background->Draw(hdc, graphics);
+		if (!GetIsWorld())
+			background->SetCameraPos(shakeX, shakeY);
 	}
 
-
-	if (player != nullptr)
+	if (sceneState != (int)ESceneState::Clear)
 	{
-		player->Draw(hdc, graphics);
-
-		if (!isWorld)
-			player->SetCameraPos(shakeX, shakeY);
-
-		for (auto bullet : player->GetBullets())
+		if (boss != nullptr)
 		{
-			if (bullet->GetisActive())
-				bullet->Draw(hdc, graphics);
+			boss->Draw(hdc, graphics);
+			boss->SetCameraPos(shakeX, shakeY);
 		}
-	}
 
-	if (!effects.empty())
-	{
-		for (auto it = effects.begin(); it != effects.end(); )
+		if (player != nullptr)
 		{
-			EffectObject *effect = (*it);
+			player->Draw(hdc, graphics);
 
-			if (!effect->GetisActive())
-				it = effects.erase(it);
-			else
+			if (!GetIsWorld())
+				player->SetCameraPos(shakeX, shakeY);
+
+			for (auto bullet : player->GetBullets())
 			{
-				effect->Draw(hdc, graphics);
-				effect->SetCameraPos(shakeX, shakeY);
-				it++;
+				if (bullet->GetisActive())
+					bullet->Draw(hdc, graphics);
 			}
 		}
-	}
 
-	if (!parryObjects.empty())
-	{
-		for (auto it = parryObjects.begin(); it != parryObjects.end(); )
+		if (!effects.empty())
 		{
-			ParryObject* parry = (*it);
-			if (!parry->GetIsActive())
-				it = parryObjects.erase(it);
-			else
+			for (auto it = effects.begin(); it != effects.end(); )
 			{
-				if (parry->StartAnimation()) 
+				EffectObject* effect = (*it);
+
+				if (!effect->GetisActive())
+					it = effects.erase(it);
+				else
 				{
-					parry->SetCameraPos(shakeX, shakeY);
-					parry->Draw(hdc, graphics);
+					effect->Draw(hdc, graphics);
+					effect->SetCameraPos(shakeX, shakeY);
+					it++;
 				}
-				it++;
 			}
 		}
+
+		if (!parryObjects.empty())
+		{
+			for (auto it = parryObjects.begin(); it != parryObjects.end(); )
+			{
+				ParryObject* parry = (*it);
+				if (!parry->GetIsActive())
+					it = parryObjects.erase(it);
+				else
+				{
+					if (parry->StartAnimation())
+					{
+						parry->SetCameraPos(shakeX, shakeY);
+						parry->Draw(hdc, graphics);
+					}
+					it++;
+				}
+			}
+		}
+
+		if (health != nullptr)
+			health->Draw(hdc);
+
+		if (!cards.empty())
+		{
+			for (auto card : cards)
+				card->Draw(hdc);
+		}
+
+		if (!frontImages.empty())
+		{
+			for (auto frontImage : frontImages)
+				frontImage->Draw(hdc, graphics);
+		}
 	}
-
-	if (health != nullptr)
-		health->Draw(hdc);
-
-	if (!cards.empty())
-	{
-		for (auto card : cards)
-			card->Draw(hdc);
-	}
-
-	if (!frontImages.empty())
-	{
-		for (auto frontImage : frontImages)
-			frontImage->Draw(hdc, graphics);
-	}
-
 }
 
 void GameManager::Gdi_End()

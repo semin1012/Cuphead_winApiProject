@@ -16,10 +16,10 @@ class TitleMap : public Background
 	clock_t				lastTime;
 
 public:
-
 	TitleMap();
 	~TitleMap();
-	void		Draw(HDC& hdc);
+
+	void		Draw(HDC& hdc, Graphics& graphics);
 	void		CreateImage();
 	void		ParsingToImagePath(int spriteSize, TCHAR* path, int startNum);
 

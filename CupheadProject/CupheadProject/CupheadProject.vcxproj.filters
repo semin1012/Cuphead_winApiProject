@@ -34,6 +34,12 @@
     <Filter Include="헤더 파일\UI">
       <UniqueIdentifier>{c4e005dc-befb-48ba-8da1-b7e60dd2409a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\GameObjects\Maps">
+      <UniqueIdentifier>{ff700fbf-edb0-4db5-a545-20fdc616c1e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObjects\Maps">
+      <UniqueIdentifier>{dcf5f5d6-0734-4380-a363-aa8aa59935b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CupheadProject.h">
@@ -57,22 +63,13 @@
     <ClInclude Include="Player.h">
       <Filter>헤더 파일\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="WorldMap.h">
-      <Filter>헤더 파일\GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Background.h">
       <Filter>헤더 파일\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="TitleMap.h">
-      <Filter>헤더 파일\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Tripper.h">
       <Filter>헤더 파일\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="FadeEffect.h">
-      <Filter>헤더 파일\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="StageMap.h">
       <Filter>헤더 파일\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
@@ -96,13 +93,22 @@
     <ClInclude Include="CardUI.h">
       <Filter>헤더 파일\UI</Filter>
     </ClInclude>
+    <ClInclude Include="StageMap.h">
+      <Filter>헤더 파일\GameObjects\Maps</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleMap.h">
+      <Filter>헤더 파일\GameObjects\Maps</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldMap.h">
+      <Filter>헤더 파일\GameObjects\Maps</Filter>
+    </ClInclude>
+    <ClInclude Include="ClearMap.h">
+      <Filter>헤더 파일\GameObjects\Maps</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CupheadProject.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="WorldMap.cpp">
-      <Filter>소스 파일\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일\GameObjects</Filter>
@@ -113,16 +119,10 @@
     <ClCompile Include="Background.cpp">
       <Filter>소스 파일\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="TitleMap.cpp">
-      <Filter>소스 파일\GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="Tripper.cpp">
       <Filter>소스 파일\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="FadeEffect.cpp">
-      <Filter>소스 파일\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="StageMap.cpp">
       <Filter>소스 파일\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
@@ -148,6 +148,18 @@
     </ClCompile>
     <ClCompile Include="CardUI.cpp">
       <Filter>소스 파일\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="StageMap.cpp">
+      <Filter>소스 파일\GameObjects\Maps</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleMap.cpp">
+      <Filter>소스 파일\GameObjects\Maps</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldMap.cpp">
+      <Filter>소스 파일\GameObjects\Maps</Filter>
+    </ClCompile>
+    <ClCompile Include="ClearMap.cpp">
+      <Filter>소스 파일\GameObjects\Maps</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

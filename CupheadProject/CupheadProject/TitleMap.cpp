@@ -19,7 +19,7 @@ TitleMap::~TitleMap()
 	characterImgs.clear();
 }
 
-void TitleMap::Draw(HDC& hdc)
+void TitleMap::Draw(HDC& hdc, Graphics& graphics)
 {
 	clock_t curTime = clock();
 	
