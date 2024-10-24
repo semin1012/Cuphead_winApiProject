@@ -23,9 +23,11 @@ GameManager::GameManager(RECT* rectView)
 	playingCameraShake = false;
 	shakeX = 0;
 	shakeY = 0;
+	isMoveCameraY = true;
+	isMoveCameraX = true;
 
-	frontImages.push_back(new FrontImage(EFrontImage::FX));
 	SetCameraPos(camera_x, camera_y);
+	frontImages.push_back(new FrontImage(EFrontImage::FX));
 }
 
 GameManager::~GameManager()
@@ -43,6 +45,15 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if (wParam == VK_SPACE && fadeEffect == nullptr)
 				fadeEffect = new FadeEffect();
+			break;
+		}
+		if (sceneState == (int)ESceneState::Clear)
+		{
+			if (wParam == 'R' || wParam == 'r')
+			{
+				sceneState = (int)ESceneState::Restart;
+				fadeEffect = new FadeEffect();
+			}
 			break;
 		}
 		if (!player->GetCanInput() || player->GetIsHit())
@@ -220,6 +231,8 @@ void GameManager::Draw(HDC& hdc)
 				delete background;
 				background = new ClearMap();
 			}
+			else if (sceneState == (int)ESceneState::Restart)
+				SetReplay();
 			effectOut = true;
 		}
 		if (fadeEffect->GetIsEnd())
@@ -399,9 +412,6 @@ void GameManager::SetCameraPos(int x, int y)
 {
 	if (sceneState == (int)ESceneState::Title)
 		return;
-
-	static bool isMoveCameraY = true;
-	static bool isMoveCameraX = true;
 
 	int deltaX = (camera_x - x);
 	int deltaY = (camera_y - y);
@@ -637,10 +647,13 @@ void GameManager::SetIsTitle(bool isTitle)
 
 		background = new WorldMap();
 		background->SetRectView(*rectView);
+		background->SetXPos(-WORLD_START_POINT_X);
+		background->SetYPos(-WORLD_START_POINT_Y);
 		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
 
+		SetCameraPos(camera_x, camera_y);
 		// TODO:
-		SetStage(1);
+		//SetStage(1);
 	}
 }
 
@@ -673,6 +686,8 @@ void GameManager::SetStage(int stage)
 
 void GameManager::Clear()
 {
+	if (sceneState == (int)ESceneState::Restart)
+		return;
 	clock_t curTime = clock();
 
 	if (curTime - clearTime > 2000)
@@ -683,6 +698,47 @@ void GameManager::Clear()
 			fadeEffect = new FadeEffect();
 		sceneState = (int)ESceneState::Clear;
 	}
+}
+
+void GameManager::DeleteObjects()
+{
+	for (auto it = effects.begin(); it != effects.end(); it++)
+		delete (*it);
+	effects.clear();
+	for (auto it = parryObjects.begin(); it != parryObjects.end(); it++)
+		delete (*it);
+	parryObjects.clear();
+	for (auto it = cards.begin(); it != cards.end(); it++)
+		delete (*it);
+	cards.clear();
+	if (player != nullptr)
+	{
+		delete player;
+		player = nullptr;
+	}
+	if (boss != nullptr)
+	{
+		delete boss;
+		boss = nullptr;
+	}
+	if (health != nullptr)
+	{
+		delete health;
+		health = nullptr;
+	}
+}
+
+void GameManager::SetReplay()
+{
+	DeleteObjects();
+	delete background;
+	background = new TitleMap();
+	background->SetRectView(*rectView);
+	sceneState = (int)ESceneState::Title;
+	camera_x = WORLD_START_POINT_X;
+	camera_y = WORLD_START_POINT_Y;
+	isMoveCameraY = true;
+	isMoveCameraX = true;
 }
 
 void GameManager::SetMouseDeltaPos(HWND& hWnd)
@@ -723,10 +779,10 @@ bool GameManager::CollidedPlayerWithWorldCollisions(int deltaX, int deltaY)
 bool GameManager::CollidedPlayer(Collider* collider, int deltaX, int deltaY)
 {
 	Collider temp = *player->GetCollider();
-	temp.left	-= deltaX - 1;
-	temp.right	-= deltaX + 1;
-	temp.top	-= deltaY - 1;
-	temp.bottom -= deltaY + 1;
+	temp.left	-= deltaX - 4;
+	temp.right	-= deltaX + 4;
+	temp.top	-= deltaY - 4;
+	temp.bottom -= deltaY + 4;
 
 	if (temp.IsOverlaps(*collider))
 		return true;
@@ -751,7 +807,7 @@ void GameManager::Gdi_Draw(HDC hdc)
 			background->SetCameraPos(shakeX, shakeY);
 	}
 
-	if (sceneState != (int)ESceneState::Clear)
+	if (sceneState != (int)ESceneState::Clear && sceneState != (int)ESceneState::Restart)
 	{
 		if (boss != nullptr)
 		{

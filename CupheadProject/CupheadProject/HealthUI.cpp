@@ -15,7 +15,7 @@ HealthUI::HealthUI(int health) : HealthUI()
 
 HealthUI::~HealthUI()
 {
-	delete image;
+
 }
 
 void HealthUI::Draw(HDC& hdc)

@@ -246,7 +246,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
         CreateDoubbleBuffering(hWnd);
 
-        gameMgr->Draw(hdc);
+         gameMgr->Draw(hdc);
         gameMgr->Update();
 
         EndDoubleBuffering(hWnd);

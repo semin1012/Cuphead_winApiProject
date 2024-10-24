@@ -26,26 +26,26 @@ public:
 	virtual void	Draw(HDC& hdc, Graphics& graphics) = 0;
 	virtual void	CreateImage() = 0;
 	void			SetRectView(RECT& rectView);
-	void		SetCameraPos(int x, int y);
+	void			SetCameraPos(int x, int y);
 
-	int			GetXPos();
-	int			GetYPos();
-	void		SetXPos(int x);
-	void		SetYPos(int y);
+	int				GetXPos();
+	int				GetYPos();
+	void			SetXPos(int x);
+	void			SetYPos(int y);
 
-	void		SetDebugMode(bool debugMode);
+	void			SetDebugMode(bool debugMode);
 
 	virtual void	SaveMapInfo() = 0;
 	virtual void	LoadMapInfo() = 0;
 	virtual void	ClearMapInfo() = 0;
 
-	void		SetColliders(std::vector<Collider*> *colliders);
-	std::vector<Collider*>* GetColliders();
+	int				GetWidth();
+	int				GetHeight();
+	void			SetWidth(int width);
+	void			SetHeight(int height);
+	Tripper*		GetTripper();
 
-	int			GetWidth();
-	int			GetHeight();
-	void		SetWidth(int width);
-	void		SetHeight(int height);
-	Tripper*	GetTripper();
+	void			SetColliders(std::vector<Collider*>* colliders);
+	std::vector<Collider*>* GetColliders();
 };
 

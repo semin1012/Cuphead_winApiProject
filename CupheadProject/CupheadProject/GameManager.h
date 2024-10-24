@@ -27,6 +27,7 @@ enum class ESceneState
 	Stage,
 	Clear,
 	Gameover,
+	Restart,
 	Max
 };
 
@@ -56,6 +57,8 @@ private:
 	bool					playingCameraShake;
 	clock_t					cameraShakeStartTime;
 	clock_t					clearTime;
+	bool					isMoveCameraY;
+	bool					isMoveCameraX;
 
 
 	FadeEffect*				fadeEffect;
@@ -96,6 +99,8 @@ public:
 
 	void		SetStage(int stage);
 	void		Clear();
+	void		DeleteObjects();
+	void		SetReplay();
 
 	// mouse event
 	void		SetMouseDeltaPos(HWND& hWnd);
