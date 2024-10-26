@@ -7,7 +7,7 @@
 #include "framework.h"
 
 #define PATTERN_1_TIME 4000
-#define HEALTH 10
+#define HEALTH 100
 #define TRANSITION_TIME 4000
 #define CHANGE_STATE_MOVE 2000
 #define PATTERN_2_TIME 3000

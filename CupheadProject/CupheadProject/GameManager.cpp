@@ -59,6 +59,16 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		}
+		if (sceneState == (int)ESceneState::GameOver)
+		{
+			if (wParam == 'R' || wParam == 'r')
+			{
+				if (fadeEffect == nullptr)
+				{
+					fadeEffect = new FadeEffect();
+				}
+			}
+		}
 		if (!player->GetCanInput() || player->GetIsHit())
 			break;
 		if (!GetIsWorld() && !GetIsTitle())
@@ -110,7 +120,7 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					player->SetIsDashing(true);
 				break;
 			case VK_DOWN:
-				if (!player->GetIsDown() && !player->GetIsLockin() && !player->GetIsSpecialAttack())
+				if (!player->GetIsDown() && !player->GetIsLockin() && !player->GetIsSpecialAttack() && !player->GetIsDashing())
 				{
 					if (player->GetIsShooting())
 						player->SetIsShooting(false);
@@ -235,7 +245,9 @@ void GameManager::Draw(HDC& hdc)
 				background = new ClearMap();
 			}
 			else if (sceneState == (int)ESceneState::Restart)
-				SetReplay();
+				SetReplay(true);
+			else if (sceneState == (int)ESceneState::GameOver)
+				SetReplay(false);
 			effectOut = true;
 		}
 		if (fadeEffect->GetIsEnd())
@@ -332,14 +344,12 @@ void GameManager::Update()
 		if (player->GetSpecailAttackCount() != cards.size() && sceneState != (int)ESceneState::World)
 		{
 			for (int i = cards.size(); i < player->GetSpecailAttackCount(); i++)
-			{
 				cards.push_back(new CardUI(i));
-			}
 		}
-
 		if (!xInputs.empty())
 			GetPlayer()->dir.x = xInputs.back();
-
+		if (player->GetHealth() <= 0)
+			GameOver();
 		player->Update();
 		if (player->GetJumpDust())
 		{
@@ -383,7 +393,6 @@ void GameManager::Update()
 						{
 							frontImages.push_back(new FrontImage(EFrontImage::KnockOut));
 							clearTime = clock();
-							
 						}
 					}
 				}
@@ -396,7 +405,10 @@ void GameManager::Update()
 					xInputs.clear();
 					health->SetHealth(player->GetHealth());
 					if (player->GetHealth() <= 0)
+					{
 						effects.push_back(new EffectObject(EEffectType::Died, 0, 0, true));
+						gameOverTime = clock();
+					}
 				}
 			}
 		}
@@ -668,31 +680,31 @@ bool GameManager::GetIsStage()
 void GameManager::SetStage(int stage)
 {
 	sceneState = (int)ESceneState::Stage;
-	stage = 1;
-	delete background;
-
+	this->stage = stage;
+	if (background != nullptr)
+		delete background;
 	background = new StageMap();
 	background->SetRectView(*rectView);
+
+	if (player == nullptr)
+		player = new Player();
+	player->SetStage();
+	boss = new Boss();
+	boss->SetPlayer(player);
+	frontImages.push_back(new FrontImage(EFrontImage::Ready));
+	health = new HealthUI();
 
 	camera_x = 0;
 	camera_y = 0;
 	SetCameraPos(0, 0);
-
-	player->SetStage();
-	boss = new Boss();
-	boss->SetPlayer(player);
-
-	frontImages.push_back(new FrontImage(EFrontImage::Ready));
-
-	health = new HealthUI();
 }
 
 void GameManager::Clear()
 {
 	if (sceneState == (int)ESceneState::Restart)
 		return;
-	clock_t curTime = clock();
 
+	clock_t curTime = clock();
 	if (curTime - clearTime > 2000)
 	{
 		camera_x = 0;
@@ -700,6 +712,21 @@ void GameManager::Clear()
 		if (fadeEffect == nullptr)
 			fadeEffect = new FadeEffect();
 		sceneState = (int)ESceneState::Clear;
+	}
+}
+
+void GameManager::GameOver()
+{
+	if (sceneState == (int)ESceneState::GameOver)
+		return;
+
+	clock_t curTime = clock();
+	if (curTime - gameOverTime > 2000)
+	{
+		camera_x = 0;
+		camera_y = 0;
+		effects.push_back(new EffectObject(EEffectType::GameOver, WINDOWS_WIDTH / 2, WINDOWS_HEIGHT / 2, true));
+		sceneState = (int)ESceneState::GameOver;
 	}
 }
 
@@ -729,19 +756,25 @@ void GameManager::DeleteObjects()
 		delete health;
 		health = nullptr;
 	}
+	xInputs.clear();
 }
 
-void GameManager::SetReplay()
+void GameManager::SetReplay(bool isTitle)
 {
 	DeleteObjects();
-	delete background;
-	background = new TitleMap();
-	background->SetRectView(*rectView);
-	sceneState = (int)ESceneState::Title;
-	camera_x = WORLD_START_POINT_X;
-	camera_y = WORLD_START_POINT_Y;
-	isMoveCameraY = true;
-	isMoveCameraX = true;
+	if (isTitle)
+	{
+		delete background;
+		background = new TitleMap();
+		background->SetRectView(*rectView);
+		sceneState = (int)ESceneState::Title;
+		camera_x = WORLD_START_POINT_X;
+		camera_y = WORLD_START_POINT_Y;
+		isMoveCameraY = true;
+		isMoveCameraX = true;
+	}
+	else
+		SetStage(1);
 }
 
 void GameManager::SetMouseDeltaPos(HWND& hWnd)

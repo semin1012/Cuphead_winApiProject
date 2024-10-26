@@ -371,16 +371,19 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
     }
     else
     {
-        switch (gameMgr->GetPlayer()->dir.x)
+        if (!gameMgr->GetPlayer()->GetIsHit())
         {
-        case 0:
-            gameMgr->GetPlayer()->SetState(EPlayerState::Idle);
-            break;
-        case -1:
-        case 1:
-            gameMgr->GetPlayer()->SetState(EPlayerState::RightRun);
-            break;
-        }
+            switch (gameMgr->GetPlayer()->dir.x)
+            {
+            case 0:
+                gameMgr->GetPlayer()->SetState(EPlayerState::Idle);
+                break;
+            case -1:
+            case 1:
+                gameMgr->GetPlayer()->SetState(EPlayerState::RightRun);
+                break;
+            }
+        }        
     }
 
     int moveDistance = MOVE_DISTANCE;

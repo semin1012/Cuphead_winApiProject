@@ -26,7 +26,7 @@ enum class ESceneState
 	World,
 	Stage,
 	Clear,
-	Gameover,
+	GameOver,
 	Restart,
 	Max
 };
@@ -57,6 +57,7 @@ private:
 	bool					playingCameraShake;
 	clock_t					cameraShakeStartTime;
 	clock_t					clearTime;
+	clock_t					gameOverTime;
 	bool					isMoveCameraY;
 	bool					isMoveCameraX;
 
@@ -99,8 +100,9 @@ public:
 
 	void		SetStage(int stage);
 	void		Clear();
+	void		GameOver();
 	void		DeleteObjects();
-	void		SetReplay();
+	void		SetReplay(bool isTitle);
 
 	// mouse event
 	void		SetMouseDeltaPos(HWND& hWnd);

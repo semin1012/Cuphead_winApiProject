@@ -23,7 +23,7 @@ EffectObject::EffectObject(EEffectType type, int x, int y, bool isLoop, bool isB
 	this->x = x;
 	this->y = y;
 	SetEffect(type);
-	if (x == 0 && y == 0)
+	if (type == EEffectType::Died)
 	{
 		int unitX = images[0]->GetWidth() / 3;
 		int unitY = images[0]->GetHeight() / 7;
@@ -183,6 +183,14 @@ void EffectObject::CreateImage(EEffectType type)
 		pImg = new Image(temp);
 		images[0] = pImg;
 		curAnimMax = 19;
+		break;
+	case EEffectType::GameOver:
+		images.resize(1);
+		_tcscpy(temp, L"../Resource/Image/UI/PressR.png");
+		pImg = new Image(temp);
+		images[0] = pImg;
+		curAnimMax = 1;
+		curAnimCnt = 0;
 		break;
 	}
 }

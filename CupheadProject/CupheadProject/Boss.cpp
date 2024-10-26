@@ -28,6 +28,8 @@ Boss::Boss()
 	deltaPosY = 0;
 	isCameraShake = false;
 	CreateImage();
+	Turn();
+	Turn();
 }
 
 void Boss::CreateImage()
@@ -111,6 +113,13 @@ Boss::~Boss()
 			delete (img);
 	}
 	images.clear();
+
+	for (auto it = transitionImages.begin(); it != transitionImages.end(); it++)
+		delete* it;
+	transitionImages.begin();
+	for (auto it = effects.begin(); it != effects.end(); it++)
+		delete* it;
+	effects.begin();
 }
 
 void Boss::Draw(HDC& hdc, Graphics& graphics)
@@ -220,11 +229,9 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 
 void Boss::Update()
 {
-	if (!bAttackCollider)
-		SetCollider();
-
 	CheckAnimState();
 	CheckAnimCount();
+
 	clock_t curTime = clock();
 
 	if (isHit)
@@ -274,6 +281,9 @@ void Boss::Update()
 		}
 	}
 	CheckHp();
+
+	if (!bAttackCollider)
+		SetCollider();
 }
 
 void Boss::Hit(Bullet* bullet)
@@ -493,7 +503,7 @@ void Boss::Move()
 {
 	clock_t curTime = clock();
 
-	float distance = (curTime - moveLastTime);
+	float distance = (curTime - moveLastTime) * 1.2f;
 
 	if (dirX == 1)
 		x += (int)distance;

@@ -105,6 +105,8 @@ void Player::CreateImage()
 
 	curAnimMax = playerImg[(int)EPlayerState::World].size();
 	curAnimCnt = 0;
+	Turn();
+	Turn();
 }
 
 // path에 startNum부터 startNum + spriteSize까지의 숫자를 이름으로 해서 Load하는 함수, 기본이 png 파일임
@@ -201,6 +203,10 @@ Player::~Player()
 	for (auto it = effects.begin(); it != effects.end(); it++)
 		delete *it;
 	effects.clear();
+
+	for (auto it = bullets.begin(); it != bullets.end(); it++)
+		delete* it;
+	bullets.clear();
 }
 
 void Player::Draw(HDC& hdc, Graphics& grapichs)
