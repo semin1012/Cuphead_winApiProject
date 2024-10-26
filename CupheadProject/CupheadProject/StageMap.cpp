@@ -35,8 +35,8 @@ void StageMap::Draw(HDC& hdc, Graphics& graphics)
 
 	backgroundImg.Draw(hdc, x, y, backgroundImg.GetWidth(), backgroundImg.GetHeight(), 0, 0, backgroundImg.GetWidth(), backgroundImg.GetHeight());
 	treeImg.Draw(hdc, x, 50 + y, treeImg.GetWidth(), treeImg.GetHeight(), 0, 0, treeImg.GetWidth(), treeImg.GetHeight());
-	woodImg.Draw(hdc, -200 + x, 0 + y, woodImg.GetWidth(), woodImg.GetHeight(), 0, 0, woodImg.GetWidth(), woodImg.GetHeight());
-	waveLinesImg[curAnimCnt].Draw(hdc, 525 + x, 420 + y, waveLinesImg[curAnimCnt].GetWidth(), waveLinesImg[curAnimCnt].GetHeight(), 0, 0, waveLinesImg[curAnimCnt].GetWidth(), waveLinesImg[curAnimCnt].GetHeight());
+	woodImg.Draw(hdc, x - 120, 0 + y, woodImg.GetWidth(), woodImg.GetHeight(), 0, 0, woodImg.GetWidth(), woodImg.GetHeight());
+	waveLinesImg[curAnimCnt].Draw(hdc, 605 + x, 420 + y, waveLinesImg[curAnimCnt].GetWidth(), waveLinesImg[curAnimCnt].GetHeight(), 0, 0, waveLinesImg[curAnimCnt].GetWidth(), waveLinesImg[curAnimCnt].GetHeight());
 	groundImg.Draw(hdc, x, y, groundImg.GetWidth(), WINDOWS_HEIGHT, 0, 0, groundImg.GetWidth(), groundImg.GetHeight());
 }
 

@@ -157,7 +157,7 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYUP:
 		if (sceneState == (int)ESceneState::Title)
 			break;
-		if (GetIsStage())
+		if (!GetIsWorld())
 		{
 			if (wParam == VK_DOWN && player->GetIsDown())
 				player->SetIsDown(false);
@@ -283,7 +283,7 @@ void GameManager::Draw(HDC& hdc)
 				{
 					if (!bullet->GetisActive()) continue;
 					collider = bullet->GetCollider();
-					Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
+					Rectangle(hdc, collider->left , collider->top - camera_y, collider->right , collider->bottom - camera_y);
 				}
 			}
 			collider = player->GetCollider();
@@ -341,6 +341,8 @@ void GameManager::Update()
 
 	if (player != nullptr)
 	{
+		if (sceneState == (int)ESceneState::Tutorial);
+			//player->UpdateCameraPosX(camera_x);
 		if (player->GetSpecailAttackCount() != cards.size() && sceneState != (int)ESceneState::World)
 		{
 			for (int i = cards.size(); i < player->GetSpecailAttackCount(); i++)
@@ -425,13 +427,15 @@ void GameManager::SetCameraView()
 
 void GameManager::SetCameraPos(int x, int y)
 {
+	SetCameraView();
+
 	if (sceneState == (int)ESceneState::Title)
 		return;
 
 	int deltaX = (camera_x - x);
 	int deltaY = (camera_y - y);
 
-	if (!GetIsWorld())
+	if (sceneState == (int)ESceneState::Stage)
 	{
 		isMoveCameraX = false;
 		isMoveCameraY = false; 
@@ -446,6 +450,8 @@ void GameManager::SetCameraPos(int x, int y)
 
 	if (background != nullptr)
 	{
+		if (sceneState == (int)ESceneState::Tutorial)
+			isMoveCameraY = false;
 		if (isMoveCameraX)
 			background->SetXPos(-camera_x);
 		if (isMoveCameraY)
@@ -454,18 +460,50 @@ void GameManager::SetCameraPos(int x, int y)
 
 	int mapSizeWidth = background->GetWidth();
 	int mapSizeHeight = background->GetHeight();
-	if (GetIsWorld())
+
+	if (background->GetTripper() != nullptr)
 	{
-		if (background->GetTripper() != nullptr)
-		{
-			if (background->GetTripper()->CollidedKey(player->GetCollider(), deltaX, deltaY))
-				background->GetTripper()->SetCollidedPlayer(true);
-			else background->GetTripper()->SetCollidedPlayer(false);
-
-		}
+		if (background->GetTripper()->CollidedKey(player->GetCollider(), deltaX, deltaY))
+			background->GetTripper()->SetCollidedPlayer(true);
+		else background->GetTripper()->SetCollidedPlayer(false);
+	}
 #pragma region Check player camera
-
+	int min_camera_x = 0;
+	int max_camera_x = 0;
+	int moveDistance = MOVE_DISTANCE;
+	if (sceneState == (int)ESceneState::Tutorial)
+	{
+		min_camera_x = 100;
+		max_camera_x = WINDOWS_HEIGHT / 2;
 		// x
+		if (isMoveCameraX && camera_x < MOVE_DISTANCE )
+		{
+			isMoveCameraX = false;
+			camera_x = MOVE_DISTANCE;
+		}
+		if (isMoveCameraX && camera_x + WINDOWS_WIDTH / 2 >= mapSizeWidth)
+		{
+			isMoveCameraX = false;
+			camera_x = mapSizeWidth - WINDOWS_WIDTH / 2;
+		}
+		if (!isMoveCameraX && player->GetXPos() >= WINDOWS_WIDTH / 2 + 15 && camera_x <= min_camera_x)
+		{
+			camera_x = MOVE_DISTANCE;
+			isMoveCameraX = true;
+			player->SetXPos(WINDOWS_WIDTH / 2 + MOVE_DISTANCE);
+		}
+		if (!isMoveCameraX && player->GetXPos() <= WINDOWS_WIDTH / 2 && camera_x >= mapSizeWidth - WINDOWS_WIDTH / 2)
+		{
+			camera_x = mapSizeWidth - WINDOWS_WIDTH / 2 - 10;
+			isMoveCameraX = true;
+			player->SetXPos(WINDOWS_WIDTH / 2);
+		}
+	}
+	else if (sceneState == (int)ESceneState::World)
+	{
+		min_camera_x = 100;
+		max_camera_x = 1000;
+		//x 
 		if (isMoveCameraX && camera_x < MOVE_DISTANCE)
 		{
 			isMoveCameraX = false;
@@ -499,20 +537,23 @@ void GameManager::SetCameraPos(int x, int y)
 			isMoveCameraY = false;
 			camera_y = mapSizeHeight - WINDOWS_HEIGHT;
 		}
-		if (!isMoveCameraY && player->GetYPos() >= 405 && camera_y <= 50)
+		if (sceneState != (int)ESceneState::Tutorial && !isMoveCameraY && player->GetYPos() >= 405 && camera_y <= 50)
 		{
 			camera_y = 0;
 			isMoveCameraY = true;
-			player->SetYPos(405);
+			if (sceneState == (int)ESceneState::World)
+				player->SetYPos(405);
 		}
-		if (!isMoveCameraY && player->GetYPos() <= mapSizeHeight - WINDOWS_HEIGHT / 2 && camera_y >= 800)
+		if (sceneState != (int)ESceneState::Tutorial && !isMoveCameraY && player->GetYPos() <= mapSizeHeight - WINDOWS_HEIGHT / 2 && camera_y >= 800)
 		{
 			camera_y = 1275;
 			isMoveCameraY = true;
-			player->SetYPos(1670);
+			if (sceneState == (int)ESceneState::World)
+				player->SetYPos(1670);
 		}
-#pragma endregion
 	}
+
+#pragma endregion
 
 	if (isMoveCameraX)
 		camera_x = x;
@@ -666,7 +707,16 @@ void GameManager::SetIsTitle(bool isTitle)
 		background->SetYPos(-WORLD_START_POINT_Y);
 		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
 
-		SetCameraPos(camera_x, camera_y);
+		//sceneState = (int)ESceneState::Tutorial;
+		//delete background;
+
+		//background = new TutorialMap();
+		//background->SetRectView(*rectView);
+		//player = new Player(0, 700);
+		//player->SetInWorld(false);
+		//player->SetStage();
+		//camera_x = 0, camera_y = 0;
+		//SetCameraPos(camera_x, camera_y);
 		// TODO:
 		//SetStage(1);
 	}
@@ -796,13 +846,18 @@ void GameManager::DragAndMoveWorldMap(HWND& hWnd)
 	mouseDelta->y = temp.y;
 }
 
+void GameManager::SetCameraInWorld()
+{
+	
+}
+
 bool GameManager::CollidedPlayerWithWorldCollisions(int deltaX, int deltaY)
 {
 	Collider temp = *player->GetCollider();
-	temp.left -= deltaX - 1;
-	temp.right -= deltaX + 1;
-	temp.top -= deltaY - 1;
-	temp.bottom -= deltaY + 1;
+	temp.left -=	deltaX - 1;
+	temp.right -=	deltaX + 1;
+	temp.top -=		deltaY - 1;
+	temp.bottom -=	deltaY + 1;
 
 	for (auto collider : (*background->GetColliders()))
 	{

@@ -276,11 +276,12 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 				0.0f, 0.0f, 0.0f, 0.0f, 1.0f
 			};
 			imgAttr.SetColorMatrix(&colorMatrix);
-			grapichs.DrawImage(playerImg[(int)state][curAnimCnt], Rect(collider.left, collider.top, width, height), 0, 0, width, height, UnitPixel, &imgAttr);
+			grapichs.DrawImage(playerImg[(int)state][curAnimCnt], Rect(collider.left - camera_x, collider.top, width, height), 0, 0, width, height, UnitPixel, &imgAttr);
 		}
-		else grapichs.DrawImage(playerImg[(int)state][curAnimCnt], collider.left, collider.top, width, height);
+		else grapichs.DrawImage(playerImg[(int)state][curAnimCnt], collider.left - camera_x, collider.top, width, height);
 	}
 
+	// 월드라면
 	// 월드라면
 	else 
 	{
@@ -636,6 +637,12 @@ void Player::SetCameraPos(int x, int y)
 	this->y -= deltaY;
 	camera_x = x;
 	camera_y = y;
+
+	for (auto effect : effects)
+	{
+		if (effect->GetisActive())
+			effect->SetCameraPos(x, y);
+	}
 }
 
 void Player::SetCameraPosX(int x)
@@ -643,6 +650,11 @@ void Player::SetCameraPosX(int x)
 	int deltaX = (camera_x - x);
 	this->x -= deltaX;
 	camera_x = x;
+	for (auto effect : effects)
+	{
+		if (effect->GetisActive())
+			effect->SetCameraPos(-x, 0);
+	}
 }
 
 void Player::SetCameraPosY(int y)
@@ -650,6 +662,11 @@ void Player::SetCameraPosY(int y)
 	int deltaY = (camera_y - y);
 	this->y -= deltaY;
 	camera_y = y;
+}
+
+void Player::UpdateCameraPosX(int x)
+{
+	camera_x = x;
 }
 
 void Player::SetState(EPlayerWorldState state, EWorldSpriteY spriteY)
@@ -760,6 +777,7 @@ void Player::Move(int x, int y)
 		if (this->x - x > 1215)
 			return;
 	}
+
 
 	this->x -= x;
 	this->y -= y;

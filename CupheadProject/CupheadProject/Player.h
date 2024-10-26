@@ -161,10 +161,13 @@ public:
 	void		SetCameraPos(int x, int y);
 	void		SetCameraPosX(int x);
 	void		SetCameraPosY(int y);
+	void		UpdateCameraPosX(int x);
+
 	void		SetState(EPlayerWorldState state, EWorldSpriteY spriteY);
 	void		SetState(EPlayerState state);
 	void		SetStateOnce(EPlayerState state);
 	void		SetInWorld(bool isWorld);
+
 
 	void		Move(int x, int y);
 	float		GetSpeed()									{ return speed; }

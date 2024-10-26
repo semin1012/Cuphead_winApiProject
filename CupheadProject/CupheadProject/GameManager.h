@@ -18,6 +18,7 @@
 #include "HealthUI.h"
 #include "CardUI.h"
 #include "ClearMap.h"
+#include "TutorialMap.h"
 #define TILE_SIZE 30
 
 enum class ESceneState
@@ -28,6 +29,7 @@ enum class ESceneState
 	Clear,
 	GameOver,
 	Restart,
+	Tutorial,
 	Max
 };
 
@@ -107,6 +109,7 @@ public:
 	// mouse event
 	void		SetMouseDeltaPos(HWND& hWnd);
 	void		DragAndMoveWorldMap(HWND& hWnd);
+	void		SetCameraInWorld();
 
 	// World Map
 	bool		CollidedPlayerWithWorldCollisions(int deltaX, int deltaY);

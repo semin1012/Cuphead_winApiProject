@@ -309,7 +309,7 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
     if (!gameMgr->GetPlayer()->GetCanInput())
         return;
 
-    if (gameMgr->GetPlayer()->GetIsHit()) 
+    if (gameMgr->GetPlayer()->GetIsHit())
         return;
 
     if (gameMgr->GetMouseDragState())
@@ -340,16 +340,16 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
     {
         switch (gameMgr->GetPlayer()->dir.y)
         {
-        // 아래로 이동
+            // 아래로 이동
         case 1:
             if (gameMgr->GetPlayer()->dir.x == 0)
                 gameMgr->GetPlayer()->SetState(EPlayerWorldState::FrontWalk, EWorldSpriteY::FrontWalk);
             else if (gameMgr->GetPlayer()->dir.x == 1)
                 gameMgr->GetPlayer()->SetState(EPlayerWorldState::FrontRightWalk, EWorldSpriteY::FrontRightWalk);
-            else 
+            else
                 gameMgr->GetPlayer()->SetState(EPlayerWorldState::FrontLeftWalk, EWorldSpriteY::FrontRightWalk);
             break;
-        // 위로 이동
+            // 위로 이동
         case -1:
             if (gameMgr->GetPlayer()->dir.x == 0)
                 gameMgr->GetPlayer()->SetState(EPlayerWorldState::BackWalk, EWorldSpriteY::BackWalk);
@@ -358,7 +358,7 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
             else
                 gameMgr->GetPlayer()->SetState(EPlayerWorldState::BackLeftWalk, EWorldSpriteY::BackRightWalk);
             break;
-        // y축 제자리
+            // y축 제자리
         case 0:
             if (gameMgr->GetPlayer()->dir.x == 0)
                 gameMgr->GetPlayer()->SetState(EPlayerWorldState::Idle, EWorldSpriteY::FrontIdle);
@@ -383,13 +383,20 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
                 gameMgr->GetPlayer()->SetState(EPlayerState::RightRun);
                 break;
             }
-        }        
+        }
     }
 
     int moveDistance = MOVE_DISTANCE;
     if (gameMgr->GetIsWorld())
         moveDistance /= 2;
 
-    gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance) * gameMgr->GetPlayer()->CanMoveDirX(),
-        (gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * moveDistance) * gameMgr->GetIsWorld());
+    if (gameMgr->GetIsWorld() || gameMgr->GetIsStage())
+    {
+        gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance) * gameMgr->GetPlayer()->CanMoveDirX(),
+            (gameMgr->GetCameraYPos() + gameMgr->GetPlayer()->dir.y * moveDistance) * gameMgr->GetIsWorld());
+    }
+    else
+    {
+        gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance * gameMgr->GetPlayer()->GetSpeed()) , 0);
+    }
 }

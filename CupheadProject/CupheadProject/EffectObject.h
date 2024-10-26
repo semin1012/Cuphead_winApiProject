@@ -55,6 +55,7 @@ public:
 	void	ParsingToImagePath(EEffectType state, int spriteSize, TCHAR* path, int startNum);
 	void	InverseImage();
 	void	SetPosition(int x, int y);
+	int		GetPositionX() { return x; }
 	void	SetIsActive(bool isActive);
 	bool	GetisActive();
 	bool	GetIsLoop()				 { return isLoop; }

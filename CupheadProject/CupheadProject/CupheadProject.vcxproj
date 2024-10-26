@@ -147,6 +147,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TitleMap.h" />
     <ClInclude Include="Tripper.h" />
+    <ClInclude Include="TutorialMap.h" />
     <ClInclude Include="WorldMap.h" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,7 @@
     <ClCompile Include="StageMap.cpp" />
     <ClCompile Include="TitleMap.cpp" />
     <ClCompile Include="Tripper.cpp" />
+    <ClCompile Include="TutorialMap.cpp" />
     <ClCompile Include="WorldMap.cpp" />
   </ItemGroup>
   <ItemGroup>
