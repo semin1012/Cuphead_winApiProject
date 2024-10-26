@@ -248,7 +248,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         gameMgr->Draw(hdc);
         gameMgr->Update();
-
+         
         EndDoubleBuffering(hWnd);
         break;
     case WM_DESTROY:

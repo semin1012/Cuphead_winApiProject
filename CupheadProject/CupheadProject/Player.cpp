@@ -364,9 +364,7 @@ void Player::Update()
 		y -= 1;
 
 	if (state == EPlayerState::RightRun || state == EPlayerState::ShootingRunRight || state == EPlayerState::ShootingRunRightUp)
-	{
 		SetRunDustEffect();
-	}
 
 	if (startStage)
 	{
@@ -459,7 +457,7 @@ void Player::Update()
 		}
 	}
 
-	if (!isShooting && isDashing && !isSpecialAttack)
+	if (!isShooting && isDashing && !isSpecialAttack && !isHit)
 	{
 		clock_t curTime = clock();
 		curJumpPower = 0;
@@ -494,12 +492,9 @@ void Player::Update()
 		}
 	}
 
-	if (isSpecialAttack)
+	if (isSpecialAttack && !isHit)
 	{
 		clock_t curTime = clock();
-
-	
-
 		if (isSpecialAttackAndJump)
 		{
 			if (curTime - startChangeStateTime > 400)
@@ -521,7 +516,7 @@ void Player::Update()
 	}
 	curAnimMax = playerImg[(int)state].size();
 
-	if (isShooting)
+	if (isShooting && !isHit)
 	{
 		clock_t curTime = clock();
 
