@@ -7,7 +7,7 @@ WorldMap::WorldMap()
 	CreateImage();
 	width = leftMapImg.GetWidth() * WORLD_MAP_SCALE + rightMapImg.GetWidth() * WORLD_MAP_SCALE;
 	height = leftMapImg.GetHeight() * WORLD_MAP_SCALE;
-	tripper = new Tripper();
+	tripper = new Tripper(*rectView, 2000, 750);
 	LoadMapInfo();
 }
 

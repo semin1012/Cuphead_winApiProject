@@ -60,12 +60,12 @@ void Tripper::Draw(HDC& hdc)
 
 	int animX = unitX * curAnimCnt;
 
-	image.Draw(hdc, TRIPPER_X_POS + camera_x, TRIPPER_Y_POS + camera_y, unitX, unitY, animX, 0, unitX, unitY);
+	image.Draw(hdc, x + camera_x, y + camera_y, unitX, unitY, animX, 0, unitX, unitY);
 
-	keyCollider.left = TRIPPER_X_POS + 45 - 60;
-	keyCollider.right = TRIPPER_X_POS - 45 + width + 60;
-	keyCollider.top = TRIPPER_Y_POS + 45 - 60;
-	keyCollider.bottom = TRIPPER_Y_POS - 45 + height + 60;
+	keyCollider.left = x + 45 - 60;
+	keyCollider.right = x - 45 + width + 60;
+	keyCollider.top = y + 45 - 60;
+	keyCollider.bottom = y - 45 + height + 60;
 
 	if (isCollidedPlayer)
 		pressKeyImg.Draw(hdc, WINDOWS_WIDTH / 2 - pressKeyImg.GetWidth() / 2, 100, pressKeyImg.GetWidth(), pressKeyImg.GetHeight());
