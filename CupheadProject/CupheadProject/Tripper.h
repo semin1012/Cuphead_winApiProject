@@ -4,12 +4,20 @@
 #define TRIPPER_X_POS 270
 #define TRIPPER_Y_POS 970
 
+enum class ETripperType
+{
+	Basic,
+	Door,
+	Max
+};
 class Tripper
 {
 	CImage				image;
+	Image*				doorImage;
 	CImage				pressKeyImg;
 	Collider			keyCollider;
 	RECT*				rectView;
+	ETripperType		type;
 
 	int					x;
 	int					y;
@@ -31,10 +39,10 @@ class Tripper
 
 public:
 	Tripper();
-	Tripper(RECT& rectView, int x, int y);
+	Tripper(RECT& rectView, int x, int y, ETripperType type = ETripperType::Basic);
 	~Tripper();
 
-	void		Draw(HDC& hdc);
+	void		Draw(HDC& hdc, Graphics& graphics);
 	void		CreateImage();
 	void		SetRectView(RECT& rectView);
 

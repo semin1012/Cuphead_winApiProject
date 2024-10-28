@@ -461,9 +461,9 @@ void Boss::SetEffectImagesIn3Phase()
 void Boss::Jump()
 {
 	clock_t curTime = clock();
-	x = Lerp(x, targetX, 0.07f);
+	x = Lerp(x, targetX, 0.05f);
 	y -= curJumpPower;
-	curJumpPower -= 5;
+	curJumpPower -= 3;
 
 	if (curJumpPower <= 0)
 		ChangeState(EBossState::AirDown);
@@ -682,11 +682,12 @@ void Boss::SetJumpState()
 	curAnimCnt = 0;
 
 	targetX = player->GetXPos();
-	curJumpPower = JumpMaxPower * (abs(targetX - x) * 0.0015);
-	if (curJumpPower <= 55)
-		curJumpPower = 55;
-	if (curJumpPower >= 70)
-		curJumpPower = 70;
+	curJumpPower = JumpMaxPower * (abs(targetX - x) * 0.0018);
+	printf("CurJumpPower: %d\n", curJumpPower);
+	if (curJumpPower <= 45)
+		curJumpPower = 45;
+	if (curJumpPower >= 60)
+		curJumpPower = 60;
 }
 
 void Boss::SetPunchState()

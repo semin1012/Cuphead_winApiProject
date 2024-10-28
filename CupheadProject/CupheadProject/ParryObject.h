@@ -22,13 +22,16 @@ class ParryObject
 	int					curAnimMax;
 	int					curAnimCnt;
 	bool				isActive;
+	bool				isLoop;
+	bool				isHide;
 	clock_t				createTime;
 	clock_t				animLastTime;
+	clock_t				hideTime;
 	EParryType			state;
 
 public:
 	ParryObject();
-	ParryObject(int x, int y);
+	ParryObject(int x, int y, bool isLoop = false);
 	~ParryObject();
 	void		SetCameraPos(int x, int y);
 
@@ -38,6 +41,10 @@ public:
 	void		CreateImage();
 	void		ParsingToImagePath(EParryType state, int spriteSize, TCHAR* path, int startNum);
 	bool		StartAnimation();
+	void		SetCollider();
+	void		SetHide();
+	void		SetCamera(int x, int y);
+	bool		IsHide()			{ return isHide; }
 	bool		GetIsActive()		{ return isActive; }
 	Collider*	GetCollider()		{ return &collider; }
 };

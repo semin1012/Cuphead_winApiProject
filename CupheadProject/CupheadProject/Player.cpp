@@ -391,7 +391,11 @@ void Player::Update()
 		if (!isDashing && !isSpecialAttack)
 		{
 			y -= curJumpPower;
-			curJumpPower -= 5;
+			curJumpPower -= 2;
+			if (inTutorial)
+				curJumpPower -= 1;
+			if (curJumpPower < -40)
+				curJumpPower = -40;
 		}
 		else if (isDashing)
 		{
@@ -908,6 +912,8 @@ void Player::SetIsDashing(bool isDashing)
 	isGrace = true;
 	state = EPlayerState::RightDash;
 	speed = DASH_SPEED;
+	if (inTutorial)
+		speed = 4.0f;
 	startChangeStateTime = clock();
 
 	curAnimCnt = 0;

@@ -14,7 +14,7 @@ class Boss;
 #define WORLD_SPRITE_SIZE_Y 8
 
 #define GROUND_POSITION_Y 700
-#define DASH_SPEED (4.0)
+#define DASH_SPEED (6.0)
 
 #define BULLET_MAX_COUNT 50
 #define GRACE_PERIOD 2000
@@ -121,7 +121,7 @@ private:
 	bool					startStage;
 	bool					isDeath;
 
-	const int				JumpMaxPower = 55;
+	const int				JumpMaxPower = 38;
 	int						curJumpPower;
 
 	float					speed;

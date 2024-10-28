@@ -36,6 +36,10 @@ void FrontImage::CreateImage()
 		_tcscpy(temp, L"../Resource/Image/UI/Knockout/FightText_KO_0");
 		ParsingToImagePath(26, temp, 1);
 		break;
+	case EFrontImage::Tutorial:
+		images.resize(1);
+		images[0] = new Image(L"../Resource/Image/Background/Tutorial/front_image.png");
+		break;
 	}
 }
 
@@ -47,6 +51,12 @@ void FrontImage::Draw(HDC& hdc, Graphics& graphics)
 	graphics.ResetTransform();
 	clock_t curTime = clock();
 	curAnimMax = images.size();
+
+	if (type == EFrontImage::Tutorial)
+	{
+		graphics.DrawImage(images[0], 0, 0, WINDOWS_WIDTH, WINDOWS_HEIGHT);
+		return;
+	}
 
 	if (curTime - animLastTime > 33)
 	{

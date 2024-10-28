@@ -11,23 +11,31 @@ Background::Background()
     height = 0;
     debugMode = false;
     tripper = nullptr;
+    hitObject = nullptr;
 }
 
-Background::Background(RECT& rectView, int x, int y)
+Background::Background(RECT& rectView, int x, int y) : Background()
 {
     this->rectView = &rectView;
     this->x = x;
     this->y = y;
-    width = 0;
-    height = 0;
-    camera_x = 0;
-    camera_y = 0;
-    debugMode = false;
-    tripper = nullptr;
 }
 
 Background::~Background()
 {
+    if (hitObject != nullptr)
+    {
+        delete hitObject;
+        hitObject = nullptr;
+    }
+    if (tripper != nullptr)
+    {
+        delete tripper;
+        tripper = nullptr;
+    }
+    for (auto it = parryObjects.begin(); it != parryObjects.end(); it++)
+        delete (*it);
+    parryObjects.clear();
 }
 
 void Background::SetRectView(RECT& rectView)
@@ -70,6 +78,23 @@ void Background::SetDebugMode(bool debugMode)
     this->debugMode = debugMode;
 }
 
+bool Background::CheckCollidedHitObject(Player* player, int deltaX, int deltaY)
+{
+    if (hitObject == nullptr)
+        return false;
+    Collider hitCollider = hitObject->GetCollider();
+    Collider playerCollider = *player->GetCollider();
+    playerCollider.left -= deltaX + 1;
+    playerCollider.right -= deltaX + 1;
+    playerCollider.top -= deltaY + 1;
+    playerCollider.bottom -= deltaY + 1;
+    playerCollider.left += camera_x;
+    playerCollider.right += camera_x;
+    if (hitCollider.IsOverlaps(playerCollider))
+        return true;
+    return false;
+}
+
 void Background::SetColliders(std::vector<Collider*> *colliders)
 {
     this->colliders = *colliders;
@@ -103,4 +128,12 @@ void Background::SetHeight(int height)
 Tripper* Background::GetTripper()
 {
     return tripper;
+}
+
+void Background::RemoveHitObject()
+{
+    if (hitObject == nullptr)
+        return;
+    delete hitObject;
+    hitObject = nullptr;
 }

@@ -108,6 +108,9 @@
     <ClInclude Include="TutorialMap.h">
       <Filter>헤더 파일\GameObjects\Maps</Filter>
     </ClInclude>
+    <ClInclude Include="HitObject.h">
+      <Filter>헤더 파일\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CupheadProject.cpp">
@@ -166,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="TutorialMap.cpp">
       <Filter>소스 파일\GameObjects\Maps</Filter>
+    </ClCompile>
+    <ClCompile Include="HitObject.cpp">
+      <Filter>소스 파일\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

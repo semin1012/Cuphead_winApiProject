@@ -13,13 +13,16 @@ ParryObject::ParryObject()
 	createTime = clock();
 	animLastTime = clock();
 	collider = { 0, 0, 0, 0 };
+	isLoop = false;
+	isHide = false;
 	CreateImage();
 }
 
-ParryObject::ParryObject(int x, int y) : ParryObject()
+ParryObject::ParryObject(int x, int y, bool isLoop) : ParryObject()
 {
 	this->x = x;
 	this->y = y;
+	this->isLoop = isLoop;
 }
 
 ParryObject::~ParryObject()
@@ -29,7 +32,6 @@ ParryObject::~ParryObject()
 		for (auto image : *it)
 			delete image;
 	}
-
 	images.clear();
 }
 
@@ -49,19 +51,27 @@ void ParryObject::Draw(HDC& hdc, Graphics& graphics)
 	clock_t curTime = clock();
 	curAnimMax = images[(int)state].size();
 
-	if (curTime - createTime > 4000)
-		isActive = false;
+	if (isHide)
+	{
+		if (curTime - hideTime > 3000)
+			isHide = false;
+		return;
+	}
+
+	if (!isLoop)
+	{
+		if (curTime - createTime > 4000)
+			isActive = false;
+	}
 
 	if (curTime - animLastTime > 50)
 	{
 		curAnimCnt++;
-
 		if (curAnimCnt >= curAnimMax)
 		{
 			curAnimCnt = 3;
 			//isActive = false;
 		}
-
 		animLastTime = clock();
 	}
 
@@ -70,16 +80,25 @@ void ParryObject::Draw(HDC& hdc, Graphics& graphics)
 
 	int width = images[(int)state][curAnimCnt]->GetWidth();
 	int height = images[(int)state][curAnimCnt]->GetHeight();
-	collider.left = x - width / 2 + 10;
-	collider.top = y - height / 2 + 30;
-	collider.right = x + width / 2 - 10;
-	collider.bottom = y + height / 2 - 30;
+	collider.left = x - width / 2 + 10 + camera_x;
+	collider.top = y - height / 2 + 30 + camera_y;
+	collider.right = x + width / 2 - 10 + camera_x;
+	collider.bottom = y + height / 2 - 30 + camera_y;
 	graphics.DrawImage(images[(int)state][curAnimCnt], collider.left - 10, collider.top - 30, width, height);
 }
 
 bool ParryObject::Collided(Player* player)
 {
-	if (collider.IsOverlaps(*player->GetCollider()))
+	if (!isLoop)
+	{
+		if (collider.IsOverlaps(*player->GetCollider()))
+			return true;
+		return false;
+	}
+	Collider temp = collider;
+	temp.left -= camera_x;
+	temp.right -= camera_x;
+	if (temp.IsOverlaps(*player->GetCollider()))
 		return true;
 	return false;
 }
@@ -126,4 +145,24 @@ bool ParryObject::StartAnimation()
 	if (curTime - createTime > 700)
 		return true;
 	return false;
+}
+
+void ParryObject::SetCollider()
+{
+	collider.left = x + camera_x;
+	collider.top = y - camera_y;
+	collider.right = x + images[(int)state][curAnimCnt]->GetWidth() + camera_x;
+	collider.bottom = y + images[(int)state][curAnimCnt]->GetHeight() - camera_y;
+}
+
+void ParryObject::SetHide()
+{
+	isHide = true;
+	hideTime = clock();
+}
+
+void ParryObject::SetCamera(int x, int y)
+{
+	camera_x = x;
+	camera_y = y;
 }

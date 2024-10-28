@@ -7,13 +7,13 @@ WorldMap::WorldMap()
 	CreateImage();
 	width = leftMapImg.GetWidth() * WORLD_MAP_SCALE + rightMapImg.GetWidth() * WORLD_MAP_SCALE;
 	height = leftMapImg.GetHeight() * WORLD_MAP_SCALE;
-	tripper = new Tripper(*rectView, 2000, 750);
+	tripper = new Tripper(*rectView, 2000, 750, ETripperType::Basic);
 	LoadMapInfo();
 }
 
 WorldMap::~WorldMap()
 {
-	delete tripper;
+
 }
 
 void WorldMap::Draw(HDC& hdc, Graphics& graphics)
@@ -29,7 +29,7 @@ void WorldMap::Draw(HDC& hdc, Graphics& graphics)
 	tripper->SetCameraY(y);
 
 	if (tripper != nullptr)
-		tripper->Draw(hdc);
+		tripper->Draw(hdc, graphics);
 }
 
 void WorldMap::CreateImage()

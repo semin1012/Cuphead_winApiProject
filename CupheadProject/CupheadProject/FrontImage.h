@@ -7,6 +7,7 @@ enum class EFrontImage
 	Ready,
 	FX,
 	KnockOut,
+	Tutorial,
 	MAX
 };
 

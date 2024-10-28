@@ -7,7 +7,7 @@
 #include "framework.h"
 
 #define PATTERN_1_TIME 4000
-#define HEALTH 100
+#define HEALTH 10
 #define TRANSITION_TIME 4000
 #define CHANGE_STATE_MOVE 2000
 #define PATTERN_2_TIME 3000
@@ -98,9 +98,9 @@ class Boss
 	EBossStateSprite		animState;
 	Collider				drawCollider;
 	Collider				collider;
-	bool					isHit;
 	bool					bAttackCollider;
 	bool					isPossibleCollision;
+	bool					isHit;
 	clock_t					isHitTime;
 	clock_t					startChangeStateTime;
 	bool					isShowParry;
@@ -109,7 +109,7 @@ class Boss
 	bool					isCameraShake;
 	
 	bool					isJumping;
-	const int				JumpMaxPower = 65;
+	const int				JumpMaxPower = 45;
 	int						curJumpPower;
 	
 public:

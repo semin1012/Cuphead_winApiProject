@@ -35,7 +35,7 @@ enum class ESceneState
 
 class GameManager
 {
-private:
+public:
 	std::vector<EffectObject*>	effects;
 	std::vector<ParryObject*>	parryObjects;
 	std::vector<FrontImage*>	frontImages;
@@ -62,14 +62,13 @@ private:
 	clock_t					gameOverTime;
 	bool					isMoveCameraY;
 	bool					isMoveCameraX;
-
-
-	FadeEffect*				fadeEffect;
+	bool					isTutorial;
 
 	ULONG_PTR				g_GdipPlusToken;
 
 
 public:
+	FadeEffect* fadeEffect;
 	GameManager(RECT* rectView);
 	~GameManager();
 
@@ -99,6 +98,7 @@ public:
 	bool		GetIsTitle();
 	void		SetIsTitle(bool isTitle);
 	bool		GetIsStage();
+	void		SetWorld();
 
 	void		SetStage(int stage);
 	void		Clear();

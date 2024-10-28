@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "Tripper.h"
 #include "Collider.h"	
+#include "HitObject.h"
+#include "ParryObject.h"
 
 class Background
 {
@@ -17,6 +19,8 @@ protected:
 	int						height;
 	bool					debugMode;
 	std::vector<Collider*>  colliders;
+	HitObject*				hitObject;
+	std::vector<ParryObject*> parryObjects;
 
 public:
 	Background();
@@ -44,8 +48,13 @@ public:
 	void			SetWidth(int width);
 	void			SetHeight(int height);
 	Tripper*		GetTripper();
+	HitObject*		GetHitObject() { return hitObject; }
+	void			RemoveHitObject();
+
+	bool			CheckCollidedHitObject(Player* player, int deltaX, int deltaY);
 
 	void			SetColliders(std::vector<Collider*>* colliders);
 	std::vector<Collider*>* GetColliders();
+	std::vector<ParryObject*>* GetParryObjects() { return &parryObjects; }
 };
 

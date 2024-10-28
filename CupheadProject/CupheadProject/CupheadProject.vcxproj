@@ -140,6 +140,7 @@
     <ClInclude Include="FrontImage.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="HealthUI.h" />
+    <ClInclude Include="HitObject.h" />
     <ClInclude Include="ParryObject.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
@@ -163,6 +164,7 @@
     <ClCompile Include="FrontImage.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="HealthUI.cpp" />
+    <ClCompile Include="HitObject.cpp" />
     <ClCompile Include="ParryObject.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="StageMap.cpp" />

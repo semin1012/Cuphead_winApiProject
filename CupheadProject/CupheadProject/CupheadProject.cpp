@@ -175,7 +175,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
     {
-        SetTimer(hWnd, TIMER_KEYSTATE, 24, KeyStateProc);
+        SetTimer(hWnd, TIMER_KEYSTATE, 15, KeyStateProc);
         mousePos = new POINT;
         Init(hWnd);
         GetWindowRect(hWnd, &rectView);
@@ -247,7 +247,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         CreateDoubbleBuffering(hWnd);
 
         gameMgr->Draw(hdc);
-        gameMgr->Update();
          
         EndDoubleBuffering(hWnd);
         break;
@@ -301,6 +300,7 @@ void EndDoubleBuffering(HWND hWnd)
 
 VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwTime)
 {
+    gameMgr->Update();
     InvalidateRect(hWnd, NULL, false);
 
     if (gameMgr->GetPlayer() == nullptr)
@@ -388,7 +388,7 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
 
     int moveDistance = MOVE_DISTANCE;
     if (gameMgr->GetIsWorld())
-        moveDistance /= 2;
+        moveDistance /= 1.5;
 
     if (gameMgr->GetIsWorld() || gameMgr->GetIsStage())
     {
@@ -397,12 +397,6 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
     }
     else
     {
-        if (gameMgr->GetPlayer()->dir.x != 0 || gameMgr->GetPlayer()->GetIsJumping())
-            gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance * gameMgr->GetPlayer()->GetSpeed()) , 0);
-        else
-        {
-            gameMgr->GetPlayer()->SetCameraPos(gameMgr->GetCameraXPos(), 0);
-            gameMgr->GetBackground()->SetCameraPos(-(gameMgr->GetCameraXPos()), 0);
-        }
+        gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance * gameMgr->GetPlayer()->GetSpeed() * 2) , 0);
     }
 }

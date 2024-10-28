@@ -25,9 +25,9 @@ GameManager::GameManager(RECT* rectView)
 	shakeY = 0;
 	isMoveCameraY = true;
 	isMoveCameraX = true;
-
+	isTutorial = true;
 	SetCameraPos(camera_x, camera_y);
-	frontImages.push_back(new FrontImage(EFrontImage::FX));
+	//frontImages.push_back(new FrontImage(EFrontImage::FX));
 }
 
 GameManager::~GameManager()
@@ -80,6 +80,22 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (!player->GetIsJumping() && !player->GetIsDashing() && !player->GetIsSpecialAttack())
 				{
 					player->SetIsJumping(true);
+				}
+				if (sceneState == (int)ESceneState::Tutorial)
+				{
+					vector<ParryObject*>* object = background->GetParryObjects();
+					for (auto it = object->begin(); it < object->end(); it++ )
+					{
+						ParryObject* parry = *it;
+						if (parry->IsHide())
+							continue;
+						if (parry->Collided(player))
+						{
+							player->Parry();
+							parry->SetHide();
+							break;
+						}
+					}
 				}
 				if (!parryObjects.empty())
 				{
@@ -208,6 +224,13 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (tripper->GetCollidedPlayer())
 					fadeEffect = new FadeEffect();
 			}
+			if (sceneState == (int)ESceneState::Tutorial && fadeEffect == nullptr)
+			{
+				isTutorial = false;
+				Tripper* tripper = GetBackground()->GetTripper();
+				if (tripper->GetCollidedPlayer())
+					fadeEffect = new FadeEffect();
+			}
 			break;
 		case 'X':
 		case 'x':
@@ -244,6 +267,8 @@ void GameManager::Draw(HDC& hdc)
 				delete background;
 				background = new ClearMap();
 			}
+			else if (sceneState == (int)ESceneState::Tutorial)
+				SetWorld();
 			else if (sceneState == (int)ESceneState::Restart)
 				SetReplay(true);
 			else if (sceneState == (int)ESceneState::GameOver)
@@ -293,7 +318,10 @@ void GameManager::Draw(HDC& hdc)
 		if (background->GetTripper() != nullptr)
 		{
 			Collider* collider = background->GetTripper()->GetKeyCollider();
-			Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
+			if (sceneState == (int)ESceneState::Tutorial)
+				Rectangle(hdc, collider->left, collider->top, collider->right, collider->bottom);
+			else
+				Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
 		} 
 
 		if (boss != nullptr)
@@ -308,6 +336,22 @@ void GameManager::Draw(HDC& hdc)
 			{
 				Collider* collider = obj->GetCollider();
 				Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
+			}
+		}
+		if (sceneState == (int)ESceneState::Tutorial)
+		{
+			if (background->GetHitObject() != nullptr)
+			{
+				Collider* collider = &background->GetHitObject()->GetCollider();
+				Rectangle(hdc, collider->left, collider->top, collider->right, collider->bottom);
+			}
+			if (!background->GetParryObjects()->empty())
+			{
+				for (auto obj : *background->GetParryObjects())
+				{
+					Collider* collider = obj->GetCollider();
+					Rectangle(hdc, collider->left, collider->top, collider->right, collider->bottom);
+				}
 			}
 		}
 
@@ -352,11 +396,32 @@ void GameManager::Update()
 			GetPlayer()->dir.x = xInputs.back();
 		if (player->GetHealth() <= 0)
 			GameOver();
+		
 		player->Update();
+
 		if (player->GetJumpDust())
 		{
 			player->SetJumpDust(false);
 			effects.push_back(new EffectObject(EEffectType::JumpDownDust, player->GetXPos(), player->GetYPos(), false, false, true));
+		}
+		if (sceneState == (int)ESceneState::Tutorial)
+		{
+			for (auto bullet : player->GetBullets())
+			{
+				if (background->GetHitObject() == nullptr)
+					break;
+				if (!bullet->GetisActive())
+					continue;
+				if (bullet->GetIsCollided())
+					continue;
+				if (bullet->Collided(&background->GetHitObject()->GetCollider()))
+				{
+					background->GetHitObject()->SetHp(background->GetHitObject()->GetHp() - 1);
+					background->GetHitObject()->Hit();
+					if (background->GetHitObject()->GetHp() == 0)
+						background->RemoveHitObject();
+				}
+			}
 		}
 
 		if (boss != nullptr)
@@ -446,7 +511,7 @@ void GameManager::SetCameraPos(int x, int y)
 		return;
 	}
 
-	if (player->GetIsLockin() || player->GetIsDown() || CollidedPlayerWithWorldCollisions(deltaX, deltaY))
+	if (player->GetIsLockin() || player->GetIsDown() || player->GetIsSpecialAttack() || CollidedPlayerWithWorldCollisions(deltaX, deltaY))
 	{
 		if (sceneState == (int)ESceneState::Tutorial)
 		{
@@ -454,6 +519,15 @@ void GameManager::SetCameraPos(int x, int y)
 			player->SetCameraPosX((camera_x));
 		}
 		return;
+	}
+	if (sceneState == (int)ESceneState::Tutorial)
+	{
+		if (background->CheckCollidedHitObject(player, deltaX, deltaY))
+		{
+			background->SetCameraPos(-(camera_x), 0);
+			player->SetCameraPosX((camera_x));
+			return;
+		}
 	}
 
 	if (background != nullptr)
@@ -711,20 +785,16 @@ void GameManager::SetIsTitle(bool isTitle)
 		sceneState = (int)ESceneState::Title;
 	else
 	{
-		//sceneState = (int)ESceneState::World;
-		//delete background;
-
-		//background = new WorldMap();
-		//background->SetRectView(*rectView);
-		//background->SetXPos(-WORLD_START_POINT_X);
-		//background->SetYPos(-WORLD_START_POINT_Y);
-		//player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
-
+		if (!isTutorial)
+		{
+			SetWorld();
+			return;
+		}
 		sceneState = (int)ESceneState::Tutorial;
 		delete background;
 
+		health = new HealthUI();
 		background = new TutorialMap();
-		background->SetRectView(*rectView);
 		background->SetRectView(*rectView);
 		player = new Player(0, 700);
 		player->SetInTutorial(true);
@@ -732,14 +802,35 @@ void GameManager::SetIsTitle(bool isTitle)
 		player->SetStage();
 		camera_x = 0, camera_y = 0;
 		SetCameraPos(camera_x, camera_y);
+
 		// TODO:
-		////SetStage(1);
+		//SetStage(1);
 	}
 }
 
 bool GameManager::GetIsStage()
 {
 	return sceneState == (int)ESceneState::Stage;
+}
+
+void GameManager::SetWorld()
+{
+	DeleteObjects();
+	camera_x = WORLD_START_POINT_X;
+	camera_y = WORLD_START_POINT_Y;
+	sceneState = (int)ESceneState::World;
+	if (background != nullptr)
+		delete background;
+	background = new WorldMap();
+	background->SetRectView(*rectView);
+	background->SetXPos(-WORLD_START_POINT_X);
+	background->SetYPos(-WORLD_START_POINT_Y);
+	player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
+	player->SetInTutorial(false);
+	player->SetInWorld(true);
+	SetCameraPos(camera_x, camera_y);
+	isMoveCameraY = true;
+	isMoveCameraX = true;
 }
 
 void GameManager::SetStage(int stage)
@@ -757,7 +848,9 @@ void GameManager::SetStage(int stage)
 	boss = new Boss();
 	boss->SetPlayer(player);
 	frontImages.push_back(new FrontImage(EFrontImage::Ready));
-	health = new HealthUI();
+
+	if (health == nullptr)
+		health = new HealthUI();
 
 	camera_x = 0;
 	camera_y = 0;
@@ -945,9 +1038,24 @@ void GameManager::Gdi_Draw(HDC hdc)
 
 	if (background != nullptr)
 	{
-		background->Draw(hdc, graphics);
+ 		background->Draw(hdc, graphics);
 		if (!GetIsWorld())
 			background->SetCameraPos(shakeX, shakeY);
+	}
+
+	if (sceneState == (int)ESceneState::Tutorial)
+	{
+		vector<ParryObject*>* parry = background->GetParryObjects();
+		if (!parry->empty())
+		{
+			for (auto it = parry->begin(); it != parry->end();)
+			{
+				ParryObject* object = (*it);
+				if (!object->GetIsActive())
+					it = parry->erase(it);
+				else it++;
+			}
+		}
 	}
 
 	if (sceneState != (int)ESceneState::Clear && sceneState != (int)ESceneState::Restart)
@@ -1008,6 +1116,12 @@ void GameManager::Gdi_Draw(HDC hdc)
 			}
 		}
 
+		if (!frontImages.empty())
+		{
+			for (auto frontImage : frontImages)
+				frontImage->Draw(hdc, graphics);
+		}
+
 		if (health != nullptr)
 			health->Draw(hdc);
 
@@ -1015,12 +1129,6 @@ void GameManager::Gdi_Draw(HDC hdc)
 		{
 			for (auto card : cards)
 				card->Draw(hdc);
-		}
-
-		if (!frontImages.empty())
-		{
-			for (auto frontImage : frontImages)
-				frontImage->Draw(hdc, graphics);
 		}
 	}
 }
