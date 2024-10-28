@@ -341,7 +341,7 @@ void GameManager::Update()
 
 	if (player != nullptr)
 	{
-		if (sceneState == (int)ESceneState::Tutorial);
+		//if (sceneState == (int)ESceneState::Tutorial);
 			//player->UpdateCameraPosX(camera_x);
 		if (player->GetSpecailAttackCount() != cards.size() && sceneState != (int)ESceneState::World)
 		{
@@ -435,6 +435,7 @@ void GameManager::SetCameraPos(int x, int y)
 	int deltaX = (camera_x - x);
 	int deltaY = (camera_y - y);
 
+
 	if (sceneState == (int)ESceneState::Stage)
 	{
 		isMoveCameraX = false;
@@ -445,8 +446,15 @@ void GameManager::SetCameraPos(int x, int y)
 		return;
 	}
 
-	if (CollidedPlayerWithWorldCollisions(deltaX, deltaY))
+	if (player->GetIsLockin() || player->GetIsDown() || CollidedPlayerWithWorldCollisions(deltaX, deltaY))
+	{
+		if (sceneState == (int)ESceneState::Tutorial)
+		{
+			background->SetCameraPos(-(camera_x), 0);
+			player->SetCameraPosX((camera_x));
+		}
 		return;
+	}
 
 	if (background != nullptr)
 	{
@@ -476,7 +484,7 @@ void GameManager::SetCameraPos(int x, int y)
 		min_camera_x = 100;
 		max_camera_x = WINDOWS_HEIGHT / 2;
 		// x
-		if (isMoveCameraX && camera_x < MOVE_DISTANCE )
+		if (isMoveCameraX && camera_x <= MOVE_DISTANCE )
 		{
 			isMoveCameraX = false;
 			camera_x = MOVE_DISTANCE;
@@ -486,15 +494,15 @@ void GameManager::SetCameraPos(int x, int y)
 			isMoveCameraX = false;
 			camera_x = mapSizeWidth - WINDOWS_WIDTH / 2;
 		}
-		if (!isMoveCameraX && player->GetXPos() >= WINDOWS_WIDTH / 2 + 15 && camera_x <= min_camera_x)
+		if (!isMoveCameraX && player->GetXPos() > WINDOWS_WIDTH / 2 + 15 && camera_x <= min_camera_x)
 		{
 			camera_x = MOVE_DISTANCE;
 			isMoveCameraX = true;
 			player->SetXPos(WINDOWS_WIDTH / 2 + MOVE_DISTANCE);
 		}
-		if (!isMoveCameraX && player->GetXPos() <= WINDOWS_WIDTH / 2 && camera_x >= mapSizeWidth - WINDOWS_WIDTH / 2)
+		if (!isMoveCameraX && player->GetXPos() < WINDOWS_WIDTH / 2 && camera_x >= mapSizeWidth - WINDOWS_WIDTH / 2)
 		{
-			camera_x = mapSizeWidth - WINDOWS_WIDTH / 2 - 10;
+			camera_x = mapSizeWidth - WINDOWS_WIDTH / 2;
 			isMoveCameraX = true;
 			player->SetXPos(WINDOWS_WIDTH / 2);
 		}
@@ -566,20 +574,25 @@ void GameManager::SetCameraPos(int x, int y)
 		if (isMoveCameraX && isMoveCameraY)
 		{
 			player->SetCameraPosY(camera_y + deltaY);
-			player->SetCameraPosX(camera_x + deltaY);
+			player->SetCameraPosX(camera_x + deltaX);
 			return;
 		}
 		if (!isMoveCameraX && !isMoveCameraY)
 		{
 			float speed = player->GetSpeed();
 			player->Move(deltaX * speed, deltaY * speed);
-			player->SetCameraPos(camera_x + deltaY * speed, camera_y + deltaY * speed);
+			player->SetCameraPos(camera_x + deltaX * speed, camera_y + deltaY * speed);
+			if (sceneState == (int)ESceneState::Tutorial)
+				background->SetCameraPos(-(camera_x), 0);
 			return;
 		}
 		if (isMoveCameraX)
 		{
+			float speed = player->GetSpeed();
 			player->Move(0, deltaY);
-			player->SetCameraPosX(camera_x + deltaY);
+			player->SetCameraPosX(camera_x + deltaX * speed);
+			if (sceneState == (int)ESceneState::Tutorial)
+				background->SetCameraPos(-(camera_x), 0);
 		}
 		if (isMoveCameraY)
 		{
@@ -698,27 +711,29 @@ void GameManager::SetIsTitle(bool isTitle)
 		sceneState = (int)ESceneState::Title;
 	else
 	{
-		sceneState = (int)ESceneState::World;
-		delete background;
-
-		background = new WorldMap();
-		background->SetRectView(*rectView);
-		background->SetXPos(-WORLD_START_POINT_X);
-		background->SetYPos(-WORLD_START_POINT_Y);
-		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
-
-		//sceneState = (int)ESceneState::Tutorial;
+		//sceneState = (int)ESceneState::World;
 		//delete background;
 
-		//background = new TutorialMap();
+		//background = new WorldMap();
 		//background->SetRectView(*rectView);
-		//player = new Player(0, 700);
-		//player->SetInWorld(false);
-		//player->SetStage();
-		//camera_x = 0, camera_y = 0;
-		//SetCameraPos(camera_x, camera_y);
+		//background->SetXPos(-WORLD_START_POINT_X);
+		//background->SetYPos(-WORLD_START_POINT_Y);
+		//player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
+
+		sceneState = (int)ESceneState::Tutorial;
+		delete background;
+
+		background = new TutorialMap();
+		background->SetRectView(*rectView);
+		background->SetRectView(*rectView);
+		player = new Player(0, 700);
+		player->SetInTutorial(true);
+		player->SetInWorld(false);
+		player->SetStage();
+		camera_x = 0, camera_y = 0;
+		SetCameraPos(camera_x, camera_y);
 		// TODO:
-		//SetStage(1);
+		////SetStage(1);
 	}
 }
 
@@ -854,17 +869,54 @@ void GameManager::SetCameraInWorld()
 bool GameManager::CollidedPlayerWithWorldCollisions(int deltaX, int deltaY)
 {
 	Collider temp = *player->GetCollider();
-	temp.left -=	deltaX - 1;
-	temp.right -=	deltaX + 1;
-	temp.top -=		deltaY - 1;
+	temp.left	-=	deltaX + 1;
+	temp.right	-=	deltaX + 1;
+	temp.top	-=	deltaY + 1;
 	temp.bottom -=	deltaY + 1;
+	bool isDown = true;
+	bool isTutorial = sceneState == (int)ESceneState::Tutorial;
+	bool result = false;
+
+	if (isTutorial)
+	{
+		temp.left += camera_x;
+		temp.right += camera_x;
+	}
 
 	for (auto collider : (*background->GetColliders()))
 	{
 		if (temp.IsOverlaps(*collider))
-			return true;
+		{
+			if (!player->GetIsJumping())
+				return true;
+			if (collider->left > temp.left && collider->right < temp.right)
+			{
+				player->SetJumpDown();
+				player->SetYPos(collider->top - 5);
+				return true;
+			}
+			result = true;
+		}
+		if (isTutorial)
+		{
+			Collider tile = { collider->left, collider->top - 10, collider->right, collider->bottom };
+			if (temp.IsOverlaps(tile))
+				isDown = false;
+		}
 	}
-	return false;
+	if (isTutorial)
+	{
+		if (isDown && player->GetYPos() != 700)
+		{
+			if (!player->GetIsJumping())
+			{
+				player->SetIsJumping(true);
+				if (player->GetJumpPower() > 0)
+					player->SetJumpPower(0);
+			}
+		}
+	}
+	return result;
 }
 
 bool GameManager::CollidedPlayer(Collider* collider, int deltaX, int deltaY)

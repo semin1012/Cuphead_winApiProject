@@ -397,6 +397,12 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
     }
     else
     {
-        gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance * gameMgr->GetPlayer()->GetSpeed()) , 0);
+        if (gameMgr->GetPlayer()->dir.x != 0 || gameMgr->GetPlayer()->GetIsJumping())
+            gameMgr->SetCameraPos((gameMgr->GetCameraXPos() + gameMgr->GetPlayer()->dir.x * moveDistance * gameMgr->GetPlayer()->GetSpeed()) , 0);
+        else
+        {
+            gameMgr->GetPlayer()->SetCameraPos(gameMgr->GetCameraXPos(), 0);
+            gameMgr->GetBackground()->SetCameraPos(-(gameMgr->GetCameraXPos()), 0);
+        }
     }
 }

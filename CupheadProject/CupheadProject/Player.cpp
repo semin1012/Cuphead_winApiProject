@@ -171,6 +171,7 @@ Player::Player()
 	isDeath = false;
 	health = 3;
 	createRunDustTime = clock();
+	inTutorial = false;
 	for (int i = 0; i < 5; i++)
 	{
 		EffectObject* effect = new EffectObject(EEffectType::RunDust, x, y);
@@ -279,6 +280,8 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 			grapichs.DrawImage(playerImg[(int)state][curAnimCnt], Rect(collider.left - camera_x, collider.top, width, height), 0, 0, width, height, UnitPixel, &imgAttr);
 		}
 		else grapichs.DrawImage(playerImg[(int)state][curAnimCnt], collider.left - camera_x, collider.top, width, height);
+		if (inTutorial)
+			collider = { x - 50, y - 100, x + 50, y };
 	}
 
 	// 월드라면
@@ -361,6 +364,9 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 
 void Player::Update()
 {
+	if (inTutorial)
+		collider = { x - 50, y - 100, x + 50, y };
+
 	if (state == EPlayerState::Ghost)
 		y -= 1;
 
@@ -433,13 +439,8 @@ void Player::Update()
 		}
 		if (y >= GROUND_POSITION_Y)
 		{
-			isParry = false;
-			isDoubleParry = false;
-			if (isDashAndJump) isDashAndJump = false;
-			if (isSpecialAttackAndJump) isSpecialAttackAndJump = false;
-			isJumping = false;
+			SetJumpDown();
 			y = GROUND_POSITION_Y;
-			setJumpDust = true;
 			if (!isHit)
 			{
 				switch (dir.y)
@@ -885,6 +886,16 @@ void Player::SetIsJumping(bool isJumping)
 	state = EPlayerState::RightJump;
 	curAnimCnt = 0;
 	curAnimMax = playerImg[(int)state].size();
+}
+
+void Player::SetJumpDown()
+{
+	isParry = false;
+	isDoubleParry = false;
+	if (isDashAndJump) isDashAndJump = false;
+	if (isSpecialAttackAndJump) isSpecialAttackAndJump = false;
+	isJumping = false;
+	setJumpDust = true;
 }
 
 void Player::SetIsDashing(bool isDashing)

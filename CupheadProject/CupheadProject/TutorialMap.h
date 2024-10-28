@@ -6,6 +6,11 @@ class TutorialMap : public Background
 {
 	Image* backgroundBackImage;
 	Image* backgroundFrontImage;
+	Image* tutorialText;
+	Image* downText;
+	Image* jump;
+	Image* dash;
+	Image* shoot;
 
 public:
 	TutorialMap();

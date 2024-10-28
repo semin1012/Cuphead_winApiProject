@@ -103,6 +103,7 @@ private:
 
 	clock_t					lastTime;
 	bool					inWorld;
+	bool					inTutorial;
 
 	bool					isDown;
 	bool					isJumping;
@@ -161,13 +162,15 @@ public:
 	void		SetCameraPos(int x, int y);
 	void		SetCameraPosX(int x);
 	void		SetCameraPosY(int y);
+	int			GetCameraPosX()								{ return camera_x; }
 	void		UpdateCameraPosX(int x);
 
 	void		SetState(EPlayerWorldState state, EWorldSpriteY spriteY);
 	void		SetState(EPlayerState state);
 	void		SetStateOnce(EPlayerState state);
 	void		SetInWorld(bool isWorld);
-
+	void		SetInTutorial(bool isTutorial)				{ inTutorial = isTutorial; }
+	bool		GetInTutorial()								{ return inTutorial; }
 
 	void		Move(int x, int y);
 	float		GetSpeed()									{ return speed; }
@@ -185,6 +188,9 @@ public:
 
 	bool		GetIsJumping()								{ return isJumping; }
 	void		SetIsJumping(bool isJumping);
+	int			GetJumpPower()								{ return curJumpPower; }
+	void		SetJumpPower(int jumpPower)					{ curJumpPower = jumpPower; }
+	void		SetJumpDown();
 	bool		GetIsDashing()								{ return isDashing; }
 	void		SetIsDashing(bool isDashing);
 	bool		GetIsDown()									{ return isDown; }
