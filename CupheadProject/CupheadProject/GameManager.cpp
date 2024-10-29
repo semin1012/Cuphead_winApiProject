@@ -813,14 +813,14 @@ void GameManager::SetIsTitle(bool isTitle)
 		sceneState = (int)ESceneState::Title;
 	else
 	{
-		if (!isTutorial)
+		/*if (!isTutorial)
 		{
 			SetWorld();
 			return;
-		}
+		}*/
 		SetTutorial();
 		// TODO:
-		SetStage(1);
+		//SetStage(1);
 	}
 }
 
@@ -906,7 +906,7 @@ void GameManager::SetStage(int stage)
 	DestroySound();
 	bgm = new Sound("../Resource/Sound/bgm/goopy.mp3", true);
 	bgm->play();
-	isTutorial = false;
+	//isTutorial = false;
 	sceneState = (int)ESceneState::Stage;
 	this->stage = stage;
 	if (background != nullptr)
@@ -914,9 +914,9 @@ void GameManager::SetStage(int stage)
 	background = new StageMap();
 	background->SetRectView(*rectView);
 
-	if (player == nullptr)
-		player = new Player();
-	player->SetStage();
+	if (player != nullptr)
+		delete player;
+	player = new Player();
 	SetIsWorld(false);
 	boss = new Boss();
 	boss->SetPlayer(player);
@@ -929,6 +929,7 @@ void GameManager::SetStage(int stage)
 	camera_x = 0;
 	camera_y = 0;
 	SetCameraPos(0, 0);
+	player->SetStage();
 }
 
 void GameManager::Clear()

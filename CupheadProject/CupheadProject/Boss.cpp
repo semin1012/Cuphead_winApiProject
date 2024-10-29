@@ -187,7 +187,7 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 		deltaPosY += 50;
 		if (deltaPosY >= 700)
 		{
-			PlaySound(EBossSoundType::StonSplat);
+			PlaySound(EBossSoundType::StonSmash);
 			deltaPosY = 700;
 			phase = 3;
 			ChangeState(EBossState::Intro);

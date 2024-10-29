@@ -389,7 +389,7 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
     }
 
     int moveDistance = MOVE_DISTANCE;
-    if (gameMgr->GetIsWorld() || gameMgr->isTutorial)
+    if (gameMgr->GetIsWorld())
         moveDistance /= 1.5;
 
     if (gameMgr->GetIsWorld() || gameMgr->GetIsStage())

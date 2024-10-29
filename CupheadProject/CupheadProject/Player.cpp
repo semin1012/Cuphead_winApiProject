@@ -389,13 +389,13 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 
 void Player::Update()
 {
-	clock_t curTime = clock();
-
 	if (inTutorial)
 		collider = { x - 50, y - 100, x + 50, y };
 
 	if (dir.x != 0)
 	{
+		clock_t curTime = clock();
+
 		if (curTime - walkSoundTime > 100)
 			sounds[(int)ESoundType::Walk]->play();
 	}
@@ -408,6 +408,8 @@ void Player::Update()
 
 	if (startStage)
 	{
+		clock_t curTime = clock();
+
 		if (curTime - startChangeStateTime > STAGE_READY_TIME)
 		{
 			startStage = false;
@@ -494,6 +496,8 @@ void Player::Update()
 	}
 	if (!isShooting && isDashing && !isSpecialAttack && !isHit)
 	{
+		clock_t curTime = clock();
+
 		curJumpPower = 0;
 		isGrace = true;
 		switch (dir.x)
@@ -527,6 +531,8 @@ void Player::Update()
 	}
 	if (isSpecialAttack && !isHit)
 	{
+		clock_t curTime = clock();
+
 		if (isSpecialAttackAndJump)
 		{
 			if (curTime - startChangeStateTime > 400)
@@ -550,6 +556,8 @@ void Player::Update()
 
 	if (isShooting && !isHit)
 	{
+		clock_t curTime = clock();
+
 		if (curTime - lastShootingTime > 400)
 		{
 			Shooting();
@@ -559,6 +567,8 @@ void Player::Update()
 
 	if (isGrace && !isDashing)
 	{
+		clock_t curTime = clock();
+
 		if (curTime - isHitTime > GRACE_PERIOD)
 		{
 			isGrace = false;
@@ -906,6 +916,8 @@ void Player::SetIsJumping(bool isJumping)
 	if (!isJumping)
 		return;
 	curJumpPower = JumpMaxPower;
+	if (!inTutorial)
+		curJumpPower = curJumpPower * 0.9f;
 	state = EPlayerState::RightJump;
 	curAnimCnt = 0;
 	curAnimMax = playerImg[(int)state].size();
@@ -1135,13 +1147,13 @@ void Player::SetStage()
 	y = GROUND_POSITION_Y;
 	SetInWorld(false);
 	bInput = false;
-	startStage = true;
 	startChangeStateTime = clock();
 	dir.x = 0;
 	camera_x = 0;
 	camera_y = 0;
 	lastForward = LAST_FORWARD_IS_RIGHT;
 	state = EPlayerState::Intro;
+	startStage = true;
 }
 
 bool Player::CanMoveDirX()
