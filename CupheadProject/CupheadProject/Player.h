@@ -101,6 +101,15 @@ enum class ESoundType
 	Max
 };
 
+enum class EAnnouncerSound
+{
+	Ready,
+	KnockOut,
+	Score,
+	Fail,
+	Max
+};
+
 class Player
 {
 private:

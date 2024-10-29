@@ -30,6 +30,9 @@ Boss::Boss()
 	CreateImage();
 	Turn();
 	Turn();
+	curSoundType = EBossSoundType::SmallIntro;
+	sound = new Sound("../Resource/Sound/Boss/small_intro.wav", false);
+	sound->play();
 }
 
 void Boss::CreateImage()
@@ -120,6 +123,7 @@ Boss::~Boss()
 	for (auto it = effects.begin(); it != effects.end(); it++)
 		delete* it;
 	effects.begin();
+	delete sound;
 }
 
 void Boss::Draw(HDC& hdc, Graphics& graphics)
@@ -178,9 +182,12 @@ void Boss::Draw(HDC& hdc, Graphics& graphics)
 
 	if (state == EBossState::Slime && phase == 2)
 	{
+		if (deltaPosY < 50)
+			PlaySound(EBossSoundType::StonDrop);
 		deltaPosY += 50;
 		if (deltaPosY >= 700)
 		{
+			PlaySound(EBossSoundType::StonSplat);
 			deltaPosY = 700;
 			phase = 3;
 			ChangeState(EBossState::Intro);
@@ -254,6 +261,7 @@ void Boss::Update()
 	{
 		if (curTime - startChangeStateTime >= CHANGE_STATE_MOVE)
 		{
+			PlaySound(EBossSoundType::StonSlide);
 			ChangeState(EBossState::Move);
 			moveLastTime = clock();
 			startChangeStateTime = clock();
@@ -295,6 +303,7 @@ void Boss::Hit(Bullet* bullet)
 	if (bullet->GetIsSpecialAttack())
 		hp -= 5;
 	else hp -= 1;
+	PlaySound(EBossSoundType::Hit);
 }
 
 void Boss::CheckAnimCount()
@@ -308,6 +317,10 @@ void Boss::CheckAnimCount()
 		{
 			if (curAnimCnt == 6 && curTime - animLastTime > 800)
 			{
+				if (phase == 1)
+					PlaySound(EBossSoundType::SmallPunch);
+				else if ( phase == 2 )
+					PlaySound(EBossSoundType::BigPunch);
 				curAnimCnt++;
 				animLastTime = clock();
 			}
@@ -422,6 +435,7 @@ void Boss::CheckHp()
 		effects[(int)EBossEffect::DeathStarA]->SetPosition(x - 40, y - 240);
 		effects[(int)EBossEffect::DeathStarB]->SetPosition(x + 30, y - 180);
 		effects[(int)EBossEffect::DeathCloud]->SetPosition(x + 20, y - 210);
+		PlaySound(EBossSoundType::StonDeath);
 	}
 	else if (hp * 3 < HEALTH && phase == 2 && !isJumping)
 	{
@@ -431,6 +445,7 @@ void Boss::CheckHp()
 			ChangeState(EBossState::TransitionToPh);
 			bAttackCollider = false;
 			startChangeStateTime = clock();
+			PlaySound(EBossSoundType::BigDeath);
 
 		}
 	}
@@ -442,6 +457,7 @@ void Boss::CheckHp()
 			state = EBossState::TransitionToPh;
 			bAttackCollider = false;
 			startChangeStateTime = clock();
+			PlaySound(EBossSoundType::SmallTransition);
 		}
 	}
 }
@@ -479,10 +495,12 @@ void Boss::Jump()
 			SetJumpState();
 		if (phase == 2)
 		{
+			PlaySound(EBossSoundType::BigLand);
 			isCameraShake = true;
 			effects[(int)EBossEffect::Ph2JumpDust]->SetIsActive(true);
 			effects[(int)EBossEffect::Ph2JumpDust]->SetPosition(x, y);
 		}
+		else PlaySound(EBossSoundType::SmallLand);
 		isJumping = false;
 		y = 700;
 	}
@@ -513,12 +531,14 @@ void Boss::Move()
 	{
 		x = images[(int)EBossStateSprite::Ph3MoveLeft][0]->GetWidth() / 2 + 10;
 		ChangeState(EBossState::Trans);
+		PlaySound(EBossSoundType::StonSlide);
 		dirX = 1;
 	}
 	else if (x >= WINDOWS_WIDTH - images[(int)EBossStateSprite::Ph3MoveLeft][0]->GetWidth() / 2)
 	{
 		x = WINDOWS_WIDTH - images[(int)EBossStateSprite::Ph3MoveLeft][0]->GetWidth() / 2 - 10;
 		ChangeState(EBossState::Trans);
+		PlaySound(EBossSoundType::StonSlide);
 		dirX = -1;
 	}
 
@@ -530,6 +550,7 @@ void Boss::Smash()
 	if (state != EBossState::Smash)
 	{
 		ChangeState(EBossState::Smash);
+		PlaySound(EBossSoundType::StonSmash);
 	}
 }
 
@@ -687,6 +708,10 @@ void Boss::SetJumpState()
 		curJumpPower = 45;
 	if (curJumpPower >= 60)
 		curJumpPower = 60;
+	if (phase == 1)
+		PlaySound(EBossSoundType::SmallJump);
+	else if (phase == 2)
+		PlaySound(EBossSoundType::BigJump);
 }
 
 void Boss::SetPunchState()
@@ -712,6 +737,65 @@ bool Boss::GetIsTransitionToPhase()
 		return true;
 	}
 	return false;
+}
+
+void Boss::PlaySound(EBossSoundType type)
+{
+	if (curSoundType != type)
+	{
+		delete sound;
+		sound = nullptr;
+		curSoundType = type;
+	}
+	switch (type)
+	{
+		case EBossSoundType::SmallIntro:
+			sound = new Sound("../Resource/Sound/Boss/small_intro.wav", false);
+			break;
+		case EBossSoundType::SmallJump:
+			sound = new Sound("../Resource/Sound/Boss/small_jump.wav", false);
+			break;
+		case EBossSoundType::SmallLand:
+			sound = new Sound("../Resource/Sound/Boss/small_land.wav", false);
+			break;
+		case EBossSoundType::SmallPunch:
+			sound = new Sound("../Resource/Sound/Boss/small_punch.wav", false);
+			break;
+		case EBossSoundType::SmallTransition:
+			sound = new Sound("../Resource/Sound/Boss/small_transition.wav", false);
+			break;
+		case EBossSoundType::BigDeath:
+			sound = new Sound("../Resource/Sound/Boss/big_death.wav", false);
+			break;
+		case EBossSoundType::BigJump:
+			sound = new Sound("../Resource/Sound/Boss/big_jump.wav", false);
+			break;
+		case EBossSoundType::BigLand:
+			sound = new Sound("../Resource/Sound/Boss/big_land.wav", false);
+			break;
+		case EBossSoundType::BigPunch:
+			sound = new Sound("../Resource/Sound/Boss/big_punch.wav", false);
+			break;
+		case EBossSoundType::Hit:
+			sound = new Sound("../Resource/Sound/Boss/hit.wav", false);
+			break;
+		case EBossSoundType::StonDeath:
+			sound = new Sound("../Resource/Sound/Boss/ston_death.wav", false);
+			break;
+		case EBossSoundType::StonDrop:
+			sound = new Sound("../Resource/Sound/Boss/ston_drop.wav", false);
+			break;
+		case EBossSoundType::StonSlide:
+			sound = new Sound("../Resource/Sound/Boss/ston_slide.wav", false);
+			break;
+		case EBossSoundType::StonSmash:
+			sound = new Sound("../Resource/Sound/Boss/ston_smash2.wav", false);
+			break;
+		case EBossSoundType::StonSplat:
+			sound = new Sound("../Resource/Sound/Boss/ston_splat.wav", false);
+			break;
+	}
+	sound->play();
 }
 
 void Boss::SetCollider()

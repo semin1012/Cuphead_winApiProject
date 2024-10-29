@@ -104,7 +104,7 @@ public:
 	bool		GetIsStage();
 	void		SetWorld();
 	void		SetTutorial();
-	void		PlayAnnounerSound();
+	void		PlayAnnounerSound(EAnnouncerSound type);
 
 	void		SetStage(int stage);
 	void		Clear();

@@ -282,6 +282,7 @@ void GameManager::Draw(HDC& hdc)
 				DestroySound();
 				bgm = new Sound("../Resource/Sound/bgm/clear.mp3", true);
 				bgm->play();
+				PlayAnnounerSound(EAnnouncerSound::Score);
 				delete background;
 				background = new ClearMap();
 			}
@@ -486,6 +487,7 @@ void GameManager::Update()
 						{
 							frontImages.push_back(new FrontImage(EFrontImage::KnockOut));
 							clearTime = clock();
+							PlayAnnounerSound(EAnnouncerSound::KnockOut);
 						}
 					}
 				}
@@ -501,6 +503,7 @@ void GameManager::Update()
 					{
 						effects.push_back(new EffectObject(EEffectType::Died, 0, 0, true));
 						gameOverTime = clock();
+						PlayAnnounerSound(EAnnouncerSound::Fail);
 					}
 				}
 			}
@@ -868,17 +871,31 @@ void GameManager::SetTutorial()
 	SetCameraPos(camera_x, camera_y);
 }
 
-void GameManager::PlayAnnounerSound()
+void GameManager::PlayAnnounerSound(EAnnouncerSound type)
 {
+	/*Ready,
+		NockOut,
+		Score,
+		Fail,
+		Max*/
 	if (announcer != nullptr)
 	{
 		delete announcer;
 		announcer = nullptr;
 	}
-	switch(sceneState)
+	switch(type)
 	{
-	case (int)ESceneState::Stage:
+	case EAnnouncerSound::Ready:
 		announcer = new Sound("../Resource/Sound/Announcer/ready.mp3", false);
+		break;
+	case EAnnouncerSound::KnockOut:
+		announcer = new Sound("../Resource/Sound/Announcer/knockout.wav", false);
+		break;
+	case EAnnouncerSound::Score:
+		announcer = new Sound("../Resource/Sound/Announcer/score.wav", false);
+		break;
+	case EAnnouncerSound::Fail:
+		announcer = new Sound("../Resource/Sound/Announcer/fail.wav", false);
 		break;
 	}
 	announcer->play();
@@ -890,7 +907,6 @@ void GameManager::SetStage(int stage)
 	bgm = new Sound("../Resource/Sound/bgm/goopy.mp3", true);
 	bgm->play();
 	isTutorial = false;
-	SetIsWorld(false);
 	sceneState = (int)ESceneState::Stage;
 	this->stage = stage;
 	if (background != nullptr)
@@ -901,10 +917,11 @@ void GameManager::SetStage(int stage)
 	if (player == nullptr)
 		player = new Player();
 	player->SetStage();
+	SetIsWorld(false);
 	boss = new Boss();
 	boss->SetPlayer(player);
 	frontImages.push_back(new FrontImage(EFrontImage::Ready));
-	PlayAnnounerSound();
+	PlayAnnounerSound(EAnnouncerSound::Ready);
 
 	if (health == nullptr)
 		health = new HealthUI();

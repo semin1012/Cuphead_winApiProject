@@ -5,6 +5,7 @@
 #include "Bullet.h"
 #include "EffectObject.h"
 #include "framework.h"
+#include "Sound.h"
 
 #define PATTERN_1_TIME 4000
 #define HEALTH 10
@@ -71,6 +72,26 @@ enum class EBossEffect
 	Max
 };
 
+enum class EBossSoundType
+{
+	SmallIntro,
+	SmallJump,
+	SmallLand,
+	SmallPunch,
+	SmallTransition,
+	BigJump,
+	BigLand,
+	BigPunch,
+	BigDeath,
+	Hit,
+	StonDeath,
+	StonDrop,
+	StonSlide,
+	StonSmash,
+	StonSplat,
+	Max
+};
+
 class Boss
 {
 	std::vector<std::vector<Image*>> images;
@@ -79,6 +100,7 @@ class Boss
 
 	float					hp;
 	Player*					player;
+	Sound*					sound;
 	int						x;
 	int						targetX;
 	int						y;
@@ -111,6 +133,7 @@ class Boss
 	bool					isJumping;
 	const int				JumpMaxPower = 45;
 	int						curJumpPower;
+	EBossSoundType			curSoundType;
 	
 public:
 	Boss();
@@ -151,5 +174,7 @@ public:
 	int			GetXPosition()				{ return x; };
 	bool		GetIsTransitionToPhase();
 	int			GetXDirection()				{ return dirX; }
+
+	void		PlaySound(EBossSoundType type);
 };
 
