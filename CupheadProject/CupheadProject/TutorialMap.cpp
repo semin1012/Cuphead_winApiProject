@@ -21,15 +21,6 @@ TutorialMap::TutorialMap()
 TutorialMap::~TutorialMap()
 {
 	delete backgroundFrontImage;
-	delete tutorialText;
-	delete downText;
-	delete jump;
-	delete dash;
-	delete shoot;
-	delete lock;
-	delete parry;
-	delete parry2;
-	delete supperAttack;
 }
 
 void TutorialMap::Draw(HDC& hdc, Graphics& graphics)
@@ -44,12 +35,12 @@ void TutorialMap::Draw(HDC& hdc, Graphics& graphics)
 	Rect rect = { 0, 0, WINDOWS_WIDTH, WINDOWS_HEIGHT };
 	backgroundBackImage.Draw(hdc, rect.X, rect.Y, rect.Width, rect.Height);
 
-	CurlingToPosition(tutorialText, graphics, 200, 300 + camera_y);
-	CurlingToPosition(downText, graphics, 700, 300 + camera_y);
-	CurlingToPosition(jump, graphics, 1330, 385 + camera_y);
-	CurlingToPosition(dash, graphics, 1760, 215 + camera_y);
-	CurlingToPosition(shoot, graphics, 2500, 300 + camera_y);
-	CurlingToPosition(lock, graphics, 3000, 245 + camera_y);
+	CurlingToPosition(&tutorialText, hdc, 200, 300 + camera_y, 211, 211, 211);
+	CurlingToPosition(&downText, hdc, 700, 300 + camera_y, 211, 211, 211);
+	CurlingToPosition(&jump, hdc, 1330, 385 + camera_y, 211, 211, 211);
+	CurlingToPosition(&dash, hdc, 1760, 215 + camera_y, 211, 211, 211);
+	CurlingToPosition(&shoot, hdc, 2500, 300 + camera_y, 211, 211, 211);
+	CurlingToPosition(&lock, hdc, 3000, 245 + camera_y, 211, 211, 211);
 
 	// hit
 	if (hitObject != nullptr)
@@ -64,9 +55,9 @@ void TutorialMap::Draw(HDC& hdc, Graphics& graphics)
 		parryObjects[i]->SetCamera(camera_x, camera_y);
 		parryObjects[i]->Draw(hdc, graphics);
 	}
-	CurlingToPosition(parry, graphics, 3900, 100 + camera_y);
-	CurlingToPosition(parry2, graphics, 4310, 200 + camera_y);
-	CurlingToPosition(supperAttack, graphics, 5100, 300 + camera_y);
+	CurlingToPosition(&parry, hdc, 3900, 100 + camera_y, 211, 211, 211);
+	CurlingToPosition(&parry2, hdc, 4310, 200 + camera_y, 211, 211, 211);
+	CurlingToPosition(&supperAttack, hdc, 5100, 300 + camera_y, 211, 211, 211);
 
 	if (tripper != nullptr)
 	{
@@ -84,15 +75,15 @@ void TutorialMap::CreateImage()
 {
 	backgroundBackImage.Load(L"../Resource/Image/Background/Tutorial/back_image.png");
 	backgroundFrontImage = new Image(L"../Resource/Image/Background/Tutorial/front_image.png");
-	tutorialText = new Image(L"../Resource/Image/Background/Tutorial/Tutorial.png");
-	downText = new Image(L"../Resource/Image/Background/Tutorial/down.png");
-	jump = new Image(L"../Resource/Image/Background/Tutorial/jump.png");
-	dash = new Image(L"../Resource/Image/Background/Tutorial/dash.png");
-	shoot = new Image(L"../Resource/Image/Background/Tutorial/shoot.png");
-	lock = new Image(L"../Resource/Image/Background/Tutorial/lock.png");
-	parry = new Image(L"../Resource/Image/Background/Tutorial/parry.png");
-	parry2 = new Image(L"../Resource/Image/Background/Tutorial/parry2.png");
-	supperAttack = new Image(L"../Resource/Image/Background/Tutorial/supper_attack.png");
+	tutorialText.Load(L"../Resource/Image/Background/Tutorial/Tutorial1.png");
+	downText.Load(L"../Resource/Image/Background/Tutorial/down1.png");
+	jump.Load(L"../Resource/Image/Background/Tutorial/jump1.png");
+	dash.Load(L"../Resource/Image/Background/Tutorial/dash1.png");
+	shoot.Load(L"../Resource/Image/Background/Tutorial/shoot1.png");
+	lock.Load(L"../Resource/Image/Background/Tutorial/lock11.png");
+	parry.Load(L"../Resource/Image/Background/Tutorial/parry1.png");
+	parry2.Load(L"../Resource/Image/Background/Tutorial/parry21.png");
+	supperAttack.Load(L"../Resource/Image/Background/Tutorial/supper_attack1.png");
 }
 
 void TutorialMap::CurlingToPosition(Image* image, Graphics& graphics, int x, int y)
@@ -100,6 +91,13 @@ void TutorialMap::CurlingToPosition(Image* image, Graphics& graphics, int x, int
 	Rect rect = { x + camera_x, y, (int)image->GetWidth(), (int)image->GetHeight() };
 	if (x + rect.Width + camera_x > 0 && x + camera_x < WINDOWS_WIDTH)
 		graphics.DrawImage(image, rect);
+}
+
+void TutorialMap::CurlingToPosition(CImage* image, HDC& hdc, int x, int y, int r, int g, int b)
+{
+	Rect rect = { x + camera_x, y, (int)image->GetWidth(), (int)image->GetHeight() };
+	if (x + rect.Width + camera_x > 0 && x + camera_x < WINDOWS_WIDTH)
+		image->TransparentBlt(hdc, RECT{ rect.X, rect.Y, rect.X + rect.Width, rect.Y + rect.Height }, RGB(r, g, b));
 }
 
 void TutorialMap::SaveMapInfo()

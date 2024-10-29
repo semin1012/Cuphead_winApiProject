@@ -159,7 +159,7 @@ Player::Player()
 	isSpecialAttackAndJump = false;
 	setJumpDust = false;
 	lastForward = LAST_FORWARD_IS_RIGHT;
-	speed = 1.5f;
+	speed = BASIC_SPEED;
 	isHit = false;
 	isHitTime = clock();
 	bInput = true;
@@ -481,7 +481,7 @@ void Player::Update()
 		{
 			isGrace = false;
 			isDashing = false;
-			speed = 1.0f;
+			speed = BASIC_SPEED;
 			switch (dir.x)
 			{
 			case 0:
@@ -894,6 +894,7 @@ void Player::SetIsJumping(bool isJumping)
 
 void Player::SetJumpDown()
 {
+	speed = BASIC_SPEED;
 	isParry = false;
 	isDoubleParry = false;
 	if (isDashAndJump) isDashAndJump = false;

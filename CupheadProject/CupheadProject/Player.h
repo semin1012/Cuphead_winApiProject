@@ -15,6 +15,7 @@ class Boss;
 
 #define GROUND_POSITION_Y 700
 #define DASH_SPEED (6.0)
+#define BASIC_SPEED (1.0)
 
 #define BULLET_MAX_COUNT 50
 #define GRACE_PERIOD 2000
