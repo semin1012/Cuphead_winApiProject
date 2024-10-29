@@ -13,6 +13,8 @@
 #include "FadeEffect.h"
 #include "CupheadProject.h"
 #include "commdlg.h"
+#include <fmod.h>
+#include <fmod_errors.h>
 #pragma comment(lib, "Msimg32.lib")
 
 #ifdef UNICODE
@@ -387,7 +389,7 @@ VOID CALLBACK KeyStateProc(HWND hWnd, UINT message, UINT_PTR iTimerID, DWORD dwT
     }
 
     int moveDistance = MOVE_DISTANCE;
-    if (gameMgr->GetIsWorld())
+    if (gameMgr->GetIsWorld() || gameMgr->isTutorial)
         moveDistance /= 1.5;
 
     if (gameMgr->GetIsWorld() || gameMgr->GetIsStage())

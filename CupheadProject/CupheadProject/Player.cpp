@@ -183,6 +183,7 @@ Player::Player()
 		Bullet* bullet = new Bullet();
 		bullets.push_back(bullet);
 	}
+	SetSound();
 	CreateImage();
 }
 
@@ -208,6 +209,26 @@ Player::~Player()
 	for (auto it = bullets.begin(); it != bullets.end(); it++)
 		delete* it;
 	bullets.clear();
+
+	for (auto it = sounds.begin(); it != sounds.end(); it++)
+		delete* it;
+	sounds.clear();
+}
+
+void Player::SetSound()
+{
+	sounds.resize((int)ESoundType::Max);
+	sounds[(int)ESoundType::Jump] = new Sound("../Resource/Sound/Player/jump.wav", false);
+	sounds[(int)ESoundType::Parry] = new Sound("../Resource/Sound/Player/parry.wav", false);
+	sounds[(int)ESoundType::Dash] = new Sound("../Resource/Sound/Player/dash.wav", false);
+	sounds[(int)ESoundType::Shooting] = new Sound("../Resource/Sound/Player/Shooting.wav", false);
+	sounds[(int)ESoundType::Shooting]->SetVolume(0.2f);
+	sounds[(int)ESoundType::EXShooting] = new Sound("../Resource/Sound/Player/ex_shooting.wav", false);
+	sounds[(int)ESoundType::Death] = new Sound("../Resource/Sound/Player/Death/death.wav", false);
+	sounds[(int)ESoundType::Hit] = new Sound("../Resource/Sound/Player/hit.wav", false);
+	sounds[(int)ESoundType::Land] = new Sound("../Resource/Sound/Player/land.wav", false);
+	sounds[(int)ESoundType::Walk] = new Sound("../Resource/Sound/Player/walk.wav", false);
+
 }
 
 void Player::Draw(HDC& hdc, Graphics& grapichs)
@@ -240,7 +261,11 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 				if (curAnimCnt >= curAnimMax)
 				{
 					if (health <= 0)
+					{
 						state = EPlayerState::Ghost;
+						sounds[(int)ESoundType::Death]->play();
+					}
+					else sounds[(int)ESoundType::Hit]->play();
 					curAnimCnt = 0;
 					isHit = false;
 				}
@@ -364,19 +389,25 @@ void Player::Draw(HDC& hdc, Graphics& grapichs)
 
 void Player::Update()
 {
+	clock_t curTime = clock();
+
 	if (inTutorial)
 		collider = { x - 50, y - 100, x + 50, y };
 
+	if (dir.x != 0)
+	{
+		if (curTime - walkSoundTime > 100)
+			sounds[(int)ESoundType::Walk]->play();
+	}
 	if (state == EPlayerState::Ghost)
 		y -= 1;
-
+	if (isJumping)
+		createRunDustTime = clock();
 	if (state == EPlayerState::RightRun || state == EPlayerState::ShootingRunRight || state == EPlayerState::ShootingRunRightUp)
 		SetRunDustEffect();
 
 	if (startStage)
 	{
-		clock_t curTime = clock();
-
 		if (curTime - startChangeStateTime > STAGE_READY_TIME)
 		{
 			startStage = false;
@@ -385,7 +416,6 @@ void Player::Update()
 		}
 		return;
 	}
-
 	if (!isShooting && isJumping)
 	{
 		if (!isDashing && !isSpecialAttack)
@@ -462,10 +492,8 @@ void Player::Update()
 				SetState(EPlayerState::Ghost);
 		}
 	}
-
 	if (!isShooting && isDashing && !isSpecialAttack && !isHit)
 	{
-		clock_t curTime = clock();
 		curJumpPower = 0;
 		isGrace = true;
 		switch (dir.x)
@@ -497,10 +525,8 @@ void Player::Update()
 			curAnimCnt = 0;
 		}
 	}
-
 	if (isSpecialAttack && !isHit)
 	{
-		clock_t curTime = clock();
 		if (isSpecialAttackAndJump)
 		{
 			if (curTime - startChangeStateTime > 400)
@@ -524,8 +550,6 @@ void Player::Update()
 
 	if (isShooting && !isHit)
 	{
-		clock_t curTime = clock();
-
 		if (curTime - lastShootingTime > 400)
 		{
 			Shooting();
@@ -535,7 +559,6 @@ void Player::Update()
 
 	if (isGrace && !isDashing)
 	{
-		clock_t curTime = clock();
 		if (curTime - isHitTime > GRACE_PERIOD)
 		{
 			isGrace = false;
@@ -632,6 +655,7 @@ void Player::Shooting()
 		}
 	}
 	lastShootingTime = clock();
+	sounds[(int)ESoundType::Shooting]->play();
 }
 
 void Player::SetCameraPos(int x, int y)
@@ -655,10 +679,11 @@ void Player::SetCameraPosX(int x)
 	int deltaX = (camera_x - x);
 	this->x -= deltaX;
 	camera_x = x;
+
 	for (auto effect : effects)
 	{
 		if (effect->GetisActive())
-			effect->SetCameraPos(-x, 0);
+			effect->SetCameraPos(-camera_x, 0);
 	}
 }
 
@@ -782,8 +807,6 @@ void Player::Move(int x, int y)
 		if (this->x - x > 1215)
 			return;
 	}
-
-
 	this->x -= x;
 	this->y -= y;
 }
@@ -859,6 +882,7 @@ void Player::Parry()
 	isParry = true;
 	if (specialAttackCount < 5)
 		specialAttackCount++;
+	sounds[(int)ESoundType::Parry]->play();
 }
 
 void Player::SetRunDustEffect()
@@ -870,10 +894,13 @@ void Player::SetRunDustEffect()
 		{
 			if (!effect->GetisActive())
 			{
+				effect->SetPosition(x + 30 * dir.x, y);
 				effect->SetEffect(EEffectType::RunDust);
 				effect->SetIsActive(true);
-				effect->SetPosition(x + 30 * dir.x, y);
 				createRunDustTime = clock();
+				printf("effect x: %d\n", effect->GetPositionX());
+				printf("effect camera: %d\n", effect->GetCameraPosX());
+				printf("player x: %d, y: %d\n", x, y);
 				return;
 			}
 		}
@@ -884,12 +911,13 @@ void Player::SetIsJumping(bool isJumping)
 {
 	ReadyToSetState();
 	this->isJumping = isJumping;
-	if (isJumping)
-		curJumpPower = JumpMaxPower;
-
+	if (!isJumping)
+		return;
+	curJumpPower = JumpMaxPower;
 	state = EPlayerState::RightJump;
 	curAnimCnt = 0;
 	curAnimMax = playerImg[(int)state].size();
+	sounds[(int)ESoundType::Jump]->play();
 }
 
 void Player::SetJumpDown()
@@ -901,15 +929,26 @@ void Player::SetJumpDown()
 	if (isSpecialAttackAndJump) isSpecialAttackAndJump = false;
 	isJumping = false;
 	setJumpDust = true;
+	sounds[(int)ESoundType::Land]->play();
+	for (auto effect : effects)
+	{
+		if (!effect->GetisActive())
+		{
+			effect->SetPosition(x + 30 * dir.x, y);
+			effect->SetCameraPos(camera_x, camera_y);
+			createRunDustTime = clock();
+		}
+	}
 }
 
 void Player::SetIsDashing(bool isDashing)
 {
-	if (isDashAndJump) return;
-	
+	if (isDashAndJump) 
+		return;
 	ReadyToSetState();
-
 	this->isDashing = isDashing;
+	if (!isDashing)
+		return;
 	isGrace = true;
 	state = EPlayerState::RightDash;
 	speed = DASH_SPEED;
@@ -919,6 +958,7 @@ void Player::SetIsDashing(bool isDashing)
 
 	curAnimCnt = 0;
 	curAnimMax = playerImg[(int)state].size();
+	sounds[(int)ESoundType::Dash]->play();
 }
 
 void Player::SetIsDown(bool isDown)
@@ -1068,6 +1108,7 @@ void Player::SetIsSpecialAttack(bool isSpecialAttack)
 
 		curAnimCnt = 0;
 		curAnimMax = playerImg[(int)state].size();
+		sounds[(int)ESoundType::EXShooting]->play();
 	}
 }
 

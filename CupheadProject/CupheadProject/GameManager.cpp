@@ -28,12 +28,19 @@ GameManager::GameManager(RECT* rectView)
 	isTutorial = true;
 	SetCameraPos(camera_x, camera_y);
 	//frontImages.push_back(new FrontImage(EFrontImage::FX));
+	Sound::Init();
+	bgm = new Sound("../Resource/Sound/bgm/title.mp3", true);
+	bgm->play();
+	tripSound = new Sound("../Resource/Sound/Player/Land.mp3", false);
 }
 
 GameManager::~GameManager()
 {
 	delete background;
 	delete mouseDelta;
+	delete bgm;
+	delete tripSound;
+	Sound::Release();
 }
 
 void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -222,14 +229,20 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				Tripper *tripper = GetBackground()->GetTripper();
 				if (tripper->GetCollidedPlayer())
+				{
 					fadeEffect = new FadeEffect();
+					tripSound->play();
+				}
 			}
 			if (sceneState == (int)ESceneState::Tutorial && fadeEffect == nullptr)
 			{
 				isTutorial = false;
 				Tripper* tripper = GetBackground()->GetTripper();
 				if (tripper->GetCollidedPlayer())
+				{
 					fadeEffect = new FadeEffect();
+					tripSound->play();
+				}
 			}
 			break;
 		case 'X':
@@ -251,8 +264,6 @@ void GameManager::Draw(HDC& hdc)
 	Gdi_Draw(hdc);
 
 #pragma region Fade Effect
-	static bool effectOut = false;
-
 	if (fadeEffect != nullptr)
 	{
 		fadeEffect->Draw(hdc);
@@ -365,6 +376,14 @@ void GameManager::Draw(HDC& hdc)
 
 void GameManager::Update()
 {
+	bgm->Update();
+
+	if (fadeEffect != nullptr)
+	{
+		if (!fadeEffect->GetIsFadeIn())
+			bgm->volumeDown();
+	}
+
 	if (sceneState == (int)ESceneState::Clear)
 		return;
 
@@ -790,19 +809,7 @@ void GameManager::SetIsTitle(bool isTitle)
 			SetWorld();
 			return;
 		}
-		sceneState = (int)ESceneState::Tutorial;
-		delete background;
-
-		health = new HealthUI();
-		background = new TutorialMap();
-		background->SetRectView(*rectView);
-		player = new Player(0, 700);
-		player->SetInTutorial(true);
-		player->SetInWorld(false);
-		player->SetStage();
-		camera_x = 0, camera_y = 0;
-		SetCameraPos(camera_x, camera_y);
-
+		SetTutorial();
 		// TODO:
 		//SetStage(1);
 	}
@@ -816,6 +823,9 @@ bool GameManager::GetIsStage()
 void GameManager::SetWorld()
 {
 	DeleteObjects();
+	DestroySound();
+	bgm = new Sound("../Resource/Sound/bgm/world.mp3", true);
+	bgm->play();
 	camera_x = WORLD_START_POINT_X;
 	camera_y = WORLD_START_POINT_Y;
 	sceneState = (int)ESceneState::World;
@@ -831,6 +841,25 @@ void GameManager::SetWorld()
 	SetCameraPos(camera_x, camera_y);
 	isMoveCameraY = true;
 	isMoveCameraX = true;
+}
+
+void GameManager::SetTutorial()
+{
+	DestroySound();
+	bgm = new Sound("../Resource/Sound/bgm/tutorial.mp3", true);
+	bgm->play();
+	sceneState = (int)ESceneState::Tutorial;
+	delete background;
+
+	health = new HealthUI();
+	background = new TutorialMap();
+	background->SetRectView(*rectView);
+	player = new Player(0, 700);
+	player->SetInTutorial(true);
+	player->SetInWorld(false);
+	player->SetStage();
+	camera_x = 0, camera_y = 0;
+	SetCameraPos(camera_x, camera_y);
 }
 
 void GameManager::SetStage(int stage)
@@ -1023,6 +1052,15 @@ bool GameManager::CollidedPlayer(Collider* collider, int deltaX, int deltaY)
 	if (temp.IsOverlaps(*collider))
 		return true;
 	return false;
+}
+
+void GameManager::DestroySound()
+{
+	if (bgm == nullptr)
+		return;
+	bgm->stop();
+	delete bgm;
+	bgm = nullptr;
 }
 
 void GameManager::Gdi_Init()

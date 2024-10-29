@@ -19,6 +19,7 @@
 #include "CardUI.h"
 #include "ClearMap.h"
 #include "TutorialMap.h"
+#include "Sound.h"
 #define TILE_SIZE 30
 
 enum class ESceneState
@@ -41,6 +42,8 @@ public:
 	std::vector<FrontImage*>	frontImages;
 	std::vector<CardUI*>		cards;
 	std::vector<int>		xInputs;
+	Sound*					bgm;
+	Sound*					tripSound;
 	Background*				background;
 	Player*					player;
 	Boss*					boss;
@@ -65,7 +68,7 @@ public:
 	bool					isTutorial;
 
 	ULONG_PTR				g_GdipPlusToken;
-
+	bool					effectOut = false;
 
 public:
 	FadeEffect* fadeEffect;
@@ -99,12 +102,14 @@ public:
 	void		SetIsTitle(bool isTitle);
 	bool		GetIsStage();
 	void		SetWorld();
+	void		SetTutorial();
 
 	void		SetStage(int stage);
 	void		Clear();
 	void		GameOver();
 	void		DeleteObjects();
 	void		SetReplay(bool isTitle);
+	Sound*		GetSoundManager() { return bgm; }
 
 	// mouse event
 	void		SetMouseDeltaPos(HWND& hWnd);
@@ -114,6 +119,7 @@ public:
 	// World Map
 	bool		CollidedPlayerWithWorldCollisions(int deltaX, int deltaY);
 	bool		CollidedPlayer(Collider* collider, int deltaX, int deltaY);
+	void		DestroySound();
 
 	// gdi+
 	void Gdi_Init();

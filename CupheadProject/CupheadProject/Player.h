@@ -3,6 +3,7 @@
 #include "framework.h"
 #include "Bullet.h"
 #include "Collider.h"
+#include "Sound.h"
 #include "EffectObject.h"
 
 class Boss;
@@ -86,11 +87,26 @@ enum class EWorldSpriteY
 	Action
 };
 
+enum class ESoundType
+{
+	Jump,
+	Dash,
+	Parry,
+	Shooting,
+	EXShooting,
+	Death,
+	Hit,
+	Land,
+	Walk,
+	Max
+};
+
 class Player
 {
 private:
 	std::vector<Bullet*>	bullets;
 	std::vector<EffectObject*> effects;
+	std::vector<Sound*>		sounds;
 
 	int						x;
 	int						y;
@@ -140,6 +156,7 @@ private:
 	bool					isHit;
 	bool					isGrace;
 	clock_t					isHitTime;
+	clock_t					walkSoundTime;
 
 public:
 	POINT					dir = { 0, 0 };
@@ -153,6 +170,7 @@ public:
 	Player();
 	Player(int x, int y);
 	~Player();
+	void		SetSound();
 
 	void		Draw(HDC& hdc, Graphics& grapichs);
 	void		Update();
