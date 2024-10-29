@@ -55,6 +55,7 @@ public:
 	void	ParsingToImagePath(EEffectType state, int spriteSize, TCHAR* path, int startNum);
 	void	InverseImage();
 	void	SetPosition(int x, int y);
+	void	SetPositionX(int x)		{ this->x = x; }
 	int		GetPositionX()			{ return x; }
 	int		GetCameraPosX()			{ return camera_x; }
 	void	SetIsActive(bool isActive);

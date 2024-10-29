@@ -17,7 +17,6 @@ Tripper::Tripper()
 	deltaX = 0;
 	deltaY = 0;
 	stage = 0;
-	doorImage = nullptr;
 	type = ETripperType::Basic;
 }
 
@@ -32,7 +31,7 @@ Tripper::Tripper(RECT& rectView, int x, int y, ETripperType type) : Tripper()
 
 Tripper::~Tripper()
 {
-	delete doorImage;
+
 }
 
 void Tripper::Draw(HDC& hdc, Graphics& graphics)
@@ -49,7 +48,8 @@ void Tripper::Draw(HDC& hdc, Graphics& graphics)
 	{
 		keyCollider.left += camera_x;
 		keyCollider.right += camera_x;
-		graphics.DrawImage(doorImage, Rect(x + camera_x, y + camera_y, doorImage->GetWidth(), doorImage->GetHeight()));
+		image.TransparentBlt(hdc, RECT{ x + camera_x, y + camera_y, x + camera_x + width, y + camera_y + height }, RGB(211, 211, 211));
+		//graphics.DrawImage(doorImage, Rect(x + camera_x, y + camera_y, doorImage->GetWidth(), doorImage->GetHeight()));
 		return;
 	}
 	
@@ -70,16 +70,16 @@ void Tripper::Draw(HDC& hdc, Graphics& graphics)
 void Tripper::CreateImage()
 {
 	pressKeyImg.Load(L"../Resource/Image/Ect/press_key_a.png");
-	image.Load(L"../Resource/Image/Background/World/botanic_panic.png");
-	doorImage = new Image(L"../Resource/Image/Background/Tutorial/door.png");
 	switch (type)
 	{
 	case ETripperType::Basic:
+		image.Load(L"../Resource/Image/Background/World/botanic_panic.png");
 		width = image.GetWidth() / 3;
 		maxAnimCnt = 3;
 		break;
 	case ETripperType::Door:
-		width = doorImage->GetWidth();
+		image.Load(L"../Resource/Image/Background/Tutorial/door1.png");
+		width = image.GetWidth();
 		maxAnimCnt = 1;
 		break;
 	}

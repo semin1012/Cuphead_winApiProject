@@ -658,7 +658,7 @@ void Player::Shooting()
 	sounds[(int)ESoundType::Shooting]->play();
 }
 
-void Player::SetCameraPos(int x, int y)
+void Player::SetCameraPos(int x, int y, int distance)
 {
 	int deltaX = (camera_x - x);
 	int deltaY = (camera_y - y);
@@ -670,7 +670,7 @@ void Player::SetCameraPos(int x, int y)
 	for (auto effect : effects)
 	{
 		if (effect->GetisActive())
-			effect->SetCameraPos(x, y);
+			effect->SetPositionX(effect->GetPositionX() + distance);
 	}
 }
 
@@ -679,12 +679,6 @@ void Player::SetCameraPosX(int x)
 	int deltaX = (camera_x - x);
 	this->x -= deltaX;
 	camera_x = x;
-
-	for (auto effect : effects)
-	{
-		if (effect->GetisActive())
-			effect->SetCameraPos(-camera_x, 0);
-	}
 }
 
 void Player::SetCameraPosY(int y)
@@ -895,12 +889,10 @@ void Player::SetRunDustEffect()
 			if (!effect->GetisActive())
 			{
 				effect->SetPosition(x + 30 * dir.x, y);
+				effect->SetCameraPos(0, 0);
 				effect->SetEffect(EEffectType::RunDust);
 				effect->SetIsActive(true);
 				createRunDustTime = clock();
-				printf("effect x: %d\n", effect->GetPositionX());
-				printf("effect camera: %d\n", effect->GetCameraPosX());
-				printf("player x: %d, y: %d\n", x, y);
 				return;
 			}
 		}
@@ -930,15 +922,6 @@ void Player::SetJumpDown()
 	isJumping = false;
 	setJumpDust = true;
 	sounds[(int)ESoundType::Land]->play();
-	for (auto effect : effects)
-	{
-		if (!effect->GetisActive())
-		{
-			effect->SetPosition(x + 30 * dir.x, y);
-			effect->SetCameraPos(camera_x, camera_y);
-			createRunDustTime = clock();
-		}
-	}
 }
 
 void Player::SetIsDashing(bool isDashing)

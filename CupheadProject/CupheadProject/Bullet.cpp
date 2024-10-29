@@ -39,11 +39,8 @@ Bullet::~Bullet()
 	for (auto it = images.begin(); it != images.end(); it++)
 	{
 		for (auto img : *it)
-		{
 			delete (img);
-		}
 	}
-
 	images.clear();
 }
 

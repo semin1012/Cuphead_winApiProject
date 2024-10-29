@@ -683,7 +683,6 @@ void Boss::SetJumpState()
 
 	targetX = player->GetXPos();
 	curJumpPower = JumpMaxPower * (abs(targetX - x) * 0.0018);
-	printf("CurJumpPower: %d\n", curJumpPower);
 	if (curJumpPower <= 45)
 		curJumpPower = 45;
 	if (curJumpPower >= 60)

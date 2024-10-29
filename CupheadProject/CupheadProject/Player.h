@@ -178,7 +178,7 @@ public:
 	bool		Collided(Boss* boss);
 
 	void		Shooting();
-	void		SetCameraPos(int x, int y);
+	void		SetCameraPos(int x, int y, int distance = 0);
 	void		SetCameraPosX(int x);
 	void		SetCameraPosY(int y);
 	int			GetCameraPosX()								{ return camera_x; }

@@ -13,7 +13,6 @@ enum class ETripperType
 class Tripper
 {
 	CImage				image;
-	Image*				doorImage;
 	CImage				pressKeyImg;
 	Collider			keyCollider;
 	RECT*				rectView;

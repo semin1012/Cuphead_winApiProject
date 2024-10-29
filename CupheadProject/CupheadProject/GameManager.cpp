@@ -31,7 +31,8 @@ GameManager::GameManager(RECT* rectView)
 	Sound::Init();
 	bgm = new Sound("../Resource/Sound/bgm/title.mp3", true);
 	bgm->play();
-	tripSound = new Sound("../Resource/Sound/Player/Land.mp3", false);
+	tripSound = new Sound("../Resource/Sound/Player/tripper.mp3", false);
+	announcer = new Sound("../Resource/Sound/Player/tripper.mp3", false);
 }
 
 GameManager::~GameManager()
@@ -51,7 +52,10 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (GetIsTitle())
 		{
 			if (wParam == VK_SPACE && fadeEffect == nullptr)
+			{
 				fadeEffect = new FadeEffect();
+				tripSound->play();
+			}
 			break;
 		}
 		if (sceneState == (int)ESceneState::Clear)
@@ -275,6 +279,9 @@ void GameManager::Draw(HDC& hdc)
 				SetStage(background->GetTripper()->GetStage());
 			else if (sceneState == (int)ESceneState::Clear)
 			{
+				DestroySound();
+				bgm = new Sound("../Resource/Sound/bgm/clear.mp3", true);
+				bgm->play();
 				delete background;
 				background = new ClearMap();
 			}
@@ -535,7 +542,7 @@ void GameManager::SetCameraPos(int x, int y)
 		if (sceneState == (int)ESceneState::Tutorial)
 		{
 			background->SetCameraPos(-(camera_x), 0);
-			player->SetCameraPosX((camera_x));
+			player->SetCameraPos(camera_x, 0);
 		}
 		return;
 	}
@@ -544,7 +551,7 @@ void GameManager::SetCameraPos(int x, int y)
 		if (background->CheckCollidedHitObject(player, deltaX, deltaY))
 		{
 			background->SetCameraPos(-(camera_x), 0);
-			player->SetCameraPosX((camera_x));
+			player->SetCameraPos(camera_x, 0);
 			return;
 		}
 	}
@@ -664,15 +671,14 @@ void GameManager::SetCameraPos(int x, int y)
 	SetCameraView();
 	if (player != nullptr)
 	{
+		float speed = player->GetSpeed();
 		if (isMoveCameraX && isMoveCameraY)
 		{
-			player->SetCameraPosY(camera_y + deltaY);
-			player->SetCameraPosX(camera_x + deltaX);
+			player->SetCameraPos(camera_x + deltaX * speed, camera_y + deltaY * speed, deltaX);
 			return;
 		}
 		if (!isMoveCameraX && !isMoveCameraY)
 		{
-			float speed = player->GetSpeed();
 			player->Move(deltaX * speed, deltaY * speed);
 			player->SetCameraPos(camera_x + deltaX * speed, camera_y + deltaY * speed);
 			if (sceneState == (int)ESceneState::Tutorial)
@@ -682,15 +688,15 @@ void GameManager::SetCameraPos(int x, int y)
 		if (isMoveCameraX)
 		{
 			float speed = player->GetSpeed();
-			player->Move(0, deltaY);
-			player->SetCameraPosX(camera_x + deltaX * speed);
+			player->Move(0, deltaY* speed);
+			player->SetCameraPos(camera_x + deltaX * speed, 0, deltaX);
 			if (sceneState == (int)ESceneState::Tutorial)
 				background->SetCameraPos(-(camera_x), 0);
 		}
 		if (isMoveCameraY)
 		{
-			player->Move(deltaX, 0);
-			player->SetCameraPosY(camera_y + deltaY);
+			player->Move(deltaX * speed, 0);
+			player->SetCameraPosY(camera_y + deltaY * speed);
 		}
 	}
 }
@@ -811,7 +817,7 @@ void GameManager::SetIsTitle(bool isTitle)
 		}
 		SetTutorial();
 		// TODO:
-		//SetStage(1);
+		SetStage(1);
 	}
 }
 
@@ -862,8 +868,29 @@ void GameManager::SetTutorial()
 	SetCameraPos(camera_x, camera_y);
 }
 
+void GameManager::PlayAnnounerSound()
+{
+	if (announcer != nullptr)
+	{
+		delete announcer;
+		announcer = nullptr;
+	}
+	switch(sceneState)
+	{
+	case (int)ESceneState::Stage:
+		announcer = new Sound("../Resource/Sound/Announcer/ready.mp3", false);
+		break;
+	}
+	announcer->play();
+}
+
 void GameManager::SetStage(int stage)
 {
+	DestroySound();
+	bgm = new Sound("../Resource/Sound/bgm/goopy.mp3", true);
+	bgm->play();
+	isTutorial = false;
+	SetIsWorld(false);
 	sceneState = (int)ESceneState::Stage;
 	this->stage = stage;
 	if (background != nullptr)
@@ -877,6 +904,7 @@ void GameManager::SetStage(int stage)
 	boss = new Boss();
 	boss->SetPlayer(player);
 	frontImages.push_back(new FrontImage(EFrontImage::Ready));
+	PlayAnnounerSound();
 
 	if (health == nullptr)
 		health = new HealthUI();

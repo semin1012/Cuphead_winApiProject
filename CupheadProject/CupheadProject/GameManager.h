@@ -44,6 +44,7 @@ public:
 	std::vector<int>		xInputs;
 	Sound*					bgm;
 	Sound*					tripSound;
+	Sound*					announcer;
 	Background*				background;
 	Player*					player;
 	Boss*					boss;
@@ -103,6 +104,7 @@ public:
 	bool		GetIsStage();
 	void		SetWorld();
 	void		SetTutorial();
+	void		PlayAnnounerSound();
 
 	void		SetStage(int stage);
 	void		Clear();
