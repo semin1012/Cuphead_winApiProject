@@ -10,8 +10,9 @@ Background::Background()
     width = 0;
     height = 0;
     debugMode = false;
-    tripper = nullptr;
     hitObject = nullptr;
+    tripper = nullptr;
+    tutorialTripper = nullptr;
 }
 
 Background::Background(RECT& rectView, int x, int y) : Background()
@@ -29,13 +30,50 @@ Background::~Background()
         hitObject = nullptr;
     }
     if (tripper != nullptr)
-    {
         delete tripper;
-        tripper = nullptr;
-    }
+    if (tutorialTripper != nullptr)
+        delete tutorialTripper;
     for (auto it = parryObjects.begin(); it != parryObjects.end(); it++)
         delete (*it);
     parryObjects.clear();
+    if (!colliders.empty())
+    {
+        for (auto it = colliders.begin(); it != colliders.end(); it++)
+            delete (*it);
+        colliders.clear();
+    }
+}
+
+void Background::DrawTrippers(HDC& hdc, Graphics& graphics)
+{
+    if (tripper != nullptr)
+    {
+        if (tripper->GetTripperType() != ETripperType::Door)
+        {
+            tripper->SetCameraX(x);
+            tripper->SetCameraY(y);
+        }
+        else
+        {
+            tripper->SetCameraX(camera_x);
+            tripper->SetCameraY(camera_y);
+        }
+        tripper->Draw(hdc, graphics);
+    }
+    if (tutorialTripper != nullptr)
+    {
+        if (tutorialTripper->GetTripperType() != ETripperType::Door)
+        {
+            tutorialTripper->SetCameraX(x);
+            tutorialTripper->SetCameraY(y);
+        }
+        else
+        {
+            tutorialTripper->SetCameraX(camera_x);
+            tutorialTripper->SetCameraY(camera_y);
+        }
+        tutorialTripper->Draw(hdc, graphics);
+    }
 }
 
 void Background::SetRectView(RECT& rectView)
@@ -123,11 +161,6 @@ void Background::SetWidth(int width)
 void Background::SetHeight(int height)
 {
     this->height = height;
-}
-
-Tripper* Background::GetTripper()
-{
-    return tripper;
 }
 
 void Background::RemoveHitObject()

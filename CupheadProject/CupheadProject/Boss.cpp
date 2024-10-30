@@ -746,9 +746,8 @@ void Boss::PlaySound(EBossSoundType type)
 		delete sound;
 		sound = nullptr;
 		curSoundType = type;
-	}
-	switch (type)
-	{
+		switch (type)
+		{
 		case EBossSoundType::SmallIntro:
 			sound = new Sound("../Resource/Sound/Boss/small_intro.wav", false);
 			break;
@@ -794,7 +793,9 @@ void Boss::PlaySound(EBossSoundType type)
 		case EBossSoundType::StonSplat:
 			sound = new Sound("../Resource/Sound/Boss/ston_splat.wav", false);
 			break;
+		}
 	}
+
 	sound->play();
 }
 

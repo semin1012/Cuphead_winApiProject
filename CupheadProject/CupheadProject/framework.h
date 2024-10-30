@@ -17,8 +17,8 @@
 
 #include <ctime>
 
-#define WORLD_START_POINT_X 300
-#define WORLD_START_POINT_Y 550
+#define WORLD_START_POINT_X 0
+#define WORLD_START_POINT_Y 700
 
 #define MOVE_DISTANCE 5
 

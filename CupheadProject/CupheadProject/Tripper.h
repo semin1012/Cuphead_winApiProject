@@ -8,6 +8,7 @@ enum class ETripperType
 {
 	Basic,
 	Door,
+	TutorialHouse,
 	Max
 };
 class Tripper
@@ -61,6 +62,7 @@ public:
 	int			GetHeight();
 	void		SetWidth(int width);
 	void		SetHeight(int height);
+	ETripperType GetTripperType()				{ return type; }
 
 	int			GetStage();
 	void		SetStage(int stage);

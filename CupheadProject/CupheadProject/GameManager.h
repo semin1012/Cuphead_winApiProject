@@ -67,6 +67,7 @@ public:
 	bool					isMoveCameraY;
 	bool					isMoveCameraX;
 	bool					isTutorial;
+	ETripperType			tripperType;
 
 	ULONG_PTR				g_GdipPlusToken;
 	bool					effectOut = false;
@@ -112,6 +113,9 @@ public:
 	void		DeleteObjects();
 	void		SetReplay(bool isTitle);
 	Sound*		GetSoundManager() { return bgm; }
+
+	void		SetTripperType(ETripperType type)		{ tripperType = type; }
+	ETripperType GetTripperType()						{ return tripperType; }
 
 	// mouse event
 	void		SetMouseDeltaPos(HWND& hWnd);

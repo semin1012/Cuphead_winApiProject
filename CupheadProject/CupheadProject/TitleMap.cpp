@@ -16,7 +16,7 @@ TitleMap::TitleMap()
 
 TitleMap::~TitleMap()
 {
-	characterImgs.clear();
+
 }
 
 void TitleMap::Draw(HDC& hdc, Graphics& graphics)

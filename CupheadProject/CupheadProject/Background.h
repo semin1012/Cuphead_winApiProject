@@ -11,6 +11,7 @@ class Background
 protected:
 	RECT*					rectView;
 	Tripper*				tripper;
+	Tripper*				tutorialTripper;
 	int						camera_x;
 	int						camera_y;
 	int						x;
@@ -28,6 +29,7 @@ public:
 	virtual ~Background();
 
 	virtual void	Draw(HDC& hdc, Graphics& graphics) = 0;
+	virtual void	DrawTrippers(HDC& hdc, Graphics& graphics);
 	virtual void	CreateImage() = 0;
 	void			SetRectView(RECT& rectView);
 	void			SetCameraPos(int x, int y);
@@ -47,13 +49,14 @@ public:
 	int				GetHeight();
 	void			SetWidth(int width);
 	void			SetHeight(int height);
-	Tripper*		GetTripper();
-	HitObject*		GetHitObject() { return hitObject; }
+	HitObject*		GetHitObject()				{ return hitObject; }
 	void			RemoveHitObject();
 
 	bool			CheckCollidedHitObject(Player* player, int deltaX, int deltaY);
 
 	void			SetColliders(std::vector<Collider*>* colliders);
+	Tripper*		GetTripper()				{ return tripper; }
+	Tripper*		GetTutorialTripper()		{ return tutorialTripper; }
 	std::vector<Collider*>* GetColliders();
 	std::vector<ParryObject*>* GetParryObjects() { return &parryObjects; }
 };

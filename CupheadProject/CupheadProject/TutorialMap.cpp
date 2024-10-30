@@ -15,7 +15,7 @@ TutorialMap::TutorialMap()
 	parryObjects.push_back(new ParryObject(3900, 400, true));
 	parryObjects.push_back(new ParryObject(4100, 400, true));
 	parryObjects.push_back(new ParryObject(4300, 400, true));
-	tripper = new Tripper(*rectView, 5800, 400, ETripperType::Door);
+	tripper = (new Tripper(*rectView, 5800, 400, ETripperType::Door));
 }
 
 TutorialMap::~TutorialMap()
@@ -59,12 +59,7 @@ void TutorialMap::Draw(HDC& hdc, Graphics& graphics)
 	CurlingToPosition(&parry2, hdc, 4310, 200 + camera_y, 211, 211, 211);
 	CurlingToPosition(&supperAttack, hdc, 5100, 300 + camera_y, 211, 211, 211);
 
-	if (tripper != nullptr)
-	{
-		tripper->SetCameraX(camera_x);
-		tripper->SetCameraY(camera_y);
-		tripper->Draw(hdc, graphics);
-	}
+	DrawTrippers(hdc, graphics);
 
 	// front
 	rect = { 0, 0, WINDOWS_WIDTH, WINDOWS_HEIGHT };

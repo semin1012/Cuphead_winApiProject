@@ -31,7 +31,8 @@ Tripper::Tripper(RECT& rectView, int x, int y, ETripperType type) : Tripper()
 
 Tripper::~Tripper()
 {
-
+	image.Destroy();
+	pressKeyImg.Destroy();
 }
 
 void Tripper::Draw(HDC& hdc, Graphics& graphics)
@@ -41,30 +42,32 @@ void Tripper::Draw(HDC& hdc, Graphics& graphics)
 	keyCollider.top = y + 45 - 60;
 	keyCollider.bottom = y - 45 + height + 60;
 
-	if (isCollidedPlayer)
-		pressKeyImg.Draw(hdc, WINDOWS_WIDTH / 2 - pressKeyImg.GetWidth() / 2, 100, pressKeyImg.GetWidth(), pressKeyImg.GetHeight());
-
 	if (type == ETripperType::Door)
 	{
 		keyCollider.left += camera_x;
 		keyCollider.right += camera_x;
 		image.TransparentBlt(hdc, RECT{ x + camera_x, y + camera_y, x + camera_x + width, y + camera_y + height }, RGB(211, 211, 211));
 		//graphics.DrawImage(doorImage, Rect(x + camera_x, y + camera_y, doorImage->GetWidth(), doorImage->GetHeight()));
-		return;
 	}
 	
-	clock_t curTime = clock();
-	if (curTime - lastTime > 50)
+	else
 	{
-		curAnimCnt++;
-		if (curAnimCnt >= maxAnimCnt)
-			curAnimCnt = 0;
-		lastTime = clock();
+		clock_t curTime = clock();
+		if (curTime - lastTime > 50)
+		{
+			curAnimCnt++;
+			if (curAnimCnt >= maxAnimCnt)
+				curAnimCnt = 0;
+			lastTime = clock();
+		}
+		int unitX = width;
+		int unitY = height;
+		int animX = unitX * curAnimCnt;
+		image.Draw(hdc, x + camera_x, y + camera_y, unitX, unitY, animX, 0, unitX, unitY);
 	}
-	int unitX = width;
-	int unitY = height;	
-	int animX = unitX * curAnimCnt;
-	image.Draw(hdc, x + camera_x, y + camera_y, unitX, unitY, animX, 0, unitX, unitY);
+
+	if (isCollidedPlayer)
+		pressKeyImg.Draw(hdc, WINDOWS_WIDTH / 2 - pressKeyImg.GetWidth() / 2, 100, pressKeyImg.GetWidth(), pressKeyImg.GetHeight());
 }
 
 void Tripper::CreateImage()
@@ -81,6 +84,11 @@ void Tripper::CreateImage()
 		image.Load(L"../Resource/Image/Background/Tutorial/door1.png");
 		width = image.GetWidth();
 		maxAnimCnt = 1;
+		break;
+	case ETripperType::TutorialHouse:
+		image.Load(L"../Resource/Image/Background/World/tutorial_house.png");
+		width = image.GetWidth() / 3;
+		maxAnimCnt = 3;
 		break;
 	}
 	height = image.GetHeight();

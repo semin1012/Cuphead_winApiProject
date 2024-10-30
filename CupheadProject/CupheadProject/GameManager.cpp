@@ -33,6 +33,7 @@ GameManager::GameManager(RECT* rectView)
 	bgm->play();
 	tripSound = new Sound("../Resource/Sound/Player/tripper.mp3", false);
 	announcer = new Sound("../Resource/Sound/Player/tripper.mp3", false);
+	tripperType = ETripperType::Max;
 }
 
 GameManager::~GameManager()
@@ -231,21 +232,38 @@ void GameManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case 'A':
 			if (sceneState == (int)ESceneState::World && fadeEffect == nullptr)
 			{
-				Tripper *tripper = GetBackground()->GetTripper();
+				Tripper* tripper = GetBackground()->GetTripper();
 				if (tripper->GetCollidedPlayer())
 				{
-					fadeEffect = new FadeEffect();
-					tripSound->play();
+					if (tripper->GetCollidedPlayer())
+					{
+						tripperType = tripper->GetTripperType();
+						fadeEffect = new FadeEffect();
+						tripSound->play();
+					}
+				}
+				tripper = GetBackground()->GetTutorialTripper();
+				if (tripper->GetCollidedPlayer())
+				{
+					if (tripper->GetCollidedPlayer())
+					{
+						tripperType = tripper->GetTripperType();
+						fadeEffect = new FadeEffect();
+						tripSound->play();
+					}
 				}
 			}
 			if (sceneState == (int)ESceneState::Tutorial && fadeEffect == nullptr)
 			{
-				isTutorial = false;
 				Tripper* tripper = GetBackground()->GetTripper();
 				if (tripper->GetCollidedPlayer())
 				{
-					fadeEffect = new FadeEffect();
-					tripSound->play();
+					if (tripper->GetCollidedPlayer())
+					{
+						tripperType = tripper->GetTripperType();
+						fadeEffect = new FadeEffect();
+						tripSound->play();
+					}
 				}
 			}
 			break;
@@ -276,11 +294,17 @@ void GameManager::Draw(HDC& hdc)
 			if (sceneState == (int)ESceneState::Title)
 				SetIsTitle(false);
 			else if (sceneState == (int)ESceneState::World)
-				SetStage(background->GetTripper()->GetStage());
+			{
+				if (tripperType == ETripperType::Basic)
+					SetStage(1);
+				else
+					SetTutorial();
+			}
 			else if (sceneState == (int)ESceneState::Clear)
 			{
 				DestroySound();
-				bgm = new Sound("../Resource/Sound/bgm/clear.mp3", true);
+				if (bgm == nullptr)
+					bgm = new Sound("../Resource/Sound/bgm/clear.mp3", true);
 				bgm->play();
 				PlayAnnounerSound(EAnnouncerSound::Score);
 				delete background;
@@ -327,7 +351,7 @@ void GameManager::Draw(HDC& hdc)
 				{
 					if (!bullet->GetisActive()) continue;
 					collider = bullet->GetCollider();
-					Rectangle(hdc, collider->left , collider->top - camera_y, collider->right , collider->bottom - camera_y);
+					Rectangle(hdc, collider->left, collider->top - camera_y, collider->right, collider->bottom - camera_y);
 				}
 			}
 			collider = player->GetCollider();
@@ -341,7 +365,15 @@ void GameManager::Draw(HDC& hdc)
 				Rectangle(hdc, collider->left, collider->top, collider->right, collider->bottom);
 			else
 				Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
-		} 
+		}
+		if (background->GetTutorialTripper() != nullptr)
+		{
+			Collider* collider = background->GetTutorialTripper()->GetKeyCollider();
+			if (sceneState == (int)ESceneState::Tutorial)
+				Rectangle(hdc, collider->left, collider->top, collider->right, collider->bottom);
+			else
+				Rectangle(hdc, collider->left - camera_x, collider->top - camera_y, collider->right - camera_x, collider->bottom - camera_y);
+		}
 
 		if (boss != nullptr)
 		{
@@ -404,6 +436,7 @@ void GameManager::Update()
 		{
 			if ((*it)->GetIsActive() == false)
 			{
+				delete (*it);
 				it = frontImages.erase(it);
 			}
 			else it++;
@@ -578,6 +611,13 @@ void GameManager::SetCameraPos(int x, int y)
 			background->GetTripper()->SetCollidedPlayer(true);
 		else background->GetTripper()->SetCollidedPlayer(false);
 	}
+	if (background->GetTutorialTripper() != nullptr)
+	{
+		if (background->GetTutorialTripper()->CollidedKey(player->GetCollider(), deltaX, deltaY))
+			background->GetTutorialTripper()->SetCollidedPlayer(true);
+		else background->GetTutorialTripper()->SetCollidedPlayer(false);
+	}
+
 #pragma region Check player camera
 	int min_camera_x = 0;
 	int max_camera_x = 0;
@@ -813,12 +853,13 @@ void GameManager::SetIsTitle(bool isTitle)
 		sceneState = (int)ESceneState::Title;
 	else
 	{
+		SetWorld();
 		/*if (!isTutorial)
 		{
-			SetWorld();
+			
 			return;
 		}*/
-		SetTutorial();
+		//SetTutorial();
 		// TODO:
 		//SetStage(1);
 	}
@@ -833,18 +874,21 @@ void GameManager::SetWorld()
 {
 	DeleteObjects();
 	DestroySound();
-	bgm = new Sound("../Resource/Sound/bgm/world.mp3", true);
+	if (bgm == nullptr)
+		bgm = new Sound("../Resource/Sound/bgm/world.mp3", true);
 	bgm->play();
 	camera_x = WORLD_START_POINT_X;
 	camera_y = WORLD_START_POINT_Y;
 	sceneState = (int)ESceneState::World;
-	if (background != nullptr)
-		delete background;
-	background = new WorldMap();
+	delete background;
+	background = nullptr;
+	if (background == nullptr)
+		background = new WorldMap();
 	background->SetRectView(*rectView);
 	background->SetXPos(-WORLD_START_POINT_X);
 	background->SetYPos(-WORLD_START_POINT_Y);
-	player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
+	if (player == nullptr )
+		player = new Player(WORLD_START_POINT_X + WINDOWS_WIDTH / 2, WORLD_START_POINT_Y + WINDOWS_HEIGHT / 2);
 	player->SetInTutorial(false);
 	player->SetInWorld(true);
 	SetCameraPos(camera_x, camera_y);
@@ -855,15 +899,19 @@ void GameManager::SetWorld()
 void GameManager::SetTutorial()
 {
 	DestroySound();
-	bgm = new Sound("../Resource/Sound/bgm/tutorial.mp3", true);
+	if (bgm == nullptr)
+		bgm = new Sound("../Resource/Sound/bgm/tutorial.mp3", true);
 	bgm->play();
 	sceneState = (int)ESceneState::Tutorial;
 	delete background;
-
-	health = new HealthUI();
-	background = new TutorialMap();
+	background = nullptr;
+	if (health == nullptr)
+		health = new HealthUI();
+	if (background == nullptr)
+		background = new TutorialMap();
 	background->SetRectView(*rectView);
-	player = new Player(0, 700);
+	if (player == nullptr)
+		player = new Player(0, 700);
 	player->SetInTutorial(true);
 	player->SetInWorld(false);
 	player->SetStage();
@@ -873,30 +921,28 @@ void GameManager::SetTutorial()
 
 void GameManager::PlayAnnounerSound(EAnnouncerSound type)
 {
-	/*Ready,
-		NockOut,
-		Score,
-		Fail,
-		Max*/
 	if (announcer != nullptr)
 	{
 		delete announcer;
 		announcer = nullptr;
 	}
-	switch(type)
+	if (announcer == nullptr)
 	{
-	case EAnnouncerSound::Ready:
-		announcer = new Sound("../Resource/Sound/Announcer/ready.mp3", false);
-		break;
-	case EAnnouncerSound::KnockOut:
-		announcer = new Sound("../Resource/Sound/Announcer/knockout.wav", false);
-		break;
-	case EAnnouncerSound::Score:
-		announcer = new Sound("../Resource/Sound/Announcer/score.wav", false);
-		break;
-	case EAnnouncerSound::Fail:
-		announcer = new Sound("../Resource/Sound/Announcer/fail.wav", false);
-		break;
+		switch (type)
+		{
+		case EAnnouncerSound::Ready:
+			announcer = new Sound("../Resource/Sound/Announcer/ready.mp3", false);
+			break;
+		case EAnnouncerSound::KnockOut:
+			announcer = new Sound("../Resource/Sound/Announcer/knockout.wav", false);
+			break;
+		case EAnnouncerSound::Score:
+			announcer = new Sound("../Resource/Sound/Announcer/score.wav", false);
+			break;
+		case EAnnouncerSound::Fail:
+			announcer = new Sound("../Resource/Sound/Announcer/fail.wav", false);
+			break;
+		}
 	}
 	announcer->play();
 }
@@ -904,22 +950,34 @@ void GameManager::PlayAnnounerSound(EAnnouncerSound type)
 void GameManager::SetStage(int stage)
 {
 	DestroySound();
-	bgm = new Sound("../Resource/Sound/bgm/goopy.mp3", true);
+	if (bgm == nullptr)
+		bgm = new Sound("../Resource/Sound/bgm/goopy.mp3", true);
 	bgm->play();
 	//isTutorial = false;
 	sceneState = (int)ESceneState::Stage;
 	this->stage = stage;
 	if (background != nullptr)
 		delete background;
-	background = new StageMap();
+	background = nullptr;
+	if (background == nullptr)
+		background = new StageMap();
 	background->SetRectView(*rectView);
 
 	if (player != nullptr)
 		delete player;
-	player = new Player();
+	player = nullptr;
+	if (player == nullptr)
+		player = new Player();
 	SetIsWorld(false);
-	boss = new Boss();
+	if (boss != nullptr)
+		delete boss;
+	boss = nullptr;
+	if (boss == nullptr)
+		boss = new Boss();
 	boss->SetPlayer(player);
+	for (auto image : frontImages)
+		delete image;
+	frontImages.clear();
 	frontImages.push_back(new FrontImage(EFrontImage::Ready));
 	PlayAnnounerSound(EAnnouncerSound::Ready);
 
@@ -965,6 +1023,9 @@ void GameManager::GameOver()
 
 void GameManager::DeleteObjects()
 {
+	for (auto image : frontImages)
+		delete image;
+	frontImages.clear();
 	for (auto it = effects.begin(); it != effects.end(); it++)
 		delete (*it);
 	effects.clear();
@@ -1007,7 +1068,12 @@ void GameManager::SetReplay(bool isTitle)
 		isMoveCameraX = true;
 	}
 	else
+	{
+		delete background;
+		background = new StageMap();
+		background->SetRectView(*rectView);
 		SetStage(1);
+	}
 }
 
 void GameManager::SetMouseDeltaPos(HWND& hWnd)
@@ -1187,7 +1253,10 @@ void GameManager::Gdi_Draw(HDC hdc)
 			{
 				ParryObject* parry = (*it);
 				if (!parry->GetIsActive())
+				{
+					delete (*it);
 					it = parryObjects.erase(it);
+				}
 				else
 				{
 					if (parry->StartAnimation())
