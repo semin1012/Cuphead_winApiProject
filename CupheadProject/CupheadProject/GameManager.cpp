@@ -988,6 +988,7 @@ void GameManager::SetStage(int stage)
 	camera_y = 0;
 	SetCameraPos(0, 0);
 	player->SetStage();
+	boss->SetStage();
 }
 
 void GameManager::Clear()

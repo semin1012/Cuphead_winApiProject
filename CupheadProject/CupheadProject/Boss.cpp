@@ -10,9 +10,9 @@ Boss::Boss()
 	camera_y = 0;
 	phase = 1;
 	curAnimMax = 0;
-	curAnimCnt = 0;
 	animLastTime = clock();
 	state = EBossState::Intro;
+	curAnimCnt = 0;
 	animState = EBossStateSprite::Intro;
 	dirX = 1;
 	drawCollider = { 0, 0, 0, 0 };
@@ -584,6 +584,13 @@ void Boss::SetCameraPos(int x, int y)
 	int deltaY = (camera_y - y);
 	this->y -= deltaY;
 	camera_y = y;
+}
+
+void Boss::SetStage()
+{
+	startChangeStateTime = clock();
+	state = EBossState::Intro;
+	curAnimCnt = 0;
 }
 
 void Boss::SetPlayer(Player* player)

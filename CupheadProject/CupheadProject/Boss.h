@@ -8,7 +8,7 @@
 #include "Sound.h"
 
 #define PATTERN_1_TIME 4000
-#define HEALTH 10
+#define HEALTH 100
 #define TRANSITION_TIME 4000
 #define CHANGE_STATE_MOVE 2000
 #define PATTERN_2_TIME 3000
@@ -162,6 +162,7 @@ public:
 	bool		GetIsPunch()				{ return state == EBossState::Punch; }
 	bool		GetIsDeath()				{ return hp <= 0; }
 	void		SetCameraPos(int x, int y);
+	void		SetStage();
 
 	bool		GetIsCameraShake()			{ return isCameraShake; }
 	void		SetIsCameraShake(bool shake) { isCameraShake = shake; }

@@ -948,7 +948,7 @@ void Player::SetIsDashing(bool isDashing)
 	state = EPlayerState::RightDash;
 	speed = DASH_SPEED;
 	if (inTutorial)
-		speed = 4.0f;
+		speed = 3.0f;
 	startChangeStateTime = clock();
 
 	curAnimCnt = 0;

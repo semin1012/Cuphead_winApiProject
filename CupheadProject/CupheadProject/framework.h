@@ -27,7 +27,7 @@
 
 #define LAST_FORWARD_IS_RIGHT 1
 #define LAST_FORWARD_IS_LEFT 0
-#define STAGE_READY_TIME 1900
+#define STAGE_READY_TIME 2300
 
 // >> : for gid+
 #include <objidl.h>

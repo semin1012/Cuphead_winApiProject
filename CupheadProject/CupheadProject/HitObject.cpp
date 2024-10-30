@@ -12,6 +12,7 @@ HitObject::HitObject()
 	collider.right = 0;
 	collider.top = 0;
 	collider.bottom = 0;
+	isHit = false;
 	hp = 5;
 }
 
