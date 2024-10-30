@@ -718,6 +718,11 @@ void GameManager::SetCameraPos(int x, int y)
 		if (isMoveCameraX && isMoveCameraY)
 		{
 			player->SetCameraPos(camera_x + deltaX * speed, camera_y + deltaY * speed, deltaX);
+			for (auto effect : effects)
+			{
+				if (effect->GetisActive())
+					effect->SetPositionX(effect->GetPositionX() + deltaX);
+			}
 			return;
 		}
 		if (!isMoveCameraX && !isMoveCameraY)
@@ -732,9 +737,15 @@ void GameManager::SetCameraPos(int x, int y)
 		{
 			float speed = player->GetSpeed();
 			player->Move(0, deltaY* speed);
-			player->SetCameraPos(camera_x + deltaX * speed, 0, deltaX);
+			player->SetCameraPos(camera_x + deltaX * speed, player->GetCameraPosY(), deltaX);
 			if (sceneState == (int)ESceneState::Tutorial)
 				background->SetCameraPos(-(camera_x), 0);
+			for (auto effect : effects)
+			{
+				if (effect->GetisActive())
+					effect->SetPositionX(effect->GetPositionX() + deltaX);
+			}
+			return;
 		}
 		if (isMoveCameraY)
 		{

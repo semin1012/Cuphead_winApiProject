@@ -191,6 +191,7 @@ public:
 	void		SetCameraPosX(int x);
 	void		SetCameraPosY(int y);
 	int			GetCameraPosX()								{ return camera_x; }
+	int			GetCameraPosY()								{ return camera_y; }
 	void		UpdateCameraPosX(int x);
 
 	void		SetState(EPlayerWorldState state, EWorldSpriteY spriteY);
